@@ -19,10 +19,25 @@ step = 0
 ratio, anim_ratio = 0, 3
 px, py = 0, 15
 tx = 1
+h_axis_pos, v_axis_pos = 0, 0
+myJoystick = None
+
+joystick_count = pygame.joystick.get_count()
+if joystick_count > 0:
+    myJoystick = pygame.joystick.Joystick(0)
+    myJoystick.init()
 
 while True:
     DISPLAYSURF.fill((255, 255, 255))
-    textSurf = BASICFONT.render("%s,%s" % (str(px), str(py)), True, (255, 255, 255))
+    pressed = ""
+    if myJoystick is not None:
+		h_axis_pos = myJoystick.get_axis(3)
+		v_axis_pos = myJoystick.get_axis(4)
+		for b in range(0, 10):
+			if myJoystick.get_button(b):
+				pressed = str(b)    
+    textSurf = BASICFONT.render("%s,%s -- %s -- %s,%s" % (str(px), str(py), pressed, 
+    	str(h_axis_pos), str(v_axis_pos)), True, (255, 255, 255))
     textRect = textSurf.get_rect()
     textRect.bottomleft = 250, 250
     for r in range(0, 16):
