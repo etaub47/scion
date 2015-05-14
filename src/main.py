@@ -19,10 +19,38 @@ step = 0
 ratio, anim_ratio = 0, 3
 px, py = 0, 15
 tx = 1
+h_axis_pos, v_axis_pos = 0, 0
+myJoystick = None
+
+
+joystick_count = pygame.joystick.get_count()
+if joystick_count > 0:
+    myJoystick = pygame.joystick.Joystick(0)
+    myJoystick.init()
 
 while True:
     DISPLAYSURF.fill((255, 255, 255))
-    textSurf = BASICFONT.render("%s,%s" % (str(px), str(py)), True, (255, 255, 255))
+    pressed = ""
+    if myJoystick is not None:
+		h_axis_pos = myJoystick.get_axis(3)
+		v_axis_pos = myJoystick.get_axis(4)
+		if h_axis_pos > 0.5: 
+			direction = RIGHT
+			speed = 5
+		elif h_axis_pos < -0.5: 
+			direction = LEFT
+			speed = 5
+		elif v_axis_pos > 0.5:
+			direction = DOWN
+			speed = 5
+		elif v_axis_pos < -0.5: 
+			direction = UP
+			speed = 5
+		else: speed = 0
+		for b in range(0, 10):
+			if myJoystick.get_button(b):
+				pressed = str(b)    
+    textSurf = BASICFONT.render("%s,%s -- %s" % (str(px), str(py), pressed), True, (255, 255, 255))
     textRect = textSurf.get_rect()
     textRect.bottomleft = 250, 250
     for r in range(0, 16):
@@ -32,16 +60,16 @@ while True:
     DISPLAYSURF.blit(textSurf, textRect)
     if direction == DOWN: 
         y += speed
-        if y >= 450: direction = RIGHT
+        #if y >= 450: direction = RIGHT
     elif direction == RIGHT:
         x += speed
-        if x >= 450: direction = UP
+        #if x >= 450: direction = UP
     elif direction == UP:
         y -= speed
-        if y <= 50: direction = LEFT
+        #if y <= 50: direction = LEFT
     elif direction == LEFT:
         x -= speed
-        if x <= 50: direction = DOWN
+        #if x <= 50: direction = DOWN
     anim.displayImage(DISPLAYSURF, i, direction, step, x, y)
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -60,8 +88,9 @@ while True:
             elif event.key == K_a: tx -= 1
     pygame.display.update()
     fpsClock.tick(FPS)
-    if ratio == anim_ratio: 
-        step += 1
-    else: 
-        ratio += 1
+    if speed > 0:
+    	if ratio == anim_ratio: 
+        	step += 1
+    	else: 
+        	ratio += 1
     if step >= 4: step = 0
