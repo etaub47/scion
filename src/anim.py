@@ -29,18 +29,17 @@ spriteMap = {
 
 terrainMap = {
     # grass, dungeon floor, brown brick wall, water, stones
-    1: (0, 15), 2: (5, 18), 3: (8, 16), 4: (37, 19), 5: (53, 16),
+    'A': (0, 15), 2: (5, 18), 3: (8, 16), 'B': (37, 19), 'C': (53, 16),
     # colortile, large tiles, gray brick wall, sand, cobblestone
-    6: (59, 15), 7: (57, 15), 8: (52, 17), 9: (7, 15), 10: (9, 14),
-    # poison swamp, lava, soft tile, blue tile
-    11: (23, 19), 12: (52, 13), 13: (56, 16), 14: (29, 16)
+    6: (59, 15), 7: (57, 15), 8: (52, 17), 'D': (7, 15), 'F': (9, 14),
+    # poison swamp, lava, soft tile, blue tile, bridge
+    'E': (23, 19), 12: (52, 13), 13: (56, 16), 14: (29, 16), 'G': (43, 16)
     # animated water: 36, 19 - 39, 19, animated swamp 23, 19 - 24, 19
     # animated lava: 49, 13 - 52, 13
 }
 
 featureMap = {
-    'stairs_down_1': (15, 15), 'stairs_up_1': (31, 15), 'stairs_down_2': (41, 15), 'stairs_up_2': (42, 15),
-    'tree': (14, 18)
+    'FA': (15, 15), 'FB': (31, 15), 'FC': (41, 15), 'FD': (42, 15), 'FE': (23, 11), 'FF': (14, 18)
 }
 
 def displayImage (DISPLAYSURF, imageRef, direction, step, x, y):
@@ -51,8 +50,16 @@ def displayImage (DISPLAYSURF, imageRef, direction, step, x, y):
     DISPLAYSURF.blit(sprite[0], (x, y), area=(x_offset, y_offset, 48, 48))
 
 def displayTerrain (DISPLAYSURF, terrainRef, x, y):
-    x_offset = (terrainMap[terrainRef][0]) * 48
-    y_offset = (terrainMap[terrainRef][1]) * 48
+    if terrainRef in terrainMap:
+        x_offset = (terrainMap[terrainRef][0]) * 48
+        y_offset = (terrainMap[terrainRef][1]) * 48
+        DISPLAYSURF.blit(sprite1, (x * 48, y * 48), area=(x_offset, y_offset, 48, 48))
+
+def displayFeature (DISPLAYSURF, featureRef, x, y):
+    if featureRef[-1] == '\n': 
+        featureRef = featureRef[:-1]
+    x_offset = (featureMap[featureRef][0]) * 48
+    y_offset = (featureMap[featureRef][1]) * 48
     DISPLAYSURF.blit(sprite1, (x * 48, y * 48), area=(x_offset, y_offset, 48, 48))
 
 def displaySquare (DISPLAYSURF, px, py):

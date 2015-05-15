@@ -1,4 +1,4 @@
-import pygame, sys, anim
+import pygame, sys, anim, world
 from pygame.locals import *
 
 pygame.init()
@@ -21,7 +21,6 @@ px, py = 0, 15
 tx = 1
 h_axis_pos, v_axis_pos = 0, 0
 myJoystick = None
-
 
 joystick_count = pygame.joystick.get_count()
 if joystick_count > 0:
@@ -53,10 +52,11 @@ while True:
     textSurf = BASICFONT.render("%s,%s -- %s" % (str(px), str(py), pressed), True, (255, 255, 255))
     textRect = textSurf.get_rect()
     textRect.bottomleft = 250, 250
-    for r in range(0, 16):
-        for s in range(0, 12):
-            anim.displayTerrain(DISPLAYSURF, tx, r, s)
-    anim.displaySquare(DISPLAYSURF, px, py)
+#    for r in range(0, 16):
+#    	for s in range(0, 12):
+#    		anim.displayTerrain(DISPLAYSURF, tx, r, s)
+#    anim.displaySquare(DISPLAYSURF, px, py)
+    world.loadOverworld(DISPLAYSURF, 1, 1)
     DISPLAYSURF.blit(textSurf, textRect)
     if direction == DOWN:
         y += speed
