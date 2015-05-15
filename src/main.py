@@ -58,18 +58,14 @@ while True:
             anim.displayTerrain(DISPLAYSURF, tx, r, s)
     anim.displaySquare(DISPLAYSURF, px, py)
     DISPLAYSURF.blit(textSurf, textRect)
-    if direction == DOWN: 
+    if direction == DOWN:
         y += speed
-        #if y >= 450: direction = RIGHT
     elif direction == RIGHT:
         x += speed
-        #if x >= 450: direction = UP
     elif direction == UP:
         y -= speed
-        #if y <= 50: direction = LEFT
     elif direction == LEFT:
         x -= speed
-        #if x <= 50: direction = DOWN
     anim.displayImage(DISPLAYSURF, i, direction, step, x, y)
     for event in pygame.event.get():
         if event.type == QUIT:
