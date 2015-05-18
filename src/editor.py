@@ -26,7 +26,6 @@ def drawHighlightBox(boxx, boxy):
     
 pygame.init()
 pygame.display.set_caption('Map Editor')
-
 DISPLAYSURF = pygame.display.set_mode((960, 768))
 BASICFONT = pygame.font.Font('freesansbold.ttf', 20)
 DISPLAYSURF.fill((255, 255, 255))
@@ -52,7 +51,6 @@ while True:
             mousex, mousey = event.pos
             mouseClicked = True
     boxx, boxy = getBoxAtPixel(mousex, mousey)
-    print boxx, boxy
     if boxx != None and boxy != None:
         drawHighlightBox(boxx, boxy)
     pygame.display.update()
