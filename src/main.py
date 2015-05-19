@@ -52,11 +52,11 @@ while True:
     textSurf = BASICFONT.render("%s,%s -- %s" % (str(px), str(py), pressed), True, (255, 255, 255))
     textRect = textSurf.get_rect()
     textRect.bottomleft = 250, 250
+    world.loadOverworld(DISPLAYSURF, 1, 1, 1)
 #    for r in range(0, 16):
 #    	for s in range(0, 12):
 #    		anim.displayTerrain(DISPLAYSURF, tx, r, s)
-#    anim.displaySquare(DISPLAYSURF, px, py)
-    world.loadOverworld(DISPLAYSURF, 1, 1)
+#   anim.displaySquare(DISPLAYSURF, px, py)
     DISPLAYSURF.blit(textSurf, textRect)
     if direction == DOWN:
         y += speed

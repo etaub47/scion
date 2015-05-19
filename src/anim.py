@@ -29,17 +29,20 @@ spriteMap = {
 
 terrainMap = {
     # grass, dungeon floor, brown brick wall, water, stones
-    'A': (0, 15), 2: (5, 18), 3: (8, 16), 'B': (37, 19), 'C': (53, 16),
+    'A': (0, 15), 'H': (5, 18), 'I': (8, 16), 'B': (37, 19), 'C': (53, 16),
     # colortile, large tiles, gray brick wall, sand, cobblestone
-    6: (59, 15), 7: (57, 15), 8: (52, 17), 'D': (7, 15), 'F': (9, 14),
+    'J': (59, 15), 'K': (57, 15), 'L': (52, 17), 'D': (7, 15), 'F': (9, 14),
     # poison swamp, lava, soft tile, blue tile, bridge
-    'E': (23, 19), 12: (52, 13), 13: (56, 16), 14: (29, 16), 'G': (43, 16)
+    'E': (23, 19), 'M': (52, 13), 'N': (56, 16), 'O': (29, 16), 'G': (43, 16)
     # animated water: 36, 19 - 39, 19, animated swamp 23, 19 - 24, 19
     # animated lava: 49, 13 - 52, 13
 }
 
 featureMap = {
-    'FA': (15, 15), 'FB': (31, 15), 'FC': (41, 15), 'FD': (42, 15), 'FE': (23, 11), 'FF': (14, 18)
+    # stairs to dungeon, stairs to overworld, , , , tree
+    'FA': (15, 15), 'FB': (31, 15), 'FC': (41, 15), 'FD': (42, 15), 'FE': (23, 11), 'FF': (14, 18),
+    # statue, fountain
+    'FG': (28, 11), 'FH': (63, 11)
 }
 
 def displayImage (DISPLAYSURF, imageRef, direction, step, x, y):
@@ -60,7 +63,9 @@ def displayFeature (DISPLAYSURF, featureRef, x, y):
         featureRef = featureRef[:-1]
     x_offset = (featureMap[featureRef][0]) * 48
     y_offset = (featureMap[featureRef][1]) * 48
-    DISPLAYSURF.blit(sprite1, (x * 48, y * 48), area=(x_offset, y_offset, 48, 48))
+    DISPLAYSURF.blit(sprite1, (x * 48, y * 48), area=(x_offset + 1, y_offset, 47, 48))
 
 def displaySquare (DISPLAYSURF, px, py):
     DISPLAYSURF.blit(sprite1, (144, 0), area=(px * 48, py * 48, 48, 48))
+
+#def displayCreature
