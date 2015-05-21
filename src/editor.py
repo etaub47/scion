@@ -28,12 +28,14 @@ pygame.init()
 pygame.display.set_caption('Map Editor')
 DISPLAYSURF = pygame.display.set_mode((960, 800))
 BASICFONT = pygame.font.Font('freesansbold.ttf', 20)
-x, y, z = 1, 1, 1
+x, y, z = 1, 1, 0
 mousex, mousey, mouseClicked = 0, 0, False
+
+world.loadWorld(x, y, z)
 
 while True:
     DISPLAYSURF.fill((255, 250, 205))
-    world.loadOverworld(DISPLAYSURF, x, y, z)
+    world.drawWorld(DISPLAYSURF, x, y, z)
     if z == 1: 
         worldname = "Overworld"
         anim.displayTerrain(DISPLAYSURF, 'A', 17, 1)
@@ -71,10 +73,7 @@ while True:
     pygame.draw.rect(DISPLAYSURF, (0, 0, 0), (144, 624, 48, 48), 0)
     pygame.draw.rect(DISPLAYSURF, (0, 0, 0), (48, 672, 48, 48), 0)
     pygame.draw.rect(DISPLAYSURF, (0, 0, 0), (48, 720, 48, 48), 0)
-    world.tinyOverworld(DISPLAYSURF, 1, 1, 1, 2, 2)
-    anim.displayTerrain(DISPLAYSURF, 'A', 2, 15)
-    #anim.displayTerrain(DISPLAYSURF, 'B', 2, 14)
-    anim.displayTerrain(DISPLAYSURF, 'A', 3, 15)
+    world.tinyOverworld(DISPLAYSURF, x, y, z)
     for event in pygame.event.get():
         if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
             pygame.quit()
