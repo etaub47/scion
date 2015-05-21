@@ -1,10 +1,6 @@
 import pygame, sys, anim, world
 from pygame.locals import *
-
-BOXSIZE = 48
-BOARDWIDTH = 768
-BOARDHEIGHT = 576
-BRIGHTYELLOW = (255, 255, 0)
+from constants import *
 
 def leftTopCoordsOfBox (boxx, boxy):
     left = boxx * BOXSIZE
@@ -33,55 +29,30 @@ mousex, mousey, mouseClicked = 0, 0, False
 
 world.loadWorld(x, y, z)
 
+buttons1=[(0, 'A', 17, 1), (0, 'B', 18, 1), (0, 'C', 17, 2), (0, 'D', 18, 2), (0, 'E', 17, 3),
+          (0, 'F', 18, 3), (0, 'G', 17, 4), (1, 'FA', 17, 6), (1, 'FF', 18, 6), (1, 'FG', 17, 7),
+          (1, 'FH', 18, 7), (2, 11, 5, 13), (2, 13, 5, 14), (2, 14, 5, 15), (2, 16, 6, 13),
+          (2, 19, 6, 14), (2, 21, 6, 15), (2, 23, 7, 13), (2, 24, 7, 14), (2, 29, 7, 15)]
+buttons2=[(0, 'H', 17, 1), (0, 'I', 18, 1), (0, 'K', 17, 2), (0, 'L', 18, 2), (0, 'M', 17, 3),
+          (0, 'N', 18, 3), (0, 'O', 17, 4), (1, 'FB', 17, 6), (1, 'FC', 18, 6), (1, 'FD', 17, 7),
+          (1, 'FE', 18, 7), (2, 9, 5, 13), (2, 10, 5, 14), (2, 12, 5, 15), (2, 15, 6, 13),
+          (2, 20, 6, 14), (2, 26, 6, 15), (2, 27, 7, 13), (2, 28, 7, 14), (2, 30, 7, 15)]
+
 while True:
     DISPLAYSURF.fill((255, 250, 205))
     world.drawWorld(DISPLAYSURF, x, y, z)
     if z == 0: 
         worldname = "Overworld"
-        anim.displayTerrain(DISPLAYSURF, 'A', 17, 1)
-        anim.displayTerrain(DISPLAYSURF, 'B', 18, 1)
-        anim.displayTerrain(DISPLAYSURF, 'C', 17, 2)
-        anim.displayTerrain(DISPLAYSURF, 'D', 18, 2)
-        anim.displayTerrain(DISPLAYSURF, 'E', 17, 3)
-        anim.displayTerrain(DISPLAYSURF, 'F', 18, 3)
-        anim.displayTerrain(DISPLAYSURF, 'G', 17, 4)
-        anim.displayFeature(DISPLAYSURF, 'FA', 17, 6)
-        anim.displayFeature(DISPLAYSURF, 'FF', 18, 6)
-        anim.displayFeature(DISPLAYSURF, 'FG', 17, 7)
-        anim.displayFeature(DISPLAYSURF, 'FH', 18, 7)
-        anim.displayCreature(DISPLAYSURF, 11, 5, 13)
-        anim.displayCreature(DISPLAYSURF, 13, 5, 14)
-        anim.displayCreature(DISPLAYSURF, 14, 5, 15)
-        anim.displayCreature(DISPLAYSURF, 16, 6, 13)
-        anim.displayCreature(DISPLAYSURF, 19, 6, 14)
-        anim.displayCreature(DISPLAYSURF, 21, 6, 15)
-        anim.displayCreature(DISPLAYSURF, 23, 7, 13)
-        anim.displayCreature(DISPLAYSURF, 24, 7, 14)
-        anim.displayCreature(DISPLAYSURF, 29, 7, 15)
+        for button in buttons1:
+            if button[0] == 0: anim.displayTerrain(DISPLAYSURF, button[1], button[2], button[3])
+            elif button[0] == 1: anim.displayFeature(DISPLAYSURF, button[1], button[2], button[3])
+            elif button[0] == 2: anim.displayCreature(DISPLAYSURF, button[1], button[2], button[3])
     else:
         worldname = "Dungeon %d" % z    
-        anim.displayTerrain(DISPLAYSURF, 'H', 17, 1)
-        anim.displayTerrain(DISPLAYSURF, 'I', 18, 1)
-        anim.displayTerrain(DISPLAYSURF, 'J', 17, 2)
-        anim.displayTerrain(DISPLAYSURF, 'K', 18, 2)
-        anim.displayTerrain(DISPLAYSURF, 'L', 17, 3)
-        anim.displayTerrain(DISPLAYSURF, 'M', 18, 3)
-        anim.displayTerrain(DISPLAYSURF, 'N', 17, 4)
-        anim.displayTerrain(DISPLAYSURF, 'O', 18, 4)
-        anim.displayFeature(DISPLAYSURF, 'FB', 17, 6)
-        anim.displayFeature(DISPLAYSURF, 'FC', 18, 6)
-        anim.displayFeature(DISPLAYSURF, 'FD', 17, 7)
-        anim.displayFeature(DISPLAYSURF, 'FE', 18, 7)
-        anim.displayCreature(DISPLAYSURF, 9, 5, 13)
-        anim.displayCreature(DISPLAYSURF, 10, 5, 14)
-        anim.displayCreature(DISPLAYSURF, 12, 5, 15)
-        anim.displayCreature(DISPLAYSURF, 15, 6, 13)
-        anim.displayCreature(DISPLAYSURF, 20, 6, 14)
-        anim.displayCreature(DISPLAYSURF, 26, 6, 15)
-        anim.displayCreature(DISPLAYSURF, 27, 7, 13)
-        anim.displayCreature(DISPLAYSURF, 28, 7, 14)
-        anim.displayCreature(DISPLAYSURF, 30, 7, 15)
-        
+        for button in buttons2:
+            if button[0] == 0: anim.displayTerrain(DISPLAYSURF, button[1], button[2], button[3])
+            elif button[0] == 1: anim.displayFeature(DISPLAYSURF, button[1], button[2], button[3])
+            elif button[0] == 2: anim.displayCreature(DISPLAYSURF, button[1], button[2], button[3])        
     textSurf = BASICFONT.render("%s -- Grid %d,%d" % (worldname, x, y), True, (0, 0, 0))
     textRect = textSurf.get_rect()
     textRect.topleft = (50, 576)
