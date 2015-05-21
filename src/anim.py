@@ -1,5 +1,6 @@
 import pygame, sys
 from pygame.locals import *
+from constants import *
 
 sprite1 = pygame.image.load('../img/sprite1.png')
 sprite2 = pygame.image.load('../img/sprite2.png')
@@ -48,24 +49,28 @@ featureMap = {
 def displayImage (DISPLAYSURF, imageRef, direction, step, x, y):
     sprite = spriteMap[imageRef]
     if step == 3: step = 1
-    x_offset = (sprite[1][direction][0] + step) * 48
-    y_offset = (sprite[1][direction][1]) * 48
-    DISPLAYSURF.blit(sprite[0], (x, y), area=(x_offset, y_offset, 48, 48))
+    x_offset = (sprite[1][direction][0] + step) * BOXSIZE
+    y_offset = (sprite[1][direction][1]) * BOXSIZE
+    DISPLAYSURF.blit(sprite[0], (x, y), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
 
 def displayTerrain (DISPLAYSURF, terrainRef, x, y):
     if terrainRef in terrainMap:
-        x_offset = (terrainMap[terrainRef][0]) * 48
-        y_offset = (terrainMap[terrainRef][1]) * 48
-        DISPLAYSURF.blit(sprite1, (x * 48, y * 48), area=(x_offset, y_offset, 48, 48))
+        x_offset = (terrainMap[terrainRef][0]) * BOXSIZE
+        y_offset = (terrainMap[terrainRef][1]) * BOXSIZE
+        DISPLAYSURF.blit(sprite1, (x * BOXSIZE, y * BOXSIZE), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
 
 def displayFeature (DISPLAYSURF, featureRef, x, y):
     if featureRef[-1] == '\n': 
         featureRef = featureRef[:-1]
-    x_offset = (featureMap[featureRef][0]) * 48
-    y_offset = (featureMap[featureRef][1]) * 48
-    DISPLAYSURF.blit(sprite1, (x * 48, y * 48), area=(x_offset + 1, y_offset, 47, 48))
+    x_offset = (featureMap[featureRef][0]) * BOXSIZE
+    y_offset = (featureMap[featureRef][1]) * BOXSIZE
+    DISPLAYSURF.blit(sprite1, (x * BOXSIZE, y * BOXSIZE), area=(x_offset + 1, y_offset, BOXSIZE - 1, BOXSIZE))
 
 def displaySquare (DISPLAYSURF, px, py):
-    DISPLAYSURF.blit(sprite1, (144, 0), area=(px * 48, py * 48, 48, 48))
+    DISPLAYSURF.blit(sprite1, (144, 0), area=(px * BOXSIZE, py * BOXSIZE, BOXSIZE, BOXSIZE))
 
-#def displayCreature
+def displayCreature (DISPLAYSURF, creatureRef, x, y):
+    sprite = spriteMap[creatureRef]
+    x_offset = (sprite[1][0][0]) * BOXSIZE
+    y_offset = (sprite[1][0][1]) * BOXSIZE
+    DISPLAYSURF.blit(sprite[0], (x * BOXSIZE, y * BOXSIZE), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))

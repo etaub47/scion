@@ -36,7 +36,7 @@ world.loadWorld(x, y, z)
 while True:
     DISPLAYSURF.fill((255, 250, 205))
     world.drawWorld(DISPLAYSURF, x, y, z)
-    if z == 1: 
+    if z == 0: 
         worldname = "Overworld"
         anim.displayTerrain(DISPLAYSURF, 'A', 17, 1)
         anim.displayTerrain(DISPLAYSURF, 'B', 18, 1)
@@ -49,6 +49,15 @@ while True:
         anim.displayFeature(DISPLAYSURF, 'FF', 18, 6)
         anim.displayFeature(DISPLAYSURF, 'FG', 17, 7)
         anim.displayFeature(DISPLAYSURF, 'FH', 18, 7)
+        anim.displayCreature(DISPLAYSURF, 11, 5, 13)
+        anim.displayCreature(DISPLAYSURF, 13, 5, 14)
+        anim.displayCreature(DISPLAYSURF, 14, 5, 15)
+        anim.displayCreature(DISPLAYSURF, 16, 6, 13)
+        anim.displayCreature(DISPLAYSURF, 19, 6, 14)
+        anim.displayCreature(DISPLAYSURF, 21, 6, 15)
+        anim.displayCreature(DISPLAYSURF, 23, 7, 13)
+        anim.displayCreature(DISPLAYSURF, 24, 7, 14)
+        anim.displayCreature(DISPLAYSURF, 29, 7, 15)
     else:
         worldname = "Dungeon %d" % z    
         anim.displayTerrain(DISPLAYSURF, 'H', 17, 1)
@@ -63,16 +72,20 @@ while True:
         anim.displayFeature(DISPLAYSURF, 'FC', 18, 6)
         anim.displayFeature(DISPLAYSURF, 'FD', 17, 7)
         anim.displayFeature(DISPLAYSURF, 'FE', 18, 7)
+        anim.displayCreature(DISPLAYSURF, 9, 5, 13)
+        anim.displayCreature(DISPLAYSURF, 10, 5, 14)
+        anim.displayCreature(DISPLAYSURF, 12, 5, 15)
+        anim.displayCreature(DISPLAYSURF, 15, 6, 13)
+        anim.displayCreature(DISPLAYSURF, 20, 6, 14)
+        anim.displayCreature(DISPLAYSURF, 26, 6, 15)
+        anim.displayCreature(DISPLAYSURF, 27, 7, 13)
+        anim.displayCreature(DISPLAYSURF, 28, 7, 14)
+        anim.displayCreature(DISPLAYSURF, 30, 7, 15)
+        
     textSurf = BASICFONT.render("%s -- Grid %d,%d" % (worldname, x, y), True, (0, 0, 0))
     textRect = textSurf.get_rect()
     textRect.topleft = (50, 576)
     #DISPLAYSURF.blit(textSurf, textRect)
-    #pygame.draw.rect(DISPLAYSURF, (0, 0, 0), (16, 600, 192, 144), 2)
-    pygame.draw.rect(DISPLAYSURF, (0, 0, 0), (48, 624, 48, 48), 0)
-    pygame.draw.rect(DISPLAYSURF, (0, 0, 0), (96, 624, 48, 48), 0)
-    pygame.draw.rect(DISPLAYSURF, (0, 0, 0), (144, 624, 48, 48), 0)
-    pygame.draw.rect(DISPLAYSURF, (0, 0, 0), (48, 672, 48, 48), 0)
-    pygame.draw.rect(DISPLAYSURF, (0, 0, 0), (48, 720, 48, 48), 0)
     world.tinyOverworld(DISPLAYSURF, x, y, z)
     for event in pygame.event.get():
         if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
@@ -83,6 +96,18 @@ while True:
         elif event.type == MOUSEBUTTONUP:
             mousex, mousey = event.pos
             mouseClicked = True
+        elif event.type == KEYDOWN and event.key == K_RIGHT and world.roomInRange(x + 1, y):
+            x += 1
+            world.loadWorld(x, y, z)
+        elif event.type == KEYDOWN and event.key == K_LEFT and world.roomInRange(x - 1, y):
+            x -= 1
+            world.loadWorld(x, y, z)
+        elif event.type == KEYDOWN and event.key == K_DOWN and world.roomInRange(x, y + 1):
+            y += 1
+            world.loadWorld(x, y, z)
+        elif event.type == KEYDOWN and event.key == K_UP and world.roomInRange(x, y - 1):
+            y -= 1
+            world.loadWorld(x, y, z)
     boxx, boxy = getBoxAtPixel(mousex, mousey)
     if boxx != None and boxy != None:
         drawHighlightBox(boxx, boxy)
