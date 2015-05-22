@@ -42,8 +42,14 @@ terrainMap = {
 featureMap = {
     # stairs to dungeon, stairs to overworld, , , , tree
     'FA': (15, 15), 'FB': (31, 15), 'FC': (41, 15), 'FD': (42, 15), 'FE': (23, 11), 'FF': (14, 18),
-    # statue, fountain
-    'FG': (28, 11), 'FH': (63, 11)
+    # statue, fountain, wings, armor, book, shield
+    'FG': (28, 11), 'FH': (63, 11), 'IA': (15, 7), 'IB': (28, 21), 'IC': (58, 22), 'ID': (54, 22),
+    # meat, gold, potion, ring, staff, sword
+    'IE': (36, 23), 'IF': (59, 23), 'IG': (63, 24), 'IH': (60, 25), 'II': (4, 46), 'IJ': (43, 27),
+    # chest, key
+    'IK': (43, 45), 'IL': (54, 45), 'IM': (
+    
+    
 }
 
 def displayImage (DISPLAYSURF, imageRef, direction, step, x, y):

@@ -33,5 +33,20 @@ feature
 
 read world_1_1.dat
 
-speed boost
-invincibility
+meat 36,23
+potion of healing 63,24
+glove of strength
+shield of protection 54,22
+boots of speed
+wings of flight
+cloak of invincibility
+staff of destruction
+ring of power 60,25
+
+book of max health 58,22
+sword of offense
+armor of defense 28,21
+
+treasure chest 43, 45
+gold coins 59,23
+key

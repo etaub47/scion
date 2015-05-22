@@ -1,9 +1,8 @@
 import pygame, sys, anim, world
 from pygame.locals import *
+from constants import *
 
 pygame.init()
-
-DOWN, LEFT, RIGHT, UP = 0, 1, 2, 3
 
 FPS = 25
 fpsClock = pygame.time.Clock()
@@ -14,6 +13,7 @@ pygame.display.set_caption('Scion')
 
 i, j = 24, 1
 x, y, direction = 250, 250, DOWN
+wx, wy, wz = 1, 1, 0
 speed = 5
 step = 0
 ratio, anim_ratio = 0, 3
@@ -22,6 +22,8 @@ tx = 1
 h_axis_pos, v_axis_pos = 0, 0
 myJoystick = None
 
+world.loadWorld(wx, wy, wz)
+
 joystick_count = pygame.joystick.get_count()
 if joystick_count > 0:
     myJoystick = pygame.joystick.Joystick(0)
@@ -29,6 +31,7 @@ if joystick_count > 0:
 
 while True:
     DISPLAYSURF.fill((255, 255, 255))
+    world.drawWorld(DISPLAYSURF, wx, wy, wz)
     pressed = ""
     if myJoystick is not None:
 		h_axis_pos = myJoystick.get_axis(3)
@@ -52,11 +55,7 @@ while True:
     textSurf = BASICFONT.render("%s,%s -- %s" % (str(px), str(py), pressed), True, (255, 255, 255))
     textRect = textSurf.get_rect()
     textRect.bottomleft = 250, 250
-    world.loadOverworld(DISPLAYSURF, 1, 1, 1)
-#    for r in range(0, 16):
-#    	for s in range(0, 12):
-#    		anim.displayTerrain(DISPLAYSURF, tx, r, s)
-#   anim.displaySquare(DISPLAYSURF, px, py)
+    anim.displaySquare(DISPLAYSURF, px, py)
     DISPLAYSURF.blit(textSurf, textRect)
     if direction == DOWN:
         y += speed

@@ -4,7 +4,7 @@ from constants import *
 terrain = [[[[[0 for x in range(BOARDTILEHEIGHT)] for x in range(BOARDTILEWIDTH)] 
     for x in range(4)] for x in range(4)] for x in range(5)]
 features = []
-colors = { 'A': (0, 128, 0), 'B': (0, 238, 238), 'C': (139, 90, 0), 'D': (205, 179, 139),
+colors = { '-': OFFWHITE, 'A': (0, 128, 0), 'B': (0, 238, 238), 'C': (139, 90, 0), 'D': (205, 179, 139),
            'E': (118, 238, 0), 'F': (139, 136, 120), 'G': (139, 0, 0) }
            
 def roomInRange (roomx, roomy):
@@ -20,8 +20,8 @@ def loadFile (wx, wy, wz):
                     if cx < BOARDTILEWIDTH:
                         terrain[wz][wx][wy][cx][cy] = ckey
             else:
-                (tx, ty, tkey) = line.split(",")
-                features.append((wz, wx, wy, int(tx), int(ty), tkey))
+                (tx, ty, ttype, tkey) = line.split(",")
+                features.append((wz, wx, wy, int(tx), int(ty), ttype, tkey))
 
 def loadWorld (wx, wy, wz):
     for roomx in range(wx - 1, wx + 2):
@@ -35,7 +35,10 @@ def drawWorld (DISPLAYSURF, wx, wy, wz):
             anim.displayTerrain(DISPLAYSURF, terrain[wz][wx][wy][x][y], x, y)
     for feature in features:
         if feature[0] == wz and feature[1] == wx and feature[2] == wy:
-            anim.displayFeature(DISPLAYSURF, feature[5], feature[3], feature[4])
+            if feature[5] == 1:
+                anim.displayFeature(DISPLAYSURF, feature[6], feature[3], feature[4])
+            elif feature[5] == 2:
+                anim.displayCreature(DISPLAYSURF, feature[6], feature[3], feature[4])
 
 def tinyOverworld (DISPLAYSURF, wx, wy, wz):
     for gx in range(3):
@@ -55,3 +58,9 @@ def tinyOverworld (DISPLAYSURF, wx, wy, wz):
                 pygame.draw.rect(DISPLAYSURF, (0, 0, 0), (rect_x, rect_y, BOXSIZE, BOXSIZE), 0)
     pygame.draw.rect(DISPLAYSURF, WHITE, (BOXSIZE * 2 - 2, 
         BOXSIZE * (BOARDTILEHEIGHT + 2) - 2, BOXSIZE + 4, BOXSIZE + 4), 4)
+
+def updateTerrain (wz, wx, wy, x, y, value):
+    terrain[wz][wx][wy][x][y] = value
+
+def addFeature (wz, wx, wy, x, y, type, value):
+    features.append((wz, wx, wy, x, y, type, value))
