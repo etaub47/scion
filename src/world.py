@@ -21,13 +21,25 @@ def loadFile (wx, wy, wz):
                         terrain[wz][wx][wy][cx][cy] = ckey
             else:
                 (tx, ty, ttype, tkey) = line.split(",")
-                features.append((wz, wx, wy, int(tx), int(ty), ttype, tkey))
+                features.append((wz, wx, wy, int(tx), int(ty), int(ttype), tkey))
 
 def loadWorld (wx, wy, wz):
     for roomx in range(wx - 1, wx + 2):
         for roomy in range(wy - 1, wy + 2):
             if roomInRange(roomx, roomy):
                 loadFile(roomx, roomy, wz)
+                
+def saveWorld (wx, wy, wz):
+    if wz == 0: datafile = "../data/world_%02d_%02d.dat" % (wx, wy)
+    else: datafile = "../data/dungeon%d_%02d_%02d.dat" % (wz, wx, wy)
+    with open(datafile, "w") as f:
+        for cy in range(BOARDTILEHEIGHT):
+            for cx in range(BOARDTILEWIDTH):
+                f.write(terrain[wz][wx][wy][cx][cy])
+            f.write('\n')
+        for feature in features:
+            if feature[0] == wz and feature[1] == wx and feature[2] == wy:
+                f.write("%d,%d,%d,%s" % (feature[3], feature[4], feature[5], feature[6]))
                 
 def drawWorld (DISPLAYSURF, wx, wy, wz):
     for x in range(BOARDTILEWIDTH):

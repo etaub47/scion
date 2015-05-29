@@ -79,15 +79,19 @@ while True:
         elif event.type == MOUSEBUTTONUP:
             mouseDown = False
         elif event.type == KEYDOWN and event.key == K_RIGHT and world.roomInRange(x + 1, y):
+            world.saveWorld(x, y, z)
             x += 1
             world.loadWorld(x, y, z)
         elif event.type == KEYDOWN and event.key == K_LEFT and world.roomInRange(x - 1, y):
+            world.saveWorld(x, y, z)
             x -= 1
             world.loadWorld(x, y, z)
         elif event.type == KEYDOWN and event.key == K_DOWN and world.roomInRange(x, y + 1):
+            world.saveWorld(x, y, z)
             y += 1
             world.loadWorld(x, y, z)
         elif event.type == KEYDOWN and event.key == K_UP and world.roomInRange(x, y - 1):
+            world.saveWorld(x, y, z)
             y -= 1
             world.loadWorld(x, y, z)
     if selection != None:

@@ -47,9 +47,7 @@ featureMap = {
     # meat, gold, potion, ring, staff, sword
     'IE': (36, 23), 'IF': (59, 23), 'IG': (63, 24), 'IH': (60, 25), 'II': (4, 46), 'IJ': (43, 27),
     # chest, key
-    'IK': (43, 45), 'IL': (54, 45), 'IM': (
-    
-    
+    'IK': (43, 45), 'IL': (54, 45)#, 'IM': (    
 }
 
 def displayImage (DISPLAYSURF, imageRef, direction, step, x, y):
