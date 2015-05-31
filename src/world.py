@@ -75,4 +75,11 @@ def updateTerrain (wz, wx, wy, x, y, value):
     terrain[wz][wx][wy][x][y] = value
 
 def addFeature (wz, wx, wy, x, y, type, value):
+    removeFeature(wz, wx, wy, x, y)
     features.append((wz, wx, wy, x, y, type, value))
+    
+def featureMatches (f, wz, wx, wy, x, y):
+    return f[0] == wz and f[1] == wx and f[2] == wy and f[3] == x and f[4] == y
+
+def removeFeature (wz, wx, wy, x, y):
+    features[:] = [f for f in features if not featureMatches(f, wz, wx, wy, x, y)]

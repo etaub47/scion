@@ -33,11 +33,17 @@ world.loadWorld(x, y, z)
 buttons1=[(0, 'A', 17, 1), (0, 'B', 18, 1), (0, 'C', 17, 2), (0, 'D', 18, 2), (0, 'E', 17, 3),
           (0, 'F', 18, 3), (0, 'G', 17, 4), (1, 'FA', 17, 6), (1, 'FF', 18, 6), (1, 'FG', 17, 7),
           (1, 'FH', 18, 7), (2, 11, 5, 13), (2, 13, 5, 14), (2, 14, 5, 15), (2, 16, 6, 13),
-          (2, 19, 6, 14), (2, 21, 6, 15), (2, 23, 7, 13), (2, 24, 7, 14), (2, 29, 7, 15)]
+          (2, 19, 6, 14), (2, 21, 6, 15), (2, 23, 7, 13), (2, 24, 7, 14), (2, 29, 7, 15),
+          (1, 'IA', 17, 9), (1, 'IN', 18, 9), (1, 'IM', 17, 10), (1, 'ID', 18, 10), (1, 'IE', 17, 11),
+          (1, 'IF', 18, 11), (1, 'IG', 17, 12), (1, 'IH', 18, 12), (1, 'II', 17, 13), (1, 'IO', 18, 13),
+          (1, 'IK', 17, 14), (1, 'IL', 18, 14)]
 buttons2=[(0, 'H', 17, 1), (0, 'I', 18, 1), (0, 'K', 17, 2), (0, 'L', 18, 2), (0, 'M', 17, 3),
           (0, 'N', 18, 3), (0, 'O', 17, 4), (1, 'FB', 17, 6), (1, 'FC', 18, 6), (1, 'FD', 17, 7),
           (1, 'FE', 18, 7), (2, 9, 5, 13), (2, 10, 5, 14), (2, 12, 5, 15), (2, 15, 6, 13),
-          (2, 20, 6, 14), (2, 26, 6, 15), (2, 27, 7, 13), (2, 28, 7, 14), (2, 30, 7, 15)]
+          (2, 20, 6, 14), (2, 26, 6, 15), (2, 27, 7, 13), (2, 28, 7, 14), (2, 30, 7, 15),
+          (1, 'IA', 17, 9), (1, 'IN', 18, 9), (1, 'IM', 17, 10), (1, 'ID', 18, 10), (1, 'IE', 17, 11),
+          (1, 'IF', 18, 11), (1, 'IG', 17, 12), (1, 'IH', 18, 12), (1, 'II', 17, 13), (1, 'IO', 18, 13),
+          (1, 'IK', 17, 14), (1, 'IL', 18, 14)]
 
 def getButtons (z):
     if z == 0: return buttons1
@@ -62,22 +68,29 @@ while True:
         elif event.type == MOUSEMOTION:
             mousex, mousey = event.pos
             boxx, boxy = getBoxAtPixel(mousex, mousey)
-            if mouseDown and boxx < BOARDTILEWIDTH and boxy < BOARDTILEHEIGHT:
-                if selection != None and selection[0] == 0:
+            if mouseDown and boxx < BOARDTILEWIDTH and boxy < BOARDTILEHEIGHT and selection != None:
+                if selection[0] == 0:
                     world.updateTerrain(z, x, y, boxx, boxy, selection[1])
-                elif selection != None and selection[0] > 0:
+                else:
                     world.addFeature(z, x, y, boxx, boxy, selection[0], selection[1])                
-        elif event.type == MOUSEBUTTONDOWN:
+        elif event.type == MOUSEBUTTONDOWN and event.button == 1:
             mousex, mousey = event.pos
             boxx, boxy = getBoxAtPixel(mousex, mousey)
             mouseDown = True
-            if selection != None and selection[0] == 0 and boxx < BOARDTILEWIDTH and boxy < BOARDTILEHEIGHT:
-                world.updateTerrain(z, x, y, boxx, boxy, selection[1])
+            if boxx < BOARDTILEWIDTH and boxy < BOARDTILEHEIGHT and selection != None:
+                if selection[0] == 0:
+                    world.updateTerrain(z, x, y, boxx, boxy, selection[1])
+                else:
+                    world.addFeature(z, x, y, boxx, boxy, selection[0], selection[1])
             for button in getButtons(z):
                 if boxx == button[2] and boxy == button[3]:
                     selection = button
-        elif event.type == MOUSEBUTTONUP:
+        elif event.type == MOUSEBUTTONUP and event.button == 1:
             mouseDown = False
+        elif event.type == MOUSEBUTTONDOWN and event.button == 3:
+            mousex, mousey = event.pos
+            boxx, boxy = getBoxAtPixel(mousex, mousey)
+            world.removeFeature(z, x, y, boxx, boxy)
         elif event.type == KEYDOWN and event.key == K_s:
             world.saveWorld(x, y, z)
         elif event.type == KEYDOWN and event.key == K_RIGHT and world.roomInRange(x + 1, y):

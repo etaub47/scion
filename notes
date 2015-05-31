@@ -35,18 +35,18 @@ read world_1_1.dat
 
 meat 36,23
 potion of healing 63,24
-glove of strength
+glove of strength 13,21
 shield of protection 54,22
-boots of speed
-wings of flight
-cloak of invincibility
-staff of destruction
+boots of speed 61,20
+wings of flight 15,7
+cloak of invincibility 5,21
+staff of destruction 4,46
 ring of power 60,25
 
-book of max health 58,22
-sword of offense
-armor of defense 28,21
+-book of max health 58,22
+-sword of offense
+-armor of defense 28,21
 
 treasure chest 43, 45
 gold coins 59,23
-key
+key 54,45
