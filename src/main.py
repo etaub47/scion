@@ -11,13 +11,13 @@ BASICFONT = pygame.font.Font('freesansbold.ttf', 20)
 DISPLAYSURF.fill((255, 255, 255))
 pygame.display.set_caption('Scion')
 
-i, j = 24, 1
+i, j = 'S24', 1
 x, y, direction = 250, 250, DOWN
 wx, wy, wz = 1, 1, 0
 speed = 5
 step = 0
 ratio, anim_ratio = 0, 3
-px, py = 0, 15
+px, py = 57, 45
 tx = 1
 h_axis_pos, v_axis_pos = 0, 0
 myJoystick = None
