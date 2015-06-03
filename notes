@@ -43,16 +43,31 @@ cloak of invincibility 5,21
 staff of destruction 4,46
 ring of power 60,25
 
--book of max health 58,22
--sword of offense
--armor of defense 28,21
-
 amulet 15,20
 mirror 57,45
+
+burn trees
+blast walls
+
+7 characters to find
 
 treasure chest 43, 45
 gold coins 59,23
 key 54,45
 
-burn trees
-blast walls
+-book of max health 58,22
+-sword of offense 43,27
+-armor of defense 28,21
+-lantern 14,24
+
+mini mirror 3,26
+blast wall 2,26
+mini fire 23,25
+mini skull 42, 29
+
+#1 11, 0
+#2 12, 0
+#3 13, 0
+#4 14, 0
+#5 15, 0
+question mark 61, 0

@@ -37,23 +37,27 @@ terrainMap = {
     'J': (59, 15, 255, 250, 205), 'K': (57, 15, 142, 142, 56), 'L': (52, 17, 183, 183, 183), 'D': (7, 15, 205, 179, 139),
     # cobblestone, poison swamp, lava, soft tile
     'F': (9, 14, 139, 136, 120), 'E': (23, 19, 118, 238, 0), 'M': (52, 13, 238, 0, 0), 'N': (56, 16, 125, 158, 192), 
-    # blue tile, bridge
-    'O': (29, 16, 56, 142, 142), 'G': (43, 16, 139, 0, 0)
+    # murky water, bridge
+    'O': (19, 19, 56, 142, 142), 'G': (43, 16, 139, 0, 0)
     # animated water: 36, 19 - 39, 19, animated swamp 23, 19 - 24, 19
     # animated lava: 49, 13 - 52, 13
 }
 
 featureMap = {
-    # stairs to dungeon, stairs to overworld, , , , tree
-    'FA': (15, 15), 'FB': (31, 15), 'FC': (41, 15), 'FD': (42, 15), 'FE': (23, 11), 'FF': (14, 18),
+    # stairs to dungeon, stairs to overworld, blue tile, open door, closed door, tree
+    'FA': (15, 15), 'FB': (31, 15), 'FC': (29, 16), 'FD': (27, 11), 'FE': (23, 11), 'FF': (14, 18),
     # statue, fountain, wings, armor, book, shield
     'FG': (28, 11), 'FH': (63, 11), 'IA': (15, 7), 'IB': (28, 21), 'IC': (58, 22), 'ID': (54, 22),
-    # meat, gold, potion, ring, staff, sword
+    # meat, gold, potion, bracelet, staff, sword
     'IE': (36, 23), 'IF': (59, 23), 'IG': (63, 24), 'IH': (60, 25), 'II': (4, 46), 'IJ': (43, 27),
     # chest, key, glove, boots, cloak, amulet
     'IK': (43, 45), 'IL': (54, 45), 'IM': (13, 21), 'IN': (61, 20), 'IO': (5, 21), 'IP': (15, 20),
-    # mirror
-    'IQ': (57, 45)
+    # mirror, lantern, ring
+    'IQ': (57, 45), 'IR': (14, 24), 'IS': (58, 25),
+    # mini mirror, blast wall, mini fire, mini skull, question mark
+    'AA': (3, 26), 'AB': (2, 26), 'AC': (23, 25), 'AD': (42, 29), 'AE': (36, 29),
+    # 1-5
+    'AF': (11, 0), 'AG': (12, 0), 'AH': (13, 0), 'AI': (14, 0), 'AJ': (15, 0)
 }
 
 def getTerrainColor (terrainRef):
@@ -87,3 +91,10 @@ def displayCreature (DISPLAYSURF, creatureRef, x, y):
     x_offset = (sprite[1][0][0]) * BOXSIZE
     y_offset = (sprite[1][0][1]) * BOXSIZE
     DISPLAYSURF.blit(sprite[0], (x * BOXSIZE, y * BOXSIZE), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
+
+def displayAddition (DISPLAYSURF, additionRef, x, y):
+    if additionRef[-1] == '\n': 
+        additionRef = additionRef[:-1]
+    x_offset = (additionMap[additionRef][0]) * BOXSIZE
+    y_offset = (additionMap[additionRef][1]) * BOXSIZE
+    DISPLAYSURF.blit(sprite1, (x * BOXSIZE, y * BOXSIZE), area=(x_offset + 1, y_offset, BOXSIZE - 1, BOXSIZE))

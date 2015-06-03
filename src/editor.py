@@ -34,14 +34,20 @@ buttons1=[(0, 'A', 17, 1), (0, 'B', 18, 1), (0, 'C', 17, 2), (0, 'D', 18, 2), (0
       (2, 'S19', 6, 14), (2, 'S21', 6, 15), (2, 'S23', 7, 13), (2, 'S24', 7, 14), (2, 'S29', 7, 15),
       (1, 'IA', 17, 9), (1, 'IN', 18, 9), (1, 'IM', 17, 10), (1, 'ID', 18, 10), (1, 'IE', 17, 11),
       (1, 'IF', 18, 11), (1, 'IG', 17, 12), (1, 'IH', 18, 12), (1, 'II', 17, 13), (1, 'IO', 18, 13),
-      (1, 'IK', 17, 14), (1, 'IL', 18, 14), (1, 'IP', 17, 15), (1, 'IQ', 18, 15)]
+      (1, 'IK', 17, 14), (1, 'IL', 18, 14), (1, 'IP', 17, 15), (1, 'IQ', 18, 15), 
+      (1, 'IJ', 9, 13), (1, 'IB', 10, 13), (1, 'IC', 11, 13), (1, 'IR', 12, 13), (1, 'IS', 13, 13),
+      (3, 'AA', 9, 14), (3, 'AB', 10, 14), (3, 'AC', 11, 14), (3, 'AD', 12, 14), (3, 'AE', 13, 14),
+      (3, 'AF', 9, 15), (3, 'AG', 10, 15), (3, 'AH', 11, 15), (3, 'AI', 12, 15), (3, 'AJ', 13, 15)]
 buttons2=[(0, 'H', 17, 1), (0, 'I', 18, 1), (0, 'K', 17, 2), (0, 'L', 18, 2), (0, 'M', 17, 3),
       (0, 'N', 18, 3), (0, 'O', 17, 4), (1, 'FB', 17, 6), (1, 'FC', 18, 6), (1, 'FD', 17, 7),
       (1, 'FE', 18, 7), (2, 'S9', 5, 13), (2, 'S10', 5, 14), (2, 'S12', 5, 15), (2, 'S15', 6, 13),
       (2, 'S20', 6, 14), (2, 'S26', 6, 15), (2, 'S27', 7, 13), (2, 'S28', 7, 14), (2, 'S30', 7, 15),
       (1, 'IA', 17, 9), (1, 'IN', 18, 9), (1, 'IM', 17, 10), (1, 'ID', 18, 10), (1, 'IE', 17, 11),
       (1, 'IF', 18, 11), (1, 'IG', 17, 12), (1, 'IH', 18, 12), (1, 'II', 17, 13), (1, 'IO', 18, 13),
-      (1, 'IK', 17, 14), (1, 'IL', 18, 14), (1, 'IP', 17, 15), (1, 'IQ', 18, 15)]
+      (1, 'IK', 17, 14), (1, 'IL', 18, 14), (1, 'IP', 17, 15), (1, 'IQ', 18, 15),
+      (1, 'IJ', 9, 13), (1, 'IB', 10, 13), (1, 'IC', 11, 13), (1, 'IR', 12, 13), (1, 'IS', 13, 13),
+      (3, 'AA', 9, 14), (3, 'AB', 10, 14), (3, 'AC', 11, 14), (3, 'AD', 12, 14), (3, 'AE', 13, 14),
+      (3, 'AF', 9, 15), (3, 'AG', 10, 15), (3, 'AH', 11, 15), (3, 'AI', 12, 15), (3, 'AJ', 13, 15)]
 
 def getButtons (z):
     if z == 0: return buttons1
@@ -52,7 +58,7 @@ while True:
     world.drawWorld(DISPLAYSURF, x, y, z)
     for button in getButtons(z):
         if button[0] == 0: anim.displayTerrain(DISPLAYSURF, button[1], button[2], button[3])
-        elif button[0] == 1: anim.displayFeature(DISPLAYSURF, button[1], button[2], button[3])
+        elif button[0] == 1 or button[0] == 3: anim.displayFeature(DISPLAYSURF, button[1], button[2], button[3])
         elif button[0] == 2: anim.displayCreature(DISPLAYSURF, button[1], button[2], button[3])
     if z == 0: worldname = 'Overworld'
     else: worldname = 'Dungeon %d' % z        
@@ -80,6 +86,8 @@ while True:
             if boxx < BOARDTILEWIDTH and boxy < BOARDTILEHEIGHT and selection != None:
                 if selection[0] == 0:
                     world.updateTerrain(z, x, y, boxx, boxy, selection[1])
+                elif selection[0] == 3:
+                    world.addAddition(z, x, y, boxx, boxy, selection[1])
                 else:
                     world.addFeature(z, x, y, boxx, boxy, selection[0], selection[1])
             for button in getButtons(z):
@@ -91,6 +99,7 @@ while True:
             mousex, mousey = event.pos
             boxx, boxy = getBoxAtPixel(mousex, mousey)
             world.removeFeature(z, x, y, boxx, boxy)
+            world.removeAddition(z, x, y, boxx, boxy)
         elif event.type == KEYDOWN and event.key == K_s:
             world.saveWorld(x, y, z)
         elif event.type == KEYDOWN and event.key == K_RIGHT and world.roomInRange(x + 1, y, z):

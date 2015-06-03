@@ -3,8 +3,7 @@ from constants import *
 
 terrain = [[[[[0 for x in range(BOARDTILEHEIGHT)] for x in range(BOARDTILEWIDTH)] 
     for x in range(WORLD_MAX_Y + 1)] for x in range(WORLD_MAX_X + 1)] for x in range(DUNGEON_MAX_Z + 1)]
-features = []
-keyColors = {}
+features, additions, keyColors = [], [], {}
            
 def roomInRange (roomx, roomy, roomz):
     if roomz == 0:
@@ -21,6 +20,10 @@ def loadFile (wx, wy, wz):
                 for cx, ckey in enumerate(line):
                     if cx < BOARDTILEWIDTH:
                         terrain[wz][wx][wy][cx][cy] = ckey
+            elif line[0] == '*':
+                (tx, ty, tkey) = line[1:].split(",")
+                if tkey[-1] == '\n': tkey = tkey[:-1]
+                additions.append((wz, wx, wy, int(tx), int(ty), tkey))
             else:
                 (tx, ty, ttype, tkey) = line.split(",")
                 if tkey[-1] == '\n': tkey = tkey[:-1]
@@ -28,6 +31,7 @@ def loadFile (wx, wy, wz):
 
 def loadWorld (wx, wy, wz):
     features[:] = []
+    additions[:] = []
     for roomx in range(wx - 1, wx + 2):
         for roomy in range(wy - 1, wy + 2):
             if roomInRange(roomx, roomy, wz):
@@ -44,6 +48,9 @@ def saveWorld (wx, wy, wz):
         for feature in features:
             if feature[0] == wz and feature[1] == wx and feature[2] == wy:
                 f.write("%d,%d,%d,%s\n" % (feature[3], feature[4], feature[5], feature[6]))
+        for addition in additions:
+            if addition[0] == wz and addition[1] == wx and addition[2] == wy:
+                f.write("*%d,%d,%s\n" % (addition[3], addition[4], addition[5]))
                 
 def drawWorld (DISPLAYSURF, wx, wy, wz):
     for x in range(BOARDTILEWIDTH):
@@ -55,6 +62,9 @@ def drawWorld (DISPLAYSURF, wx, wy, wz):
                 anim.displayFeature(DISPLAYSURF, feature[6], feature[3], feature[4])
             elif feature[5] == 2:
                 anim.displayCreature(DISPLAYSURF, feature[6], feature[3], feature[4])
+    for addition in additions:
+        if addition[0] == wz and addition[1] == wx and addition[2] == wy:
+            anim.displayFeature(DISPLAYSURF, addition[5], addition[3], addition[4])
 
 def tinyOverworld (DISPLAYSURF, wx, wy, wz):
     for gx in range(3):
@@ -85,9 +95,16 @@ def updateTerrain (wz, wx, wy, x, y, value):
 def addFeature (wz, wx, wy, x, y, type, value):
     removeFeature(wz, wx, wy, x, y)
     features.append((wz, wx, wy, x, y, type, value))
+
+def addAddition (wz, wx, wy, x, y, value):
+    removeAddition(wz, wx, wy, x, y)
+    additions.append((wz, wx, wy, x, y, value))
     
-def featureMatches (f, wz, wx, wy, x, y):
+def positionMatches (f, wz, wx, wy, x, y):
     return f[0] == wz and f[1] == wx and f[2] == wy and f[3] == x and f[4] == y
 
 def removeFeature (wz, wx, wy, x, y):
-    features[:] = [f for f in features if not featureMatches(f, wz, wx, wy, x, y)]
+    features[:] = [f for f in features if not positionMatches(f, wz, wx, wy, x, y)]
+
+def removeAddition (wz, wx, wy, x, y):
+    additions[:] = [a for a in additions if not positionMatches(a, wz, wx, wy, x, y)]
