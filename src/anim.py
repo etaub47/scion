@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, time, world
 from pygame.locals import *
 from constants import *
 
@@ -70,27 +70,30 @@ def displayImage (DISPLAYSURF, imageRef, direction, step, x, y):
     y_offset = (sprite[1][direction][1]) * BOXSIZE
     DISPLAYSURF.blit(sprite[0], (x, y), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
 
-def displayTerrain (DISPLAYSURF, terrainRef, x, y):
+def displayTerrain (DISPLAYSURF, terrainRef, x, y, offset_x = 0, offset_y = 0):
     if terrainRef in terrainMap:
         x_offset = (terrainMap[terrainRef][0]) * BOXSIZE
         y_offset = (terrainMap[terrainRef][1]) * BOXSIZE
-        DISPLAYSURF.blit(sprite1, (x * BOXSIZE, y * BOXSIZE), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
+        DISPLAYSURF.blit(sprite1, (x * BOXSIZE + offset_x, y * BOXSIZE + offset_y), 
+            area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
 
-def displayFeature (DISPLAYSURF, featureRef, x, y):
+def displayFeature (DISPLAYSURF, featureRef, x, y, offset_x = 0, offset_y = 0):
     if featureRef[-1] == '\n': 
         featureRef = featureRef[:-1]
     x_offset = (featureMap[featureRef][0]) * BOXSIZE
     y_offset = (featureMap[featureRef][1]) * BOXSIZE
-    DISPLAYSURF.blit(sprite1, (x * BOXSIZE, y * BOXSIZE), area=(x_offset + 1, y_offset, BOXSIZE - 1, BOXSIZE))
+    DISPLAYSURF.blit(sprite1, (x * BOXSIZE + offset_x, y * BOXSIZE + offset_y), 
+        area=(x_offset + 1, y_offset, BOXSIZE - 1, BOXSIZE))
 
 def displaySquare (DISPLAYSURF, px, py):
     DISPLAYSURF.blit(sprite1, (144, 0), area=(px * BOXSIZE, py * BOXSIZE, BOXSIZE, BOXSIZE))
 
-def displayCreature (DISPLAYSURF, creatureRef, x, y):
+def displayCreature (DISPLAYSURF, creatureRef, x, y, offset_x = 0, offset_y = 0):
     sprite = spriteMap[creatureRef]
     x_offset = (sprite[1][0][0]) * BOXSIZE
     y_offset = (sprite[1][0][1]) * BOXSIZE
-    DISPLAYSURF.blit(sprite[0], (x * BOXSIZE, y * BOXSIZE), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
+    DISPLAYSURF.blit(sprite[0], (x * BOXSIZE + offset_x, y * BOXSIZE + offset_y), 
+        area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
 
 def displayAddition (DISPLAYSURF, additionRef, x, y):
     if additionRef[-1] == '\n': 
@@ -98,3 +101,31 @@ def displayAddition (DISPLAYSURF, additionRef, x, y):
     x_offset = (additionMap[additionRef][0]) * BOXSIZE
     y_offset = (additionMap[additionRef][1]) * BOXSIZE
     DISPLAYSURF.blit(sprite1, (x * BOXSIZE, y * BOXSIZE), area=(x_offset + 1, y_offset, BOXSIZE - 1, BOXSIZE))
+
+def scrollScreen (DISPLAYSURF, i, direction, step, x, y, wx, wy, wz):
+    if direction == DOWN:
+        for new_y in range(MAX_Y, MIN_Y, 0 - (BOXSIZE / 2)):
+            world.drawWorld(DISPLAYSURF, wx, wy, wz, offset_y = new_y - MAX_Y, real=True)
+            world.drawWorld(DISPLAYSURF, wx, wy + 1, wz, offset_y = new_y, real=True)
+            displayImage(DISPLAYSURF, i, direction, step, x, new_y)
+            pygame.display.update()
+            time.sleep(0.05)
+    elif direction == RIGHT:
+        for new_x in range(MAX_X, MIN_X, 0 - (BOXSIZE / 2)):
+            world.drawWorld(DISPLAYSURF, wx, wy, wz, offset_x = new_x - MAX_X, real=True)
+            world.drawWorld(DISPLAYSURF, wx + 1, wy, wz, offset_x = new_x, real=True)
+            displayImage(DISPLAYSURF, i, direction, step, new_x, y)
+            pygame.display.update()
+            time.sleep(0.05)
+    elif direction == UP:
+        for new_y in range(MIN_Y, MAX_Y, (BOXSIZE / 2)):
+            world.drawWorld(DISPLAYSURF, wx, wy, wz, real=True)
+            displayImage(DISPLAYSURF, i, direction, step, x, new_y)
+            pygame.display.update()
+            time.sleep(0.05)
+    elif direction == LEFT:
+        for new_x in range(MIN_X, MAX_X, (BOXSIZE / 2)):
+            world.drawWorld(DISPLAYSURF, wx, wy, wz, real=True)
+            displayImage(DISPLAYSURF, i, direction, step, new_x, y)
+            pygame.display.update()
+            time.sleep(0.05)

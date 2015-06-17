@@ -6,7 +6,7 @@ pygame.init()
 
 FPS = 25
 fpsClock = pygame.time.Clock()
-DISPLAYSURF = pygame.display.set_mode((768, 576))
+DISPLAYSURF = pygame.display.set_mode((BOXSIZE * BOARDTILEWIDTH, BOXSIZE * BOARDTILEHEIGHT))
 BASICFONT = pygame.font.Font('freesansbold.ttf', 20)
 DISPLAYSURF.fill((255, 255, 255))
 pygame.display.set_caption('Scion')
@@ -30,8 +30,8 @@ if joystick_count > 0:
     myJoystick.init()
 
 while True:
-    DISPLAYSURF.fill((255, 255, 255))
-    world.drawWorld(DISPLAYSURF, wx, wy, wz)
+    #DISPLAYSURF.fill((255, 255, 255))
+    world.drawWorld(DISPLAYSURF, wx, wy, wz, real=True)
     pressed = ""
     if myJoystick is not None:
 		h_axis_pos = myJoystick.get_axis(3)
@@ -51,20 +51,32 @@ while True:
 		else: speed = 0
 		for b in range(0, 10):
 			if myJoystick.get_button(b):
-				pressed = str(b)    
+				pressed = str(b)
     textSurf = BASICFONT.render("%s,%s -- %s" % (str(px), str(py), pressed), True, (255, 255, 255))
     textRect = textSurf.get_rect()
     textRect.bottomleft = 250, 250
     anim.displaySquare(DISPLAYSURF, px, py)
     DISPLAYSURF.blit(textSurf, textRect)
     if direction == DOWN:
-        y += speed
+        if y < MAX_Y: y += speed
+        else: 
+            anim.scrollScreen(DISPLAYSURF, i, direction, step, x, y, wx, wy, wz)
+            y, wy = MIN_Y, wy + 1
     elif direction == RIGHT:
-        x += speed
+        if x < MAX_X: x += speed
+        else: 
+            anim.scrollScreen(DISPLAYSURF, i, direction, step, x, y, wx, wy, wz)
+            x, wx = MIN_X, wx + 1
     elif direction == UP:
-        y -= speed
+        if y > MIN_Y: y -= speed
+        else: 
+            anim.scrollScreen(DISPLAYSURF, i, direction, step, x, y, wx, wy, wz)
+            y = MAX_Y
     elif direction == LEFT:
-        x -= speed
+        if x > MIN_X: x -= speed
+        else: 
+            anim.scrollScreen(DISPLAYSURF, i, direction, step, x, y, wx, wy, wz)
+            x = MAX_X
     anim.displayImage(DISPLAYSURF, i, direction, step, x, y)
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -75,10 +87,14 @@ while True:
             elif event.key == K_p: i += 1
             elif event.key == K_k: speed += 1
             elif event.key == K_m: speed -= 1
-            elif event.key == K_LEFT: px -= 1
-            elif event.key == K_RIGHT: px += 1
-            elif event.key == K_UP: py -= 1
-            elif event.key == K_DOWN: py += 1
+            #elif event.key == K_LEFT: px -= 1
+            #elif event.key == K_RIGHT: px += 1
+            #elif event.key == K_UP: py -= 1
+            #elif event.key == K_DOWN: py += 1
+            elif event.key == K_LEFT: direction = LEFT
+            elif event.key == K_RIGHT: direction = RIGHT
+            elif event.key == K_UP: direction = UP
+            elif event.key == K_DOWN: direction = DOWN
             elif event.key == K_q: tx += 1
             elif event.key == K_a: tx -= 1
     pygame.display.update()
