@@ -104,28 +104,26 @@ def displayAddition (DISPLAYSURF, additionRef, x, y):
 
 def scrollScreen (DISPLAYSURF, i, direction, step, x, y, wx, wy, wz):
     if direction == DOWN:
-        for new_y in range(MAX_Y, MIN_Y, 0 - (BOXSIZE / 2)):
-            world.drawWorld(DISPLAYSURF, wx, wy, wz, offset_y = new_y - MAX_Y, real=True)
+        for new_y in range(MAX_Y, MIN_Y, 0 - (BOXSIZE / 3)):
+            world.drawWorld(DISPLAYSURF, wx, wy, wz, offset_y = new_y - MAX_Y - (BOXSIZE * 2 / 3), real=True)
             world.drawWorld(DISPLAYSURF, wx, wy + 1, wz, offset_y = new_y, real=True)
             displayImage(DISPLAYSURF, i, direction, step, x, new_y)
             pygame.display.update()
-            time.sleep(0.05)
     elif direction == RIGHT:
-        for new_x in range(MAX_X, MIN_X, 0 - (BOXSIZE / 2)):
-            world.drawWorld(DISPLAYSURF, wx, wy, wz, offset_x = new_x - MAX_X, real=True)
+        for new_x in range(MAX_X, MIN_X, 0 - (BOXSIZE / 3)):
+            world.drawWorld(DISPLAYSURF, wx, wy, wz, offset_x = new_x - MAX_X - (BOXSIZE * 2 / 3), real=True)
             world.drawWorld(DISPLAYSURF, wx + 1, wy, wz, offset_x = new_x, real=True)
             displayImage(DISPLAYSURF, i, direction, step, new_x, y)
             pygame.display.update()
-            time.sleep(0.05)
     elif direction == UP:
-        for new_y in range(MIN_Y, MAX_Y, (BOXSIZE / 2)):
-            world.drawWorld(DISPLAYSURF, wx, wy, wz, real=True)
+        for new_y in range(MIN_Y, MAX_Y, (BOXSIZE / 3)):
+            world.drawWorld(DISPLAYSURF, wx, wy, wz, offset_y = new_y + (BOXSIZE * 2 / 3), real=True)
+            world.drawWorld(DISPLAYSURF, wx, wy - 1, wz, offset_y = new_y - MAX_Y, real=True)
             displayImage(DISPLAYSURF, i, direction, step, x, new_y)
             pygame.display.update()
-            time.sleep(0.05)
     elif direction == LEFT:
-        for new_x in range(MIN_X, MAX_X, (BOXSIZE / 2)):
-            world.drawWorld(DISPLAYSURF, wx, wy, wz, real=True)
+        for new_x in range(MIN_X, MAX_X, (BOXSIZE / 3)):
+            world.drawWorld(DISPLAYSURF, wx, wy, wz, offset_x = new_x + (BOXSIZE * 2 / 3), real=True)
+            world.drawWorld(DISPLAYSURF, wx - 1, wy, wz, offset_x = new_x - MAX_X, real=True)
             displayImage(DISPLAYSURF, i, direction, step, new_x, y)
             pygame.display.update()
-            time.sleep(0.05)

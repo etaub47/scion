@@ -62,21 +62,25 @@ while True:
         else: 
             anim.scrollScreen(DISPLAYSURF, i, direction, step, x, y, wx, wy, wz)
             y, wy = MIN_Y, wy + 1
+            world.loadWorld(wx, wy, wz)
     elif direction == RIGHT:
         if x < MAX_X: x += speed
         else: 
             anim.scrollScreen(DISPLAYSURF, i, direction, step, x, y, wx, wy, wz)
             x, wx = MIN_X, wx + 1
+            world.loadWorld(wx, wy, wz)
     elif direction == UP:
         if y > MIN_Y: y -= speed
         else: 
             anim.scrollScreen(DISPLAYSURF, i, direction, step, x, y, wx, wy, wz)
-            y = MAX_Y
+            y, wy = MAX_Y, wy - 1
+            world.loadWorld(wx, wy, wz)
     elif direction == LEFT:
         if x > MIN_X: x -= speed
         else: 
             anim.scrollScreen(DISPLAYSURF, i, direction, step, x, y, wx, wy, wz)
-            x = MAX_X
+            x, wx = MAX_X, wx - 1
+            world.loadWorld(wx, wy, wz)
     anim.displayImage(DISPLAYSURF, i, direction, step, x, y)
     for event in pygame.event.get():
         if event.type == QUIT:
