@@ -60,6 +60,14 @@ featureMap = {
     'AF': (11, 0), 'AG': (12, 0), 'AH': (13, 0), 'AI': (14, 0), 'AJ': (15, 0)
 }
 
+projectileMap = {
+    # 'identifier': (x_offset, y_offset, rotate_angle_offset, speed)
+    # arrow
+    'PA': (55, 46, 45, 25)
+}
+
+projectiles = []
+
 def getTerrainColor (terrainRef):
     return terrainMap[terrainRef][2:]
 
@@ -127,3 +135,45 @@ def scrollScreen (DISPLAYSURF, i, direction, step, x, y, wx, wy, wz):
             world.drawWorld(DISPLAYSURF, wx - 1, wy, wz, offset_x = new_x - MAX_X, real=True)
             displayImage(DISPLAYSURF, i, direction, step, new_x, y)
             pygame.display.update()
+
+def createProjectile (projectileRef, direction, x, y):
+    x_offset = (projectileMap[projectileRef][0]) * BOXSIZE
+    y_offset = (projectileMap[projectileRef][1]) * BOXSIZE
+    rot_angle = projectileMap[projectileRef][2]
+    speed = projectileMap[projectileRef][3]
+    if direction == DOWN: rot_angle += 90
+    elif direction == RIGHT: rot_angle += 180
+    elif direction == UP: rot_angle += 270
+    proj_surface = pygame.Surface((BOXSIZE, BOXSIZE), SRCALPHA)
+    proj_surface.blit(sprite1, (0, 0), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
+    proj_surface = pygame.transform.rotate(proj_surface, rot_angle)
+    projectiles.append([proj_surface, direction, x, y, speed])
+    
+def moveAndDisplayProjectiles (DISPLAYSURF):
+    for projectile in projectiles:
+        DISPLAYSURF.blit(projectile[0], (projectile[2], projectile[3]))
+        if projectile[1] == DOWN:
+            if projectile[3] < MAX_Y:
+                projectile[3] += projectile[4]
+            else:
+                pass
+                #TODO: remove projectile
+                #projectiles[:] = [p for p in projectiles if not positionMatches(a, wz, wx, wy, x, y)]
+        elif projectile[1] == RIGHT:
+            if projectile[2] < MAX_X:
+                projectile[2] += projectile[4]
+            else:
+                pass
+                #TODO
+        elif projectile[1] == UP:
+            if projectile[3] > MIN_Y:
+                projectile[3] -= projectile[4]
+            else:
+                pass
+                #TODO
+        elif projectile[1] == LEFT:
+            if projectile[2] > MIN_X:
+                projectile[2] -= projectile[4]
+            else:
+                pass
+                #TODO

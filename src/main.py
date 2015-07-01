@@ -17,7 +17,7 @@ wx, wy, wz = 1, 1, 0
 speed = 5
 step = 0
 ratio, anim_ratio = 0, 3
-px, py = 57, 45
+px, py = 55, 46
 tx = 1
 h_axis_pos, v_axis_pos = 0, 0
 myJoystick = None
@@ -81,7 +81,6 @@ while True:
             anim.scrollScreen(DISPLAYSURF, i, direction, step, x, y, wx, wy, wz)
             x, wx = MAX_X, wx - 1
             world.loadWorld(wx, wy, wz)
-    anim.displayImage(DISPLAYSURF, i, direction, step, x, y)
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
@@ -91,16 +90,21 @@ while True:
             elif event.key == K_p: i += 1
             elif event.key == K_k: speed += 1
             elif event.key == K_m: speed -= 1
-            #elif event.key == K_LEFT: px -= 1
-            #elif event.key == K_RIGHT: px += 1
-            #elif event.key == K_UP: py -= 1
-            #elif event.key == K_DOWN: py += 1
+            elif event.key == K_d: px -= 1
+            elif event.key == K_f: px += 1
+            elif event.key == K_r: py -= 1
+            elif event.key == K_c: py += 1
             elif event.key == K_LEFT: direction = LEFT
             elif event.key == K_RIGHT: direction = RIGHT
             elif event.key == K_UP: direction = UP
             elif event.key == K_DOWN: direction = DOWN
             elif event.key == K_q: tx += 1
             elif event.key == K_a: tx -= 1
+            elif event.key == K_SPACE:
+                #projectiles.append(['PA', direction, x, y, 15])
+                anim.createProjectile('PA', direction, x, y)
+    anim.displayImage(DISPLAYSURF, i, direction, step, x, y)
+    anim.moveAndDisplayProjectiles(DISPLAYSURF)    
     pygame.display.update()
     fpsClock.tick(FPS)
     if speed > 0:
