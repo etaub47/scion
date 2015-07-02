@@ -101,8 +101,7 @@ while True:
             elif event.key == K_q: tx += 1
             elif event.key == K_a: tx -= 1
             elif event.key == K_SPACE:
-                #projectiles.append(['PA', direction, x, y, 15])
-                anim.createProjectile('PA', direction, x, y)
+                anim.createProjectile('PH', direction, x, y)
     anim.displayImage(DISPLAYSURF, i, direction, step, x, y)
     anim.moveAndDisplayProjectiles(DISPLAYSURF)    
     pygame.display.update()

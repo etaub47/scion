@@ -61,9 +61,13 @@ featureMap = {
 }
 
 projectileMap = {
-    # 'identifier': (x_offset, y_offset, rotate_angle_offset, speed)
-    # arrow
-    'PA': (55, 46, 45, 25)
+    # 'identifier': (x_offset, y_offset, rotate_angle_offset, speed, rotate?)
+    # arrow, fire arrow, ice shard
+    # tornado, fireball, web
+    # dagger, spear
+    'PA': (55, 46, 45, 25, True), 'PB': (3, 43, 45, 25, True), 'PC': (29, 43, 45, 20, True), 
+    'PD': (22, 47, 0, 15, False), 'PE': (9, 43, -45, 20, True), 'PF': (10, 11, 90, 15, True),
+    'PG': (2, 11, 0, 25, True), 'PH': (37, 47, 135, 20, True)
 }
 
 projectiles = []
@@ -141,7 +145,8 @@ def createProjectile (projectileRef, direction, x, y):
     y_offset = (projectileMap[projectileRef][1]) * BOXSIZE
     rot_angle = projectileMap[projectileRef][2]
     speed = projectileMap[projectileRef][3]
-    if direction == DOWN: rot_angle += 90
+    if not projectileMap[projectileRef][4]: rot_angle = 0
+    elif direction == DOWN: rot_angle += 90
     elif direction == RIGHT: rot_angle += 180
     elif direction == UP: rot_angle += 270
     proj_surface = pygame.Surface((BOXSIZE, BOXSIZE), SRCALPHA)
@@ -149,31 +154,27 @@ def createProjectile (projectileRef, direction, x, y):
     proj_surface = pygame.transform.rotate(proj_surface, rot_angle)
     projectiles.append([proj_surface, direction, x, y, speed])
     
-def moveAndDisplayProjectiles (DISPLAYSURF):
+def moveAndDisplayProjectiles (DISPLAYSURF):    
     for projectile in projectiles:
         DISPLAYSURF.blit(projectile[0], (projectile[2], projectile[3]))
         if projectile[1] == DOWN:
             if projectile[3] < MAX_Y:
                 projectile[3] += projectile[4]
             else:
-                pass
-                #TODO: remove projectile
-                #projectiles[:] = [p for p in projectiles if not positionMatches(a, wz, wx, wy, x, y)]
+                projectile[0] = None
         elif projectile[1] == RIGHT:
             if projectile[2] < MAX_X:
                 projectile[2] += projectile[4]
             else:
-                pass
-                #TODO
+                projectile[0] = None
         elif projectile[1] == UP:
             if projectile[3] > MIN_Y:
                 projectile[3] -= projectile[4]
             else:
-                pass
-                #TODO
+                projectile[0] = None
         elif projectile[1] == LEFT:
             if projectile[2] > MIN_X:
                 projectile[2] -= projectile[4]
             else:
-                pass
-                #TODO
+                projectile[0] = None
+    projectiles[:] = [p for p in projectiles if p[0] != None]
