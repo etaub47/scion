@@ -86,6 +86,7 @@ def getTerrainColor (terrainRef):
 def displayImage (DISPLAYSURF, imageRef, direction, step, x, y):
     sprite = spriteMap[imageRef]
     if step == 3: step = 1
+    print direction, step
     x_offset = (sprite[1][direction][0] + step) * BOXSIZE
     y_offset = (sprite[1][direction][1]) * BOXSIZE
     DISPLAYSURF.blit(sprite[0], (x, y), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
@@ -108,12 +109,8 @@ def displayFeature (DISPLAYSURF, featureRef, x, y, offset_x = 0, offset_y = 0):
 def displaySquare (DISPLAYSURF, px, py):
     DISPLAYSURF.blit(sprite1, (144, 0), area=(px * BOXSIZE, py * BOXSIZE, BOXSIZE, BOXSIZE))
 
-def displayCreature (DISPLAYSURF, creatureRef, x, y, offset_x = 0, offset_y = 0):
-    sprite = spriteMap[creatureRef]
-    x_offset = (sprite[1][0][0]) * BOXSIZE
-    y_offset = (sprite[1][0][1]) * BOXSIZE
-    DISPLAYSURF.blit(sprite[0], (x * BOXSIZE + offset_x, y * BOXSIZE + offset_y), 
-        area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
+def displayCreature (DISPLAYSURF, spriteRef, x, y, direction = DOWN, step = 1):
+    displayImage(DISPLAYSURF, spriteRef, direction, step, x, y)
 
 def displayAddition (DISPLAYSURF, additionRef, x, y):
     if additionRef[-1] == '\n': 
@@ -188,11 +185,14 @@ def moveAndDisplayProjectiles (DISPLAYSURF):
 def createCreature (creatureRef, x, y):
     sprite_ref, pattern, speed = creatureMap[creatureRef][0], creatureMap[creatureRef][1], creatureMap[creatureRef][2]
     direction = DOWN # TODO: random
-    creatures.append([sprite_ref, direction, x, y, speed, pattern, offset_x, offset_y])
+    creatures.append([sprite_ref, direction, x * BOXSIZE, y * BOXSIZE, speed, pattern, 0])
 
 def moveAndDisplayCreatures (DISPLAYSURF):
     for creature in creatures:
-        displayCreature(DISPLAYSURF, creature[SPRITE_IDX], creature[X_IDX], creature[Y_IDX])
+        displayCreature(DISPLAYSURF, creature[SPRITE_IDX], creature[X_IDX], creature[Y_IDX],
+            direction = creature[DIR_IDX], step = creature[STEP_IDX])
+        creature[STEP_IDX] += 1;
+        if creature[STEP_IDX] >= 4: creature[STEP_IDX] = 0
         if move(creature): # move the creature and check to see if it went off screen
             creature[DIR_IDX] = UP # TODO: random
 

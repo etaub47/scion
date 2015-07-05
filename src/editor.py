@@ -63,8 +63,8 @@ while True:
     world.drawWorld(DISPLAYSURF, x, y, z)
     for button in getButtons(z):
         if button[0] == 0: anim.displayTerrain(DISPLAYSURF, button[1], button[2], button[3])
-        elif button[0] == 2: anim.displayCreature(DISPLAYSURF, button[1], button[2], button[3])
-        elif button[0] == 1 or button[0] == 3 or button[0] == 4: 
+        elif button[0] == 2: anim.displayCreature(DISPLAYSURF, button[1], button[2] * BOXSIZE, button[3] * BOXSIZE)
+        elif button[0] == 1 or button[0] == 3 or button[0] == 4:
             anim.displayFeature(DISPLAYSURF, button[1], button[2], button[3])
     if z == 0: worldname = 'Overworld'
     else: worldname = 'Dungeon %d' % z        
