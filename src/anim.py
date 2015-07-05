@@ -188,11 +188,16 @@ def moveAndDisplayProjectiles (DISPLAYSURF):
 def createCreature (creatureRef, x, y):
     sprite_ref, pattern, speed = creatureMap[creatureRef][0], creatureMap[creatureRef][1], creatureMap[creatureRef][2]
     direction = DOWN # TODO: random
-    creatures.append([sprite_ref, direction, x, y, speed, pattern])
+    creatures.append([sprite_ref, direction, x, y, speed, pattern, offset_x, offset_y])
 
 def moveAndDisplayCreatures (DISPLAYSURF):
     for creature in creatures:
         displayCreature(DISPLAYSURF, creature[SPRITE_IDX], creature[X_IDX], creature[Y_IDX])
         if move(creature): # move the creature and check to see if it went off screen
             creature[DIR_IDX] = UP # TODO: random
-        
+
+def getCreatureRefBySpriteRef (spriteRef):
+    return spriteMap[spriteRef][2]
+
+def clearCreatures ():
+    creatures[:] = []

@@ -22,7 +22,7 @@ tx = 1
 h_axis_pos, v_axis_pos = 0, 0
 myJoystick = None
 
-world.loadWorld(wx, wy, wz)
+world.loadWorld(wx, wy, wz, real=True)
 
 joystick_count = pygame.joystick.get_count()
 if joystick_count > 0:
@@ -62,25 +62,25 @@ while True:
         else: 
             anim.scrollScreen(DISPLAYSURF, i, direction, step, x, y, wx, wy, wz)
             y, wy = MIN_Y, wy + 1
-            world.loadWorld(wx, wy, wz)
+            world.loadWorld(wx, wy, wz, real=True)
     elif direction == RIGHT:
         if x < MAX_X: x += speed
         else: 
             anim.scrollScreen(DISPLAYSURF, i, direction, step, x, y, wx, wy, wz)
             x, wx = MIN_X, wx + 1
-            world.loadWorld(wx, wy, wz)
+            world.loadWorld(wx, wy, wz, real=True)
     elif direction == UP:
         if y > MIN_Y: y -= speed
         else: 
             anim.scrollScreen(DISPLAYSURF, i, direction, step, x, y, wx, wy, wz)
             y, wy = MAX_Y, wy - 1
-            world.loadWorld(wx, wy, wz)
+            world.loadWorld(wx, wy, wz, real=True)
     elif direction == LEFT:
         if x > MIN_X: x -= speed
         else: 
             anim.scrollScreen(DISPLAYSURF, i, direction, step, x, y, wx, wy, wz)
             x, wx = MAX_X, wx - 1
-            world.loadWorld(wx, wy, wz)
+            world.loadWorld(wx, wy, wz, real=True)
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()

@@ -4,7 +4,7 @@ from constants import *
 terrain = [[[[[0 for x in range(BOARDTILEHEIGHT)] for x in range(BOARDTILEWIDTH)]
     for x in range(WORLD_MAX_Y + 1)] for x in range(WORLD_MAX_X + 1)] for x in range(DUNGEON_MAX_Z + 1)]
 loaded = [[[False for x in range(WORLD_MAX_Y + 1)] for x in range(WORLD_MAX_X + 1)] for x in range(DUNGEON_MAX_Z + 1)]
-features, additions1, additions2, keyColors = [], [], [], {}
+features, creatures, additions1, additions2, keyColors = [], [], [], [], {}
            
 def roomInRange (roomx, roomy, roomz):
     if roomx <= 0 or roomy <= 0: return False
@@ -34,16 +34,18 @@ def loadFile (wx, wy, wz):
             else:
                 (tx, ty, ttype, tkey) = line.split(",")
                 if tkey[-1] == '\n': tkey = tkey[:-1]
-                features.append((wz, wx, wy, int(tx), int(ty), int(ttype), tkey))
+                if int(ttype) == 1: features.append((wz, wx, wy, int(tx), int(ty), tkey))
+                elif int(ttype) == 2: creatures.append((wz, wx, wy, int(tx), int(ty), tkey))
 
-def loadWorld (wx, wy, wz):
-    features[:] = []
-    additions1[:] = []
-    additions2[:] = []
+def loadWorld (wx, wy, wz, real = False):
     for roomx in range(wx - 1, wx + 2):
         for roomy in range(wy - 1, wy + 2):
             if roomInRange(roomx, roomy, wz) and loaded[wz][roomx][roomy] == False:
                 loadFile(roomx, roomy, wz)
+    if real:
+        anim.clearCreatures()
+        for creature in getCreatures(wz, wx, wy):
+            anim.createCreature(anim.getCreatureRefBySpriteRef(creature[5]), creature[3], creature[4])
                 
 def saveWorld (wx, wy, wz):
     if wz == 0: datafile = "../data/world_%02d_%02d.dat" % (wx, wy)
@@ -55,7 +57,10 @@ def saveWorld (wx, wy, wz):
             f.write('\n')
         for feature in features:
             if feature[0] == wz and feature[1] == wx and feature[2] == wy:
-                f.write("%d,%d,%d,%s\n" % (feature[3], feature[4], feature[5], feature[6]))
+                f.write("%d,%d,%d,%s\n" % (feature[3], feature[4], 1, feature[5]))
+        for creature in creatures:
+            if creature[0] == wz and creature[1] == wx and creature[2] == wy:
+                f.write("%d,%d,%d,%s\n" % (creature[3], creature[4], 2, creature[5]))
         for addition in additions1:
             if addition[0] == wz and addition[1] == wx and addition[2] == wy:
                 f.write("*%d,%d,%s\n" % (addition[3], addition[4], addition[5]))
@@ -70,13 +75,12 @@ def drawWorld (DISPLAYSURF, wx, wy, wz, offset_x = 0, offset_y = 0, real = False
                 offset_x = offset_x, offset_y = offset_y)
     for feature in features:
         if feature[0] == wz and feature[1] == wx and feature[2] == wy:
-            if feature[5] == 1:
-                anim.displayFeature(DISPLAYSURF, feature[6], feature[3], feature[4], 
-                    offset_x = offset_x, offset_y = offset_y)
-            elif feature[5] == 2:
-                anim.displayCreature(DISPLAYSURF, feature[6], feature[3], feature[4],
-                    offset_x = offset_x, offset_y = offset_y)
+            anim.displayFeature(DISPLAYSURF, feature[5], feature[3], feature[4], 
+                offset_x = offset_x, offset_y = offset_y)
     if not real:
+        for creature in getCreatures(wz, wx, wy):
+            anim.displayCreature(DISPLAYSURF, creature[5], creature[3], creature[4],
+                offset_x = offset_x, offset_y = offset_y)
         for addition in additions1:
             if addition[0] == wz and addition[1] == wx and addition[2] == wy:
                 anim.displayFeature(DISPLAYSURF, addition[5], addition[3], addition[4])
@@ -133,3 +137,6 @@ def removeAddition (key, wz, wx, wy, x, y):
         additions1[:] = [a for a in additions1 if not positionMatches(a, wz, wx, wy, x, y)]
     else:
         additions2[:] = [a for a in additions2 if not positionMatches(a, wz, wx, wy, x, y)]
+        
+def getCreatures (wz, wx, wy):
+    return [c for c in creatures if c[0] == wz and c[1] == wx and c[2] == wy]
