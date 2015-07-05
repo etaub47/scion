@@ -103,7 +103,8 @@ while True:
             elif event.key == K_SPACE:
                 anim.createProjectile('PH', direction, x, y)
     anim.displayImage(DISPLAYSURF, i, direction, step, x, y)
-    anim.moveAndDisplayProjectiles(DISPLAYSURF)    
+    anim.moveAndDisplayProjectiles(DISPLAYSURF) 
+    anim.moveAndDisplayCreatures(DISPLAYSURF) 
     pygame.display.update()
     fpsClock.tick(FPS)
     if speed > 0:

@@ -1,19 +1,22 @@
 import pygame, anim
 from constants import *
 
-terrain = [[[[[0 for x in range(BOARDTILEHEIGHT)] for x in range(BOARDTILEWIDTH)] 
+terrain = [[[[[0 for x in range(BOARDTILEHEIGHT)] for x in range(BOARDTILEWIDTH)]
     for x in range(WORLD_MAX_Y + 1)] for x in range(WORLD_MAX_X + 1)] for x in range(DUNGEON_MAX_Z + 1)]
+loaded = [[[False for x in range(WORLD_MAX_Y + 1)] for x in range(WORLD_MAX_X + 1)] for x in range(DUNGEON_MAX_Z + 1)]
 features, additions1, additions2, keyColors = [], [], [], {}
            
 def roomInRange (roomx, roomy, roomz):
+    if roomx <= 0 or roomy <= 0: return False
     if roomz == 0:
-        return roomx > 0 and roomy > 0 and roomx <= WORLD_MAX_X and roomy <= WORLD_MAX_Y
+        return roomx <= WORLD_MAX_X and roomy <= WORLD_MAX_Y
     else:
-        return roomx > 0 and roomy > 0 and roomx <= DUNGEON_MAX_X and roomy <= DUNGEON_MAX_Y
+        return roomx <= DUNGEON_MAX_X and roomy <= DUNGEON_MAX_Y
 
 def loadFile (wx, wy, wz):
     if wz == 0: datafile = "../data/world_%02d_%02d.dat" % (wx, wy)
-    else: datafile = "../data/dungeon%d_%02d_%02d.dat" % (wz, wx, wy)    
+    else: datafile = "../data/dungeon%d_%02d_%02d.dat" % (wz, wx, wy)
+    loaded[wz][wx][wy] = True
     with open(datafile, "r") as f:
         for cy, line in enumerate(f):
             if cy < BOARDTILEHEIGHT:
@@ -39,7 +42,7 @@ def loadWorld (wx, wy, wz):
     additions2[:] = []
     for roomx in range(wx - 1, wx + 2):
         for roomy in range(wy - 1, wy + 2):
-            if roomInRange(roomx, roomy, wz):
+            if roomInRange(roomx, roomy, wz) and loaded[wz][roomx][roomy] == False:
                 loadFile(roomx, roomy, wz)
                 
 def saveWorld (wx, wy, wz):

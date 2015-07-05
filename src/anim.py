@@ -15,7 +15,8 @@ spriteMap = {
     'S5': (sprite2, [(0, 4), (0, 5), (0, 6), (0, 7)]), 'S6': (sprite2, [(3, 4), (3, 5), (3, 6), (3, 7)]), 
     'S7': (sprite2, [(6, 4), (6, 5), (6, 6), (6, 7)]), 'S8': (sprite2, [(9, 4), (9, 5), (9, 6), (9, 7)]),
     'S9': (sprite3, [(0, 0), (9, 0), (3, 0), (6, 0)]), 'S10': (sprite3, [(0, 1), (9, 1), (3, 1), (6, 1)]),
-    'S11': (sprite3, [(0, 2), (9, 2), (3, 2), (6, 2)]), 'S12': (sprite3, [(0, 3), (9, 3), (3, 3), (6, 3)]),
+    # goblin
+    'S11': (sprite3, [(0, 2), (9, 2), (3, 2), (6, 2)], 'CA'), 'S12': (sprite3, [(0, 3), (9, 3), (3, 3), (6, 3)]),
     'S13': (sprite3, [(0, 4), (9, 4), (3, 4), (6, 4)]), 'S14': (sprite3, [(0, 5), (9, 5), (3, 5), (6, 5)]),
     'S15': (sprite3, [(0, 6), (9, 6), (3, 6), (6, 6)]), 'S16': (sprite3, [(0, 7), (9, 7), (3, 7), (6, 7)]),
     'S17': (sprite4, [(0, 0), (0, 1), (0, 2), (0, 3)]), 'S18': (sprite4, [(3, 0), (3, 1), (3, 2), (3, 3)]),
@@ -70,7 +71,14 @@ projectileMap = {
     'PG': (2, 11, 0, 25, True), 'PH': (37, 47, 135, 20, True)
 }
 
+creatureMap = {
+    # 'identifier': (sprite_ref, pattern, speed)    
+    # goblin
+    'CA': ('S11', 0, 5)
+}
+
 projectiles = []
+creatures = []
 
 def getTerrainColor (terrainRef):
     return terrainMap[terrainRef][2:]
@@ -154,27 +162,37 @@ def createProjectile (projectileRef, direction, x, y):
     proj_surface = pygame.transform.rotate(proj_surface, rot_angle)
     projectiles.append([proj_surface, direction, x, y, speed])
     
+def move (item):
+    # item = [something, direction, x, y, speed]
+    if (item[DIR_IDX] == DOWN):
+        if item[Y_IDX] < MAX_Y: item[Y_IDX] += item[SPEED_IDX]
+        else: return True
+    elif item[DIR_IDX] == RIGHT:
+        if item[X_IDX] < MAX_X: item[X_IDX] += item[SPEED_IDX]
+        else: return True
+    elif item[DIR_IDX] == UP:
+        if item[Y_IDX] > MIN_Y: item[Y_IDX] -= item[SPEED_IDX]
+        else: return True
+    elif item[DIR_IDX] == LEFT:
+        if item[X_IDX] > MIN_X: item[X_IDX] -= item[SPEED_IDX]
+        else: return True
+    return False
+    
 def moveAndDisplayProjectiles (DISPLAYSURF):    
     for projectile in projectiles:
-        DISPLAYSURF.blit(projectile[0], (projectile[2], projectile[3]))
-        if projectile[1] == DOWN:
-            if projectile[3] < MAX_Y:
-                projectile[3] += projectile[4]
-            else:
-                projectile[0] = None
-        elif projectile[1] == RIGHT:
-            if projectile[2] < MAX_X:
-                projectile[2] += projectile[4]
-            else:
-                projectile[0] = None
-        elif projectile[1] == UP:
-            if projectile[3] > MIN_Y:
-                projectile[3] -= projectile[4]
-            else:
-                projectile[0] = None
-        elif projectile[1] == LEFT:
-            if projectile[2] > MIN_X:
-                projectile[2] -= projectile[4]
-            else:
-                projectile[0] = None
+        DISPLAYSURF.blit(projectile[SOURCE_IDX], (projectile[X_IDX], projectile[Y_IDX]))
+        if move(projectile): # move the projectile and check to see if it went off screen
+            projectile[SOURCE_IDX] = None
     projectiles[:] = [p for p in projectiles if p[0] != None]
+
+def createCreature (creatureRef, x, y):
+    sprite_ref, pattern, speed = creatureMap[creatureRef][0], creatureMap[creatureRef][1], creatureMap[creatureRef][2]
+    direction = DOWN # TODO: random
+    creatures.append([sprite_ref, direction, x, y, speed, pattern])
+
+def moveAndDisplayCreatures (DISPLAYSURF):
+    for creature in creatures:
+        displayCreature(DISPLAYSURF, creature[SPRITE_IDX], creature[X_IDX], creature[Y_IDX])
+        if move(creature): # move the creature and check to see if it went off screen
+            creature[DIR_IDX] = UP # TODO: random
+        
