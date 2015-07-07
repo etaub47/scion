@@ -83,8 +83,6 @@ while True:
             if mouseDown and boxx < BOARDTILEWIDTH and boxy < BOARDTILEHEIGHT and selection != None:
                 if selection[0] == 0:
                     world.updateTerrain(z, x, y, boxx, boxy, selection[1])
-                else:
-                    world.addFeature(z, x, y, boxx, boxy, selection[0], selection[1])                
         elif event.type == MOUSEBUTTONDOWN and event.button == 1:
             mousex, mousey = event.pos
             boxx, boxy = getBoxAtPixel(mousex, mousey)
