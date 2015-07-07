@@ -107,6 +107,7 @@ while True:
             mousex, mousey = event.pos
             boxx, boxy = getBoxAtPixel(mousex, mousey)
             world.removeFeature(z, x, y, boxx, boxy)
+            world.removeCreature(z, x, y, boxx, boxy)
             world.removeAddition(1, z, x, y, boxx, boxy)
             world.removeAddition(2, z, x, y, boxx, boxy)
         elif event.type == KEYDOWN and event.key == K_s:
