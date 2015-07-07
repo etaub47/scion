@@ -116,8 +116,12 @@ def updateTerrain (wz, wx, wy, x, y, value):
     terrain[wz][wx][wy][x][y] = value
 
 def addFeature (wz, wx, wy, x, y, type, value):
-    removeFeature(wz, wx, wy, x, y)
-    features.append((wz, wx, wy, x, y, type, value))
+    if type == 1:
+        removeFeature(wz, wx, wy, x, y)
+        features.append((wz, wx, wy, x, y, value))
+    else:
+        removeCreature(wz, wx, wy, x, y)
+        creatures.append((wz, wx, wy, x, y, value))
 
 def addAddition (key, wz, wx, wy, x, y, value):
     if key == 1:
@@ -132,6 +136,9 @@ def positionMatches (f, wz, wx, wy, x, y):
 
 def removeFeature (wz, wx, wy, x, y):
     features[:] = [f for f in features if not positionMatches(f, wz, wx, wy, x, y)]
+
+def removeCreature (wz, wx, wy, x, y):
+    creatures[:] = [c for c in creatures if not positionMatches(c, wz, wx, wy, x, y)]
 
 def removeAddition (key, wz, wx, wy, x, y):
     if key == 1:

@@ -98,7 +98,6 @@ def displayTerrain (DISPLAYSURF, terrainRef, x, y, offset_x = 0, offset_y = 0):
             area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
 
 def displayFeature (DISPLAYSURF, featureRef, x, y, offset_x = 0, offset_y = 0):
-    print featureRef
     if featureRef[-1] == '\n': 
         featureRef = featureRef[:-1]
     x_offset = (featureMap[featureRef][0]) * BOXSIZE
