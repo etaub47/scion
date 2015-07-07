@@ -86,7 +86,6 @@ def getTerrainColor (terrainRef):
 def displayImage (DISPLAYSURF, imageRef, direction, step, x, y):
     sprite = spriteMap[imageRef]
     if step == 3: step = 1
-    print direction, step
     x_offset = (sprite[1][direction][0] + step) * BOXSIZE
     y_offset = (sprite[1][direction][1]) * BOXSIZE
     DISPLAYSURF.blit(sprite[0], (x, y), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
@@ -99,6 +98,7 @@ def displayTerrain (DISPLAYSURF, terrainRef, x, y, offset_x = 0, offset_y = 0):
             area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
 
 def displayFeature (DISPLAYSURF, featureRef, x, y, offset_x = 0, offset_y = 0):
+    print featureRef
     if featureRef[-1] == '\n': 
         featureRef = featureRef[:-1]
     x_offset = (featureMap[featureRef][0]) * BOXSIZE
