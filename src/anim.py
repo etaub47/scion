@@ -1,4 +1,4 @@
-import pygame, sys, time, world
+import pygame, sys, time, world, random
 from pygame.locals import *
 from constants import *
 
@@ -16,16 +16,16 @@ spriteMap = {
     'S7': (sprite2, [(6, 4), (6, 5), (6, 6), (6, 7)]), 'S8': (sprite2, [(9, 4), (9, 5), (9, 6), (9, 7)]),
     'S9': (sprite3, [(0, 0), (9, 0), (3, 0), (6, 0)]), 'S10': (sprite3, [(0, 1), (9, 1), (3, 1), (6, 1)]),
     # goblin
-    'S11': (sprite3, [(0, 2), (9, 2), (3, 2), (6, 2)], 'CA'), 'S12': (sprite3, [(0, 3), (9, 3), (3, 3), (6, 3)]),
-    'S13': (sprite3, [(0, 4), (9, 4), (3, 4), (6, 4)]), 'S14': (sprite3, [(0, 5), (9, 5), (3, 5), (6, 5)]),
-    'S15': (sprite3, [(0, 6), (9, 6), (3, 6), (6, 6)]), 'S16': (sprite3, [(0, 7), (9, 7), (3, 7), (6, 7)]),
+    'S11': (sprite3, [(0, 2), (9, 2), (3, 2), (6, 2)], 'C11'), 'S12': (sprite3, [(0, 3), (9, 3), (3, 3), (6, 3)]),
+    'S13': (sprite3, [(0, 4), (9, 4), (3, 4), (6, 4)], 'C13'), 'S14': (sprite3, [(0, 5), (9, 5), (3, 5), (6, 5)], 'C14'),
+    'S15': (sprite3, [(0, 6), (9, 6), (3, 6), (6, 6)]), 'S16': (sprite3, [(0, 7), (9, 7), (3, 7), (6, 7)], 'C16'),
     'S17': (sprite4, [(0, 0), (0, 1), (0, 2), (0, 3)]), 'S18': (sprite4, [(3, 0), (3, 1), (3, 2), (3, 3)]),
-    'S19': (sprite4, [(6, 0), (6, 1), (6, 2), (6, 3)]), 'S20': (sprite4, [(9, 0), (9, 1), (9, 2), (9, 3)]),
-    'S21': (sprite4, [(0, 4), (0, 5), (0, 6), (0, 7)]), 'S22': (sprite4, [(3, 4), (3, 5), (3, 6), (3, 7)]),
-    'S23': (sprite4, [(6, 4), (6, 5), (6, 6), (6, 7)]), 'S24': (sprite6, [(0, 0), (0, 1), (0, 2), (0, 3)]),
+    'S19': (sprite4, [(6, 0), (6, 1), (6, 2), (6, 3)], 'C19'), 'S20': (sprite4, [(9, 0), (9, 1), (9, 2), (9, 3)]),
+    'S21': (sprite4, [(0, 4), (0, 5), (0, 6), (0, 7)], 'C21'), 'S22': (sprite4, [(3, 4), (3, 5), (3, 6), (3, 7)]),
+    'S23': (sprite4, [(6, 4), (6, 5), (6, 6), (6, 7)], 'C23'), 'S24': (sprite6, [(0, 0), (0, 1), (0, 2), (0, 3)], 'C24'),
     'S25': (sprite5, [(3, 0), (3, 1), (3, 2), (3, 3)]), 'S26': (sprite6, [(6, 0), (6, 1), (6, 2), (6, 3)]),
     'S27': (sprite5, [(9, 0), (9, 1), (9, 2), (9, 3)]), 'S28': (sprite5, [(0, 4), (0, 5), (0, 6), (0, 7)]),
-    'S29': (sprite6, [(3, 4), (3, 5), (3, 6), (3, 7)]), 'S30': (sprite6, [(6, 4), (6, 5), (6, 6), (6, 7)]),
+    'S29': (sprite6, [(3, 4), (3, 5), (3, 6), (3, 7)], 'C29'), 'S30': (sprite6, [(6, 4), (6, 5), (6, 6), (6, 7)]),
     'S31': (sprite5, [(9, 4), (9, 5), (9, 6), (9, 7)])
 }
 
@@ -72,9 +72,19 @@ projectileMap = {
 }
 
 creatureMap = {
-    # 'identifier': (sprite_ref, pattern, speed)    
+    # 'identifier': (sprite_ref, pattern, speed)
+    # pattern: 0 = random
     # goblin
-    'CA': ('S11', 0, 5)
+    'C11': ('S11', 0, 5), 
+    # water demon
+    'C13': ('S13', 0, 5), 'C14': ('S14', 0, 5),
+    'C16': ('S16', 0, 5),
+    'C19': ('S19', 0, 5),
+    # worg
+    'C21': ('S21', 0, 8),
+    'C23': ('S23', 0, 5),
+    'C24': ('S24', 0, 5),
+    'C29': ('S29', 0, 5)
 }
 
 projectiles = []
@@ -184,16 +194,22 @@ def moveAndDisplayProjectiles (DISPLAYSURF):
 def createCreature (creatureRef, x, y):
     sprite_ref, pattern, speed = creatureMap[creatureRef][0], creatureMap[creatureRef][1], creatureMap[creatureRef][2]
     direction = DOWN # TODO: random
-    creatures.append([sprite_ref, direction, x * BOXSIZE, y * BOXSIZE, speed, pattern, 0])
+    creatures.append([sprite_ref, direction, x * BOXSIZE, y * BOXSIZE, speed, pattern, 0, 0])
 
 def moveAndDisplayCreatures (DISPLAYSURF):
     for creature in creatures:
         displayCreature(DISPLAYSURF, creature[SPRITE_IDX], creature[X_IDX], creature[Y_IDX],
             direction = creature[DIR_IDX], step = creature[STEP_IDX])
-        creature[STEP_IDX] += 1;
+        if creature[TIMER_IDX] % 2 == 0:
+            creature[STEP_IDX] += 1
+        creature[TIMER_IDX] += 1
+        if creature[TIMER_IDX] > 100:
+            creature[TIMER_IDX] = 0
         if creature[STEP_IDX] >= 4: creature[STEP_IDX] = 0
-        if move(creature): # move the creature and check to see if it went off screen
-            creature[DIR_IDX] = UP # TODO: random
+        if creature[PATTERN_IDX] == 0:
+            if move(creature) or creature[TIMER_IDX] == 50 or random.randint(1, 100) <= 2:
+                newDirection = random.randint(0, 3)
+                creature[DIR_IDX] = newDirection
 
 def getCreatureRefBySpriteRef (spriteRef):
     return spriteMap[spriteRef][2]

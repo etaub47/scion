@@ -52,6 +52,8 @@ while True:
 		for b in range(0, 10):
 			if myJoystick.get_button(b):
 				pressed = str(b)
+				if int(pressed) == 2:
+				    anim.createProjectile('PH', direction, x, y)
     textSurf = BASICFONT.render("%s,%s -- %s" % (str(px), str(py), pressed), True, (255, 255, 255))
     textRect = textSurf.get_rect()
     textRect.bottomleft = 250, 250
