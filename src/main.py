@@ -1,5 +1,6 @@
 import pygame, sys, anim, world
 from pygame.locals import *
+from pygame import Rect
 from constants import *
 
 pygame.init()
@@ -11,7 +12,7 @@ BASICFONT = pygame.font.Font('freesansbold.ttf', 20)
 DISPLAYSURF.fill((255, 255, 255))
 pygame.display.set_caption('Scion')
 
-i, j = 'S24', 1
+i, j = 'S1', 1
 x, y, direction = 250, 250, DOWN
 wx, wy, wz = 1, 1, 0
 speed = 5
@@ -59,26 +60,35 @@ while True:
     textRect.bottomleft = 250, 250
     anim.displaySquare(DISPLAYSURF, px, py)
     DISPLAYSURF.blit(textSurf, textRect)
+    rect = Rect(x + 2, y + BOXSIZE / 2, BOXSIZE - 4, BOXSIZE / 2)
     if direction == DOWN:
-        if y < MAX_Y: y += speed
+        if y < MAX_Y: 
+            world.move(wz, wx, wy, rect, 0, speed)
+            x, y = rect.x - 2, rect.y - BOXSIZE / 2 
         else: 
             anim.scrollScreen(DISPLAYSURF, i, direction, step, x, y, wx, wy, wz)
             y, wy = MIN_Y, wy + 1
             world.loadWorld(wx, wy, wz, real=True)
     elif direction == RIGHT:
-        if x < MAX_X: x += speed
+        if x < MAX_X:
+            world.move(wz, wx, wy, rect, speed, 0)        
+            x, y = rect.x - 2, rect.y - BOXSIZE / 2
         else: 
             anim.scrollScreen(DISPLAYSURF, i, direction, step, x, y, wx, wy, wz)
             x, wx = MIN_X, wx + 1
             world.loadWorld(wx, wy, wz, real=True)
     elif direction == UP:
-        if y > MIN_Y: y -= speed
+        if y > MIN_Y: 
+            world.move(wz, wx, wy, rect, 0, -speed)
+            x, y = rect.x - 2, rect.y - BOXSIZE / 2            
         else: 
             anim.scrollScreen(DISPLAYSURF, i, direction, step, x, y, wx, wy, wz)
             y, wy = MAX_Y, wy - 1
             world.loadWorld(wx, wy, wz, real=True)
     elif direction == LEFT:
-        if x > MIN_X: x -= speed
+        if x > MIN_X:
+            world.move(wz, wx, wy, rect, -speed, 0)
+            x, y = rect.x - 2, rect.y - BOXSIZE / 2            
         else: 
             anim.scrollScreen(DISPLAYSURF, i, direction, step, x, y, wx, wy, wz)
             x, wx = MAX_X, wx - 1
@@ -88,8 +98,8 @@ while True:
             pygame.quit()
             sys.exit()
         elif event.type == KEYDOWN:
-            if event.key == K_o: i -= 1
-            elif event.key == K_p: i += 1
+            if event.key == K_o: i = "S" + str(int(i[1:]) - 1)
+            elif event.key == K_p: i = "S" + str(int(i[1:]) + 1)
             elif event.key == K_k: speed += 1
             elif event.key == K_m: speed -= 1
             elif event.key == K_d: px -= 1

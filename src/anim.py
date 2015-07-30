@@ -30,16 +30,19 @@ spriteMap = {
 }
 
 terrainMap = {
+    # x_offset, y_offset, r, g, b, obstacle (1=clear, 2=obstacle, 3=special)
     # nothing, grass
-    '-': (0, 0, 255, 250, 205), 'A': (0, 15, 0, 128, 0), 
+    '-': (0, 0, 255, 250, 205, 1), 'A': (0, 15, 0, 128, 0, 1), 
     # dungeon floor, brown brick wall, water, stones    
-    'H': (5, 18, 105, 105, 105), 'I': (8, 16, 139, 37, 0), 'B': (37, 19, 0, 238, 238), 'C': (53, 16, 139, 90, 0),
-    # colortile, large tiles, gray brick wall, sand
-    'J': (59, 15, 255, 250, 205), 'K': (57, 15, 142, 142, 56), 'L': (52, 17, 183, 183, 183), 'D': (7, 15, 205, 179, 139),
+    'H': (5, 18, 105, 105, 105, 1), 'I': (8, 16, 139, 37, 0, 2), 'B': (37, 19, 0, 238, 238, 3), 'C': (53, 16, 139, 90, 0, 2),
+    # colortile, large tiles, gray brick wall
+    'J': (59, 15, 255, 250, 205, 1), 'K': (57, 15, 142, 142, 56, 1), 'L': (52, 17, 183, 183, 183, 2), 
+    # sand
+    'D': (7, 15, 205, 179, 139, 1),
     # cobblestone, poison swamp, lava, soft tile
-    'F': (9, 14, 139, 136, 120), 'E': (23, 19, 118, 238, 0), 'M': (52, 13, 238, 0, 0), 'N': (56, 16, 125, 158, 192), 
+    'F': (9, 14, 139, 136, 120, 1), 'E': (23, 19, 118, 238, 0, 3), 'M': (52, 13, 238, 0, 0, 2), 'N': (56, 16, 125, 158, 192, 1), 
     # murky water, bridge
-    'O': (19, 19, 56, 142, 142), 'G': (43, 16, 139, 0, 0)
+    'O': (19, 19, 56, 142, 142, 3), 'G': (43, 16, 139, 0, 0, 1)
     # animated water: 36, 19 - 39, 19, animated swamp 23, 19 - 24, 19
     # animated lava: 49, 13 - 52, 13
 }
@@ -91,7 +94,10 @@ projectiles = []
 creatures = []
 
 def getTerrainColor (terrainRef):
-    return terrainMap[terrainRef][2:]
+    return terrainMap[terrainRef][2:4]
+    
+def getTerrainObstacle (terrainRef):
+    return terrainMap[terrainRef][5]
 
 def displayImage (DISPLAYSURF, imageRef, direction, step, x, y):
     sprite = spriteMap[imageRef]

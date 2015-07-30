@@ -1,10 +1,11 @@
 import pygame, anim
 from constants import *
+from pygame import Rect
 
 terrain = [[[[[0 for x in range(BOARDTILEHEIGHT)] for x in range(BOARDTILEWIDTH)]
     for x in range(WORLD_MAX_Y + 1)] for x in range(WORLD_MAX_X + 1)] for x in range(DUNGEON_MAX_Z + 1)]
 loaded = [[[False for x in range(WORLD_MAX_Y + 1)] for x in range(WORLD_MAX_X + 1)] for x in range(DUNGEON_MAX_Z + 1)]
-features, creatures, additions1, additions2, keyColors = [], [], [], [], {}
+obstacles, features, creatures, additions1, additions2, keyColors = [], [], [], [], [], {}
            
 def roomInRange (roomx, roomy, roomz):
     if roomx <= 0 or roomy <= 0: return False
@@ -43,9 +44,14 @@ def loadWorld (wx, wy, wz, real = False):
             if roomInRange(roomx, roomy, wz) and loaded[wz][roomx][roomy] == False:
                 loadFile(roomx, roomy, wz)
     if real:
+        del obstacles[:]
+        for x in range(BOARDTILEWIDTH):
+            for y in range(BOARDTILEHEIGHT):
+                if anim.getTerrainObstacle(terrain[wz][wx][wy][x][y]) > 1:
+                    obstacles.append(Rect(x * BOXSIZE, y * BOXSIZE, BOXSIZE, BOXSIZE))
         anim.clearCreatures()
         for creature in getCreatures(wz, wx, wy):
-            anim.createCreature(anim.getCreatureRefBySpriteRef(creature[5]), creature[3], creature[4])
+            anim.createCreature(anim.getCreatureRefBySpriteRef(creature[5]), creature[3], creature[4])   
                 
 def saveWorld (wx, wy, wz):
     if wz == 0: datafile = "../data/world_%02d_%02d.dat" % (wx, wy)
@@ -148,3 +154,16 @@ def removeAddition (key, wz, wx, wy, x, y):
         
 def getCreatures (wz, wx, wy):
     return [c for c in creatures if c[0] == wz and c[1] == wx and c[2] == wy]
+
+def move (wz, wx, wy, rect, x_offset, y_offset):
+    rect.move_ip(x_offset, y_offset)
+    idx = rect.collidelist(obstacles)
+    if idx > -1:
+        if x_offset > 0:
+            rect.right = obstacles[idx].left
+        elif x_offset < 0:
+            rect.left = obstacles[idx].right
+        elif y_offset > 0:
+            rect.bottom = obstacles[idx].top
+        elif y_offset < 0:
+            rect.top = obstacles[idx].bottom
