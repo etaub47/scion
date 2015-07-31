@@ -10,23 +10,40 @@ sprite5 = pygame.image.load('../img/sprite5.png')
 sprite6 = pygame.image.load('../img/sprite6.png')
 
 spriteMap = { 
-    'S1': (sprite2, [(0, 0), (0, 1), (0, 2), (0, 3)]), 'S2': (sprite2, [(3, 0), (3, 1), (3, 2), (3, 3)]),
-    'S3': (sprite2, [(6, 0), (6, 1), (6, 2), (6, 3)]), 'S4': (sprite2, [(9, 0), (9, 1), (9, 2), (9, 3)]), 
-    'S5': (sprite2, [(0, 4), (0, 5), (0, 6), (0, 7)]), 'S6': (sprite2, [(3, 4), (3, 5), (3, 6), (3, 7)]), 
-    'S7': (sprite2, [(6, 4), (6, 5), (6, 6), (6, 7)]), 'S8': (sprite2, [(9, 4), (9, 5), (9, 6), (9, 7)]),
-    'S9': (sprite3, [(0, 0), (9, 0), (3, 0), (6, 0)]), 'S10': (sprite3, [(0, 1), (9, 1), (3, 1), (6, 1)]),
+    'S1': (sprite2, [(0, 0), (0, 1), (0, 2), (0, 3)], 'H1'), 
+    'S2': (sprite2, [(3, 0), (3, 1), (3, 2), (3, 3)], 'H2'),
+    'S3': (sprite2, [(6, 0), (6, 1), (6, 2), (6, 3)], 'H3'), 
+    'S4': (sprite2, [(9, 0), (9, 1), (9, 2), (9, 3)], 'H4'), 
+    'S5': (sprite2, [(0, 4), (0, 5), (0, 6), (0, 7)], 'H5'),
+    'S6': (sprite2, [(3, 4), (3, 5), (3, 6), (3, 7)], 'H6'), 
+    'S7': (sprite2, [(6, 4), (6, 5), (6, 6), (6, 7)], 'H7'),
+    'S8': (sprite2, [(9, 4), (9, 5), (9, 6), (9, 7)], 'H8'),
+    'S9': (sprite3, [(0, 0), (9, 0), (3, 0), (6, 0)], 'H9'), 
+    'S10': (sprite3, [(0, 1), (9, 1), (3, 1), (6, 1)], 'H10'),
     # goblin
-    'S11': (sprite3, [(0, 2), (9, 2), (3, 2), (6, 2)], 'C11'), 'S12': (sprite3, [(0, 3), (9, 3), (3, 3), (6, 3)]),
-    'S13': (sprite3, [(0, 4), (9, 4), (3, 4), (6, 4)], 'C13'), 'S14': (sprite3, [(0, 5), (9, 5), (3, 5), (6, 5)], 'C14'),
-    'S15': (sprite3, [(0, 6), (9, 6), (3, 6), (6, 6)]), 'S16': (sprite3, [(0, 7), (9, 7), (3, 7), (6, 7)], 'C16'),
-    'S17': (sprite4, [(0, 0), (0, 1), (0, 2), (0, 3)]), 'S18': (sprite4, [(3, 0), (3, 1), (3, 2), (3, 3)]),
-    'S19': (sprite4, [(6, 0), (6, 1), (6, 2), (6, 3)], 'C19'), 'S20': (sprite4, [(9, 0), (9, 1), (9, 2), (9, 3)]),
-    'S21': (sprite4, [(0, 4), (0, 5), (0, 6), (0, 7)], 'C21'), 'S22': (sprite4, [(3, 4), (3, 5), (3, 6), (3, 7)]),
-    'S23': (sprite4, [(6, 4), (6, 5), (6, 6), (6, 7)], 'C23'), 'S24': (sprite6, [(0, 0), (0, 1), (0, 2), (0, 3)], 'C24'),
-    'S25': (sprite5, [(3, 0), (3, 1), (3, 2), (3, 3)]), 'S26': (sprite6, [(6, 0), (6, 1), (6, 2), (6, 3)]),
-    'S27': (sprite5, [(9, 0), (9, 1), (9, 2), (9, 3)]), 'S28': (sprite5, [(0, 4), (0, 5), (0, 6), (0, 7)]),
-    'S29': (sprite6, [(3, 4), (3, 5), (3, 6), (3, 7)], 'C29'), 'S30': (sprite6, [(6, 4), (6, 5), (6, 6), (6, 7)]),
-    'S31': (sprite5, [(9, 4), (9, 5), (9, 6), (9, 7)])
+    'S11': (sprite3, [(0, 2), (9, 2), (3, 2), (6, 2)], 'C11'),
+    'S12': (sprite3, [(0, 3), (9, 3), (3, 3), (6, 3)], 'C12'),
+    # water demon
+    'S13': (sprite3, [(0, 4), (9, 4), (3, 4), (6, 4)], 'C13'), 
+    'S14': (sprite3, [(0, 5), (9, 5), (3, 5), (6, 5)], 'C14'),
+    'S15': (sprite3, [(0, 6), (9, 6), (3, 6), (6, 6)], 'C15'),
+    'S16': (sprite3, [(0, 7), (9, 7), (3, 7), (6, 7)], 'C16'),
+    'S17': (sprite4, [(0, 0), (0, 1), (0, 2), (0, 3)], 'C17'), 
+    'S18': (sprite4, [(3, 0), (3, 1), (3, 2), (3, 3)], 'C18'),
+    'S19': (sprite4, [(6, 0), (6, 1), (6, 2), (6, 3)], 'C19'),
+    'S20': (sprite4, [(9, 0), (9, 1), (9, 2), (9, 3)], 'C20'),
+    # worg
+    'S21': (sprite4, [(0, 4), (0, 5), (0, 6), (0, 7)], 'C21'),
+    'S22': (sprite4, [(3, 4), (3, 5), (3, 6), (3, 7)], 'C22'),
+    'S23': (sprite4, [(6, 4), (6, 5), (6, 6), (6, 7)], 'C23'),
+    'S24': (sprite6, [(0, 0), (0, 1), (0, 2), (0, 3)], 'C24'),
+    'S25': (sprite5, [(3, 0), (3, 1), (3, 2), (3, 3)], 'C25'),
+    'S26': (sprite6, [(6, 0), (6, 1), (6, 2), (6, 3)], 'C26'),
+    'S27': (sprite5, [(9, 0), (9, 1), (9, 2), (9, 3)], 'C27'),
+    'S28': (sprite5, [(0, 4), (0, 5), (0, 6), (0, 7)], 'C28'),
+    'S29': (sprite6, [(3, 4), (3, 5), (3, 6), (3, 7)], 'C29'),
+    'S30': (sprite6, [(6, 4), (6, 5), (6, 6), (6, 7)], 'C30'),
+    'S31': (sprite5, [(9, 4), (9, 5), (9, 6), (9, 7)], 'C31')
 }
 
 terrainMap = {
@@ -48,20 +65,28 @@ terrainMap = {
 }
 
 featureMap = {
-    # stairs to dungeon, stairs to overworld, blue tile, open door, closed door, tree
-    'FA': (15, 15), 'FB': (31, 15), 'FC': (29, 16), 'FD': (27, 11), 'FE': (23, 11), 'FF': (14, 18),
-    # statue, fountain, wings, armor, book, shield
-    'FG': (28, 11), 'FH': (63, 11), 'IA': (15, 7), 'IB': (28, 21), 'IC': (58, 22), 'ID': (54, 22),
-    # meat, gold, potion, bracelet, staff, sword
-    'IE': (36, 23), 'IF': (59, 23), 'IG': (63, 24), 'IH': (60, 25), 'II': (4, 46), 'IJ': (43, 27),
-    # chest, key, glove, boots, cloak, amulet
-    'IK': (43, 45), 'IL': (54, 45), 'IM': (13, 21), 'IN': (61, 20), 'IO': (5, 21), 'IP': (15, 20),
+    # stairs to dungeon, stairs to overworld, blue tile, open door, closed door
+    'FA': (15, 15, 3), 'FB': (31, 15, 3), 'FC': (29, 16, 4), 'FD': (27, 11, 1), 'FE': (23, 11, 2), 
+    # tree
+    'FF': (14, 18, 2),
+    # statue, fountain, wings, armor, book
+    'FG': (28, 11, 4), 'FH': (63, 11, 2), 'IA': (15, 7, 5), 'IB': (28, 21, 5), 'IC': (58, 22, 5), 
+    # shield
+    'ID': (54, 22, 5),
+    # meat, gold, potion, bracelet, staff
+    'IE': (36, 23, 5), 'IF': (59, 23, 5), 'IG': (63, 24, 5), 'IH': (60, 25, 5), 'II': (4, 46, 5), 
+    # sword
+    'IJ': (43, 27, 5),
+    # chest, key, glove, boots, cloak
+    'IK': (43, 45, 5), 'IL': (54, 45, 5), 'IM': (13, 21, 5), 'IN': (61, 20, 5), 'IO': (5, 21, 5),
+    # amulet
+    'IP': (15, 20, 5),
     # mirror, lantern, ring
-    'IQ': (57, 45), 'IR': (14, 24), 'IS': (58, 25),
+    'IQ': (57, 45, 5), 'IR': (14, 24, 5), 'IS': (58, 25, 5),
     # mini mirror, blast wall, mini fire, mini skull, question mark
-    'AA': (3, 26), 'AB': (2, 26), 'AC': (23, 25), 'AD': (42, 29), 'AE': (36, 29),
+    'AA': (3, 26, 6), 'AB': (2, 26, 6), 'AC': (23, 25, 6), 'AD': (42, 29, 6), 'AE': (36, 29, 6),
     # 1-5
-    'AF': (11, 0), 'AG': (12, 0), 'AH': (13, 0), 'AI': (14, 0), 'AJ': (15, 0)
+    'AF': (11, 0, 7), 'AG': (12, 0, 7), 'AH': (13, 0, 7), 'AI': (14, 0, 7), 'AJ': (15, 0, 7)
 }
 
 projectileMap = {
@@ -80,7 +105,8 @@ creatureMap = {
     # goblin
     'C11': ('S11', 0, 5), 
     # water demon
-    'C13': ('S13', 0, 5), 'C14': ('S14', 0, 5),
+    'C13': ('S13', 0, 5),
+    'C14': ('S14', 0, 5),
     'C16': ('S16', 0, 5),
     'C19': ('S19', 0, 5),
     # worg
@@ -90,14 +116,31 @@ creatureMap = {
     'C29': ('S29', 0, 5)
 }
 
+heroMap = {
+    'H1': ('S1', 0),
+    'H2': ('S2', 0),
+    'H3': ('S3', 0),
+    'H4': ('S4', 0),
+    'H5': ('S5', 0),
+    'H6': ('S6', 0),
+    'H7': ('S7', 0),
+    'H8': ('S8', 0),
+    'H9': ('S9', 0),
+    'H10': ('S10', 0)
+}
+
 projectiles = []
 creatures = []
+staticHeroes = []
 
 def getTerrainColor (terrainRef):
-    return terrainMap[terrainRef][2:4]
+    return terrainMap[terrainRef][2:5]
     
 def getTerrainObstacle (terrainRef):
     return terrainMap[terrainRef][5]
+
+def getFeatureObstacle (featureRef):
+    return featureMap[featureRef][2]
 
 def displayImage (DISPLAYSURF, imageRef, direction, step, x, y):
     sprite = spriteMap[imageRef]
@@ -174,35 +217,51 @@ def createProjectile (projectileRef, direction, x, y):
     proj_surface = pygame.transform.rotate(proj_surface, rot_angle)
     projectiles.append([proj_surface, direction, x, y, speed])
     
-def move (item):
+def move (item, wz, wx, wy):
     # item = [something, direction, x, y, speed]
+    # returns True if the move resulted in a collision with terrain or a feature
     if (item[DIR_IDX] == DOWN):
-        if item[Y_IDX] < MAX_Y: item[Y_IDX] += item[SPEED_IDX]
-        else: return True
+        rect = Rect(item[X_IDX] + 2, item[Y_IDX] + BOXSIZE / 2, BOXSIZE - 4, BOXSIZE / 2)
+        if item[Y_IDX] >= MAX_Y or world.move(wz, wx, wy, rect, 0, item[SPEED_IDX]):
+            item[X_IDX], item[Y_IDX] = rect.x - 2, rect.y - BOXSIZE / 2
+            return True
     elif item[DIR_IDX] == RIGHT:
-        if item[X_IDX] < MAX_X: item[X_IDX] += item[SPEED_IDX]
-        else: return True
+        rect = Rect(item[X_IDX] + 2, item[Y_IDX] + BOXSIZE / 2, BOXSIZE - 4, BOXSIZE / 2)
+        if item[X_IDX] >= MAX_X or world.move(wz, wx, wy, rect, item[SPEED_IDX], 0):
+            item[X_IDX], item[Y_IDX] = rect.x - 2, rect.y - BOXSIZE / 2
+            return True
     elif item[DIR_IDX] == UP:
-        if item[Y_IDX] > MIN_Y: item[Y_IDX] -= item[SPEED_IDX]
-        else: return True
+        rect = Rect(item[X_IDX] + 2, item[Y_IDX] + BOXSIZE / 2, BOXSIZE - 4, BOXSIZE / 2)
+        if item[Y_IDX] <= MIN_Y or world.move(wz, wx, wy, rect, 0, -item[SPEED_IDX]):
+            item[X_IDX], item[Y_IDX] = rect.x - 2, rect.y - BOXSIZE / 2
+            return True
     elif item[DIR_IDX] == LEFT:
-        if item[X_IDX] > MIN_X: item[X_IDX] -= item[SPEED_IDX]
-        else: return True
+        rect = Rect(item[X_IDX] + 2, item[Y_IDX] + BOXSIZE / 2, BOXSIZE - 4, BOXSIZE / 2)
+        if item[X_IDX] <= MIN_X or world.move(wz, wx, wy, rect, -item[SPEED_IDX], 0):
+            item[X_IDX], item[Y_IDX] = rect.x - 2, rect.y - BOXSIZE / 2
+            return True
+    item[X_IDX], item[Y_IDX] = rect.x - 2, rect.y - BOXSIZE / 2
     return False
     
-def moveAndDisplayProjectiles (DISPLAYSURF):    
+def moveAndDisplayProjectiles (DISPLAYSURF, wz, wx, wy):    
     for projectile in projectiles:
         DISPLAYSURF.blit(projectile[SOURCE_IDX], (projectile[X_IDX], projectile[Y_IDX]))
-        if move(projectile): # move the projectile and check to see if it went off screen
+        if move(projectile, wz, wx, wy): # move the projectile and check to see if it went off screen
             projectile[SOURCE_IDX] = None
     projectiles[:] = [p for p in projectiles if p[0] != None]
 
 def createCreature (creatureRef, x, y):
-    sprite_ref, pattern, speed = creatureMap[creatureRef][0], creatureMap[creatureRef][1], creatureMap[creatureRef][2]
-    direction = DOWN # TODO: random
-    creatures.append([sprite_ref, direction, x * BOXSIZE, y * BOXSIZE, speed, pattern, 0, 0])
+    if creatureRef[0] == 'C':
+        sprite_ref = creatureMap[creatureRef][0]
+        pattern = creatureMap[creatureRef][1]
+        speed = creatureMap[creatureRef][2]
+        direction = random.randint(0, 3)
+        creatures.append([sprite_ref, direction, x * BOXSIZE, y * BOXSIZE, speed, pattern, 0, 0])
+    else:
+        sprite_ref = heroMap[creatureRef][0]
+        staticHeroes.append((sprite_ref, x * BOXSIZE, y * BOXSIZE))
 
-def moveAndDisplayCreatures (DISPLAYSURF):
+def moveAndDisplayCreatures (DISPLAYSURF, wz, wx, wy):
     for creature in creatures:
         displayCreature(DISPLAYSURF, creature[SPRITE_IDX], creature[X_IDX], creature[Y_IDX],
             direction = creature[DIR_IDX], step = creature[STEP_IDX])
@@ -213,9 +272,12 @@ def moveAndDisplayCreatures (DISPLAYSURF):
             creature[TIMER_IDX] = 0
         if creature[STEP_IDX] >= 4: creature[STEP_IDX] = 0
         if creature[PATTERN_IDX] == 0:
-            if move(creature) or creature[TIMER_IDX] == 50 or random.randint(1, 100) <= 2:
+            if move(creature, wz, wx, wy) or creature[TIMER_IDX] == 50 or random.randint(1, 100) <= 2:
                 newDirection = random.randint(0, 3)
                 creature[DIR_IDX] = newDirection
+    for hero in staticHeroes:
+        spriteRef, x, y = hero[0], hero[1], hero[2]
+        displayCreature(DISPLAYSURF, spriteRef, x, y)
 
 def getCreatureRefBySpriteRef (spriteRef):
     return spriteMap[spriteRef][2]

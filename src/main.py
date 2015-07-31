@@ -15,6 +15,7 @@ pygame.display.set_caption('Scion')
 i, j = 'S1', 1
 x, y, direction = 250, 250, DOWN
 wx, wy, wz = 1, 1, 0
+wx, wy, wz = 6, 5, 0
 speed = 5
 step = 0
 ratio, anim_ratio = 0, 3
@@ -115,8 +116,8 @@ while True:
             elif event.key == K_SPACE:
                 anim.createProjectile('PH', direction, x, y)
     anim.displayImage(DISPLAYSURF, i, direction, step, x, y)
-    anim.moveAndDisplayProjectiles(DISPLAYSURF) 
-    anim.moveAndDisplayCreatures(DISPLAYSURF) 
+    anim.moveAndDisplayProjectiles(DISPLAYSURF, wz, wx, wy) 
+    anim.moveAndDisplayCreatures(DISPLAYSURF, wz, wx, wy) 
     pygame.display.update()
     fpsClock.tick(FPS)
     if speed > 0:

@@ -49,6 +49,11 @@ def loadWorld (wx, wy, wz, real = False):
             for y in range(BOARDTILEHEIGHT):
                 if anim.getTerrainObstacle(terrain[wz][wx][wy][x][y]) > 1:
                     obstacles.append(Rect(x * BOXSIZE, y * BOXSIZE, BOXSIZE, BOXSIZE))
+        for feature in features:
+            if feature[0] == wz and feature[1] == wx and feature[2] == wy:
+                featureObstacle = anim.getFeatureObstacle(feature[5])
+                if featureObstacle == 2 or featureObstacle == 4:
+                    obstacles.append(Rect(feature[3] * BOXSIZE, feature[4] * BOXSIZE, BOXSIZE, BOXSIZE))
         anim.clearCreatures()
         for creature in getCreatures(wz, wx, wy):
             anim.createCreature(anim.getCreatureRefBySpriteRef(creature[5]), creature[3], creature[4])   
@@ -158,12 +163,14 @@ def getCreatures (wz, wx, wy):
 def move (wz, wx, wy, rect, x_offset, y_offset):
     rect.move_ip(x_offset, y_offset)
     idx = rect.collidelist(obstacles)
-    if idx > -1:
-        if x_offset > 0:
-            rect.right = obstacles[idx].left
-        elif x_offset < 0:
-            rect.left = obstacles[idx].right
-        elif y_offset > 0:
-            rect.bottom = obstacles[idx].top
-        elif y_offset < 0:
-            rect.top = obstacles[idx].bottom
+    if idx == -1:
+        return False
+    if x_offset > 0:
+        rect.right = obstacles[idx].left
+    elif x_offset < 0:
+        rect.left = obstacles[idx].right
+    elif y_offset > 0:
+        rect.bottom = obstacles[idx].top
+    elif y_offset < 0:
+        rect.top = obstacles[idx].bottom
+    return True
