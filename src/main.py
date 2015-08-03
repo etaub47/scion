@@ -117,7 +117,8 @@ while True:
                 anim.createProjectile('PH', direction, x, y)
     anim.displayImage(DISPLAYSURF, i, direction, step, x, y)
     anim.moveAndDisplayProjectiles(DISPLAYSURF, wz, wx, wy) 
-    anim.moveAndDisplayCreatures(DISPLAYSURF, wz, wx, wy) 
+    anim.moveAndDisplayCreatures(DISPLAYSURF, wz, wx, wy)
+    anim.displayLifeMeter(DISPLAYSURF, 3)    
     pygame.display.update()
     fpsClock.tick(FPS)
     if speed > 0:

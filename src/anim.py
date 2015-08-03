@@ -46,6 +46,10 @@ spriteMap = {
     'S31': (sprite5, [(9, 4), (9, 5), (9, 6), (9, 7)], 'C31')
 }
 
+imageMap = {
+    'LIFE': (25, 0)
+}
+
 terrainMap = {
     # x_offset, y_offset, r, g, b, obstacle (1=clear, 2=obstacle, 3=special)
     # nothing, grass
@@ -141,6 +145,15 @@ def getTerrainObstacle (terrainRef):
 
 def getFeatureObstacle (featureRef):
     return featureMap[featureRef][2]
+
+def displaySimpleImage (DISPLAYSURF, imageRef, x, y):
+    image = imageMap[imageRef]
+    x_offset, y_offset = image[0] * BOXSIZE, image[1] * BOXSIZE
+    DISPLAYSURF.blit(sprite1, (x, y), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
+    
+def displayLifeMeter (DISPLAYSURF, life):
+    for heart in range(life):
+        displaySimpleImage(DISPLAYSURF, 'LIFE', heart * (BOXSIZE / 3) - (BOXSIZE / 2), 0)        
 
 def displayImage (DISPLAYSURF, imageRef, direction, step, x, y):
     sprite = spriteMap[imageRef]
@@ -284,3 +297,5 @@ def getCreatureRefBySpriteRef (spriteRef):
 
 def clearCreatures ():
     creatures[:] = []
+    staticHeroes[:] = []
+
