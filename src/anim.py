@@ -229,10 +229,12 @@ def createProjectile (projectileRef, direction, x, y):
     proj_surface.blit(sprite1, (0, 0), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
     proj_surface = pygame.transform.rotate(proj_surface, rot_angle)
     projectiles.append([proj_surface, direction, x, y, speed])
-    
+
 def move (item, wz, wx, wy):
-    # item = [something, direction, x, y, speed]
-    # returns True if the move resulted in a collision with terrain or a feature
+    """
+    moves a hero, creature, or projectile based on its current speed and direction
+    returns True if the move resulted in a collision with terrain or a feature, False otherwise
+    """
     if (item[DIR_IDX] == DOWN):
         rect = Rect(item[X_IDX] + 2, item[Y_IDX] + BOXSIZE / 2, BOXSIZE - 4, BOXSIZE / 2)
         if item[Y_IDX] >= MAX_Y or world.move(wz, wx, wy, rect, 0, item[SPEED_IDX]):
@@ -263,16 +265,17 @@ def moveAndDisplayProjectiles (DISPLAYSURF, wz, wx, wy):
             projectile[SOURCE_IDX] = None
     projectiles[:] = [p for p in projectiles if p[0] != None]
 
-def createCreature (creatureRef, x, y):
+def createCreature (creatureRef, tx, ty):
     if creatureRef[0] == 'C':
         sprite_ref = creatureMap[creatureRef][0]
         pattern = creatureMap[creatureRef][1]
         speed = creatureMap[creatureRef][2]
         direction = random.randint(0, 3)
-        creatures.append([sprite_ref, direction, x * BOXSIZE, y * BOXSIZE, speed, pattern, 0, 0])
+        creatures.append([sprite_ref, direction, tx * BOXSIZE, ty * BOXSIZE, speed, pattern, 0, 0,
+            Rect(tx * BOXSIZE + 2, ty * BOXSIZE + BOXSIZE / 2, BOXSIZE - 4, BOXSIZE / 2)])
     else:
         sprite_ref = heroMap[creatureRef][0]
-        staticHeroes.append((sprite_ref, x * BOXSIZE, y * BOXSIZE))
+        staticHeroes.append((sprite_ref, tx * BOXSIZE, ty * BOXSIZE))
 
 def moveAndDisplayCreatures (DISPLAYSURF, wz, wx, wy):
     for creature in creatures:

@@ -29,6 +29,7 @@ mousex, mousey, mouseDown = 0, 0, False
 boxx, boxy = None, None
 selection = None
 world.loadWorld(x, y, z)
+
 buttons1=[(0, 'A', 17, 1), (0, 'B', 18, 1), (0, 'C', 17, 2), (0, 'D', 18, 2), (0, 'E', 17, 3),
       (0, 'F', 18, 3), (0, 'G', 17, 4), (1, 'FA', 17, 6), (1, 'FF', 18, 6), (1, 'FG', 17, 7),
       (1, 'FH', 18, 7), (2, 'S11', 5, 13), (2, 'S13', 5, 14), (2, 'S14', 5, 15), (2, 'S16', 6, 13),
