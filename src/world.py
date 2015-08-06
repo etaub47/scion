@@ -56,7 +56,7 @@ def loadWorld (wx, wy, wz, real = False):
                     obstacles.append(Rect(feature[3] * BOXSIZE, feature[4] * BOXSIZE, BOXSIZE, BOXSIZE))
         anim.clearCreatures()
         for creature in getCreatures(wz, wx, wy):
-            anim.createCreature(anim.getCreatureRefBySpriteRef(creature[5]), creature[3], creature[4])   
+            anim.createCreature(creature[5], creature[3], creature[4])
                 
 def saveWorld (wx, wy, wz):
     if wz == 0: datafile = "../data/world_%02d_%02d.dat" % (wx, wy)
@@ -159,18 +159,6 @@ def removeAddition (key, wz, wx, wy, x, y):
         
 def getCreatures (wz, wx, wy):
     return [c for c in creatures if c[0] == wz and c[1] == wx and c[2] == wy]
-
-def move (wz, wx, wy, rect, x_offset, y_offset):
-    rect.move_ip(x_offset, y_offset)
-    idx = rect.collidelist(obstacles)
-    if idx == -1:
-        return False
-    if x_offset > 0:
-        rect.right = obstacles[idx].left
-    elif x_offset < 0:
-        rect.left = obstacles[idx].right
-    elif y_offset > 0:
-        rect.bottom = obstacles[idx].top
-    elif y_offset < 0:
-        rect.top = obstacles[idx].bottom
-    return True
+    
+def getObstacles ():
+    return obstacles

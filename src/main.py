@@ -2,6 +2,7 @@ import pygame, sys, anim, world
 from pygame.locals import *
 from pygame import Rect
 from constants import *
+from movables import *
 
 pygame.init()
 
@@ -12,17 +13,12 @@ BASICFONT = pygame.font.Font('freesansbold.ttf', 20)
 DISPLAYSURF.fill((255, 255, 255))
 pygame.display.set_caption('Scion')
 
-i, j = 'S1', 1
-x, y, direction = 250, 250, DOWN
-wx, wy, wz = 1, 1, 0
 wx, wy, wz = 6, 5, 0
-speed = 5
-step = 0
-ratio, anim_ratio = 0, 3
 px, py = 55, 46
 tx = 1
 h_axis_pos, v_axis_pos = 0, 0
 myJoystick = None
+hero = Hero('H1', 5, 5)
 
 world.loadWorld(wx, wy, wz, real=True)
 
@@ -32,68 +28,43 @@ if joystick_count > 0:
     myJoystick.init()
 
 while True:
-    #DISPLAYSURF.fill((255, 255, 255))
+
     world.drawWorld(DISPLAYSURF, wx, wy, wz, real=True)
-    pressed = ""
+
+    pressed = ""    
     if myJoystick is not None:
 		h_axis_pos = myJoystick.get_axis(3)
 		v_axis_pos = myJoystick.get_axis(4)
-		if h_axis_pos > 0.5: 
-			direction = RIGHT
-			speed = 5
-		elif h_axis_pos < -0.5: 
-			direction = LEFT
-			speed = 5
-		elif v_axis_pos > 0.5:
-			direction = DOWN
-			speed = 5
-		elif v_axis_pos < -0.5: 
-			direction = UP
-			speed = 5
-		else: speed = 0
 		for b in range(0, 10):
 			if myJoystick.get_button(b):
 				pressed = str(b)
 				if int(pressed) == 2:
 				    anim.createProjectile('PH', direction, x, y)
+				    
     textSurf = BASICFONT.render("%s,%s -- %s" % (str(px), str(py), pressed), True, (255, 255, 255))
     textRect = textSurf.get_rect()
     textRect.bottomleft = 250, 250
     anim.displaySquare(DISPLAYSURF, px, py)
     DISPLAYSURF.blit(textSurf, textRect)
-    rect = Rect(x + 2, y + BOXSIZE / 2, BOXSIZE - 4, BOXSIZE / 2)
-    if direction == DOWN:
-        if y < MAX_Y: 
-            world.move(wz, wx, wy, rect, 0, speed)
-            x, y = rect.x - 2, rect.y - BOXSIZE / 2 
-        else: 
-            anim.scrollScreen(DISPLAYSURF, i, direction, step, x, y, wx, wy, wz)
-            y, wy = MIN_Y, wy + 1
-            world.loadWorld(wx, wy, wz, real=True)
-    elif direction == RIGHT:
-        if x < MAX_X:
-            world.move(wz, wx, wy, rect, speed, 0)        
-            x, y = rect.x - 2, rect.y - BOXSIZE / 2
-        else: 
-            anim.scrollScreen(DISPLAYSURF, i, direction, step, x, y, wx, wy, wz)
-            x, wx = MIN_X, wx + 1
-            world.loadWorld(wx, wy, wz, real=True)
-    elif direction == UP:
-        if y > MIN_Y: 
-            world.move(wz, wx, wy, rect, 0, -speed)
-            x, y = rect.x - 2, rect.y - BOXSIZE / 2            
-        else: 
-            anim.scrollScreen(DISPLAYSURF, i, direction, step, x, y, wx, wy, wz)
-            y, wy = MAX_Y, wy - 1
-            world.loadWorld(wx, wy, wz, real=True)
-    elif direction == LEFT:
-        if x > MIN_X:
-            world.move(wz, wx, wy, rect, -speed, 0)
-            x, y = rect.x - 2, rect.y - BOXSIZE / 2            
-        else: 
-            anim.scrollScreen(DISPLAYSURF, i, direction, step, x, y, wx, wy, wz)
-            x, wx = MAX_X, wx - 1
-            world.loadWorld(wx, wy, wz, real=True)
+    
+    obstacles = world.getObstacles()
+    hitResult = hero.move(obstacles, None, None) # TODO: hero, creatures
+    if hero.direction == DOWN and hitResult[0]:
+        anim.scrollScreen(DISPLAYSURF, hero, wx, wy, wz)
+        hero.y, wy = MIN_Y, wy + 1
+    elif hero.direction == RIGHT and hitResult[0]:
+        anim.scrollScreen(DISPLAYSURF, hero, wx, wy, wz)
+        hero.x, wx = MIN_X, wx + 1
+    elif hero.direction == UP and hitResult[0]:
+        anim.scrollScreen(DISPLAYSURF, hero, wx, wy, wz)
+        hero.y, wy = MAX_Y, wy - 1
+    elif hero.direction == LEFT and hitResult[0]:
+        anim.scrollScreen(DISPLAYSURF, hero, wx, wy, wz)
+        hero.x, wx = MAX_X, wx - 1
+    if hitResult[0]: 
+        world.loadWorld(wx, wy, wz, real=True)
+        hero.updateRect()
+        
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
@@ -107,23 +78,22 @@ while True:
             elif event.key == K_f: px += 1
             elif event.key == K_r: py -= 1
             elif event.key == K_c: py += 1
-            elif event.key == K_LEFT: direction = LEFT
-            elif event.key == K_RIGHT: direction = RIGHT
-            elif event.key == K_UP: direction = UP
-            elif event.key == K_DOWN: direction = DOWN
             elif event.key == K_q: tx += 1
             elif event.key == K_a: tx -= 1
             elif event.key == K_SPACE:
-                anim.createProjectile('PH', direction, x, y)
-    anim.displayImage(DISPLAYSURF, i, direction, step, x, y)
+                anim.createProjectile('PA', hero.direction, hero.x, hero.y)
+            
+    keys = pygame.key.get_pressed()
+    if keys[K_LEFT] or h_axis_pos < -0.5: hero.moving(LEFT)
+    elif keys[K_RIGHT] or h_axis_pos > 0.5: hero.moving(RIGHT)
+    elif keys[K_UP] or v_axis_pos < -0.5: hero.moving(UP)
+    elif keys[K_DOWN] or v_axis_pos > 0.5: hero.moving(DOWN)
+    else: hero.stop()
+    
+    anim.displayHero(DISPLAYSURF, hero, hero.x, hero.y)
     anim.moveAndDisplayProjectiles(DISPLAYSURF, wz, wx, wy) 
     anim.moveAndDisplayCreatures(DISPLAYSURF, wz, wx, wy)
     anim.displayLifeMeter(DISPLAYSURF, 3)    
     pygame.display.update()
     fpsClock.tick(FPS)
-    if speed > 0:
-    	if ratio == anim_ratio: 
-        	step += 1
-    	else: 
-        	ratio += 1
-    if step >= 4: step = 0
+    if hero.speed > 0: hero.tick()
