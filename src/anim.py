@@ -2,6 +2,7 @@ import pygame, sys, time, world, random
 from pygame.locals import *
 from constants import *
 from movables import *
+from state import tempState, permState
 
 imageMap = {
     'LIFE': (25, 0)
@@ -50,10 +51,6 @@ featureMap = {
     'AF': (11, 0, 7), 'AG': (12, 0, 7), 'AH': (13, 0, 7), 'AI': (14, 0, 7), 'AJ': (15, 0, 7)
 }
 
-projectiles = []
-creatures = []
-staticHeroes = []
-
 def getTerrainColor (terrainRef):
     return terrainMap[terrainRef][2:5]
     
@@ -63,121 +60,125 @@ def getTerrainObstacle (terrainRef):
 def getFeatureObstacle (featureRef):
     return featureMap[featureRef][2]
 
-def displaySimpleImage (DISPLAYSURF, imageRef, x, y):
+def displaySimpleImage (displaySurf, imageRef, x, y):
     image = imageMap[imageRef]
     x_offset, y_offset = image[0] * BOXSIZE, image[1] * BOXSIZE
-    DISPLAYSURF.blit(sprite1, (x, y), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
+    displaySurf.blit(sprite1, (x, y), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
     
-def displayLifeMeter (DISPLAYSURF, life):
+def displayLifeMeter (displaySurf, life):
     for heart in range(life):
-        displaySimpleImage(DISPLAYSURF, 'LIFE', heart * (BOXSIZE / 3) - (BOXSIZE / 2), 0)        
+        displaySimpleImage(displaySurf, 'LIFE', heart * (BOXSIZE / 3) - (BOXSIZE / 2), 0)        
 
-def displayImage (DISPLAYSURF, spriteRef, direction, step, x, y):
+def displayImage (displaySurf, spriteRef, direction, step, x, y):
     sprite = spriteMap[spriteRef]
     if step == 3: step = 1
     x_offset = (sprite.coords[direction][0] + step) * BOXSIZE
     y_offset = (sprite.coords[direction][1]) * BOXSIZE
-    DISPLAYSURF.blit(sprite.name, (x, y), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
+    displaySurf.blit(sprite.name, (x, y), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
 
-def displayTerrain (DISPLAYSURF, terrainRef, tx, ty, offset_x = 0, offset_y = 0):
+def displayTerrain (displaySurf, terrainRef, tx, ty, offset_x = 0, offset_y = 0):
     if terrainRef in terrainMap:
         x_offset = (terrainMap[terrainRef][0]) * BOXSIZE
         y_offset = (terrainMap[terrainRef][1]) * BOXSIZE
-        DISPLAYSURF.blit(sprite1, (tx * BOXSIZE + offset_x, ty * BOXSIZE + offset_y), 
+        displaySurf.blit(sprite1, (tx * BOXSIZE + offset_x, ty * BOXSIZE + offset_y), 
             area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
 
-def displayFeature (DISPLAYSURF, featureRef, x, y, offset_x = 0, offset_y = 0):
+def displayFeature (displaySurf, featureRef, x, y, offset_x = 0, offset_y = 0):
     if featureRef[-1] == '\n': 
         featureRef = featureRef[:-1]
     x_offset = (featureMap[featureRef][0]) * BOXSIZE
     y_offset = (featureMap[featureRef][1]) * BOXSIZE
-    DISPLAYSURF.blit(sprite1, (x * BOXSIZE + offset_x, y * BOXSIZE + offset_y), 
+    displaySurf.blit(sprite1, (x * BOXSIZE + offset_x, y * BOXSIZE + offset_y), 
         area=(x_offset + 1, y_offset, BOXSIZE - 1, BOXSIZE))
 
-def displaySquare (DISPLAYSURF, px, py):
-    DISPLAYSURF.blit(sprite1, (144, 0), area=(px * BOXSIZE, py * BOXSIZE, BOXSIZE, BOXSIZE))
+def displaySquare (displaySurf, px, py):
+    displaySurf.blit(sprite1, (144, 0), area=(px * BOXSIZE, py * BOXSIZE, BOXSIZE, BOXSIZE))
 
-def displayCreature (DISPLAYSURF, creature):
+def displayCreature (displaySurf, creature):
     frame = 1 if creature.step == 3 else creature.step
     spriteType = creature.creatureType.spriteType
     x_offset = (spriteType.coords[creature.direction][0] + frame) * BOXSIZE
     y_offset = (spriteType.coords[creature.direction][1]) * BOXSIZE
-    DISPLAYSURF.blit(spriteType.name, (creature.x, creature.y), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
+    displaySurf.blit(spriteType.name, (creature.x, creature.y), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
 
-def displayHero (DISPLAYSURF, hero, x, y):
+def displayHero (displaySurf, hero):
     frame = 1 if hero.step == 3 else hero.step
     spriteType = hero.heroType.spriteType
     x_offset = (spriteType.coords[hero.direction][0] + frame) * BOXSIZE
     y_offset = (spriteType.coords[hero.direction][1]) * BOXSIZE
-    DISPLAYSURF.blit(spriteType.name, (x, y), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
+    displaySurf.blit(spriteType.name, (hero.x, hero.y), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
 
-def displayAddition (DISPLAYSURF, additionRef, x, y):
+def displayAddition (displaySurf, additionRef, x, y):
     if additionRef[-1] == '\n': 
         additionRef = additionRef[:-1]
     x_offset = (additionMap[additionRef][0]) * BOXSIZE
     y_offset = (additionMap[additionRef][1]) * BOXSIZE
-    DISPLAYSURF.blit(sprite1, (x * BOXSIZE, y * BOXSIZE), area=(x_offset + 1, y_offset, BOXSIZE - 1, BOXSIZE))
+    displaySurf.blit(sprite1, (x * BOXSIZE, y * BOXSIZE), area=(x_offset + 1, y_offset, BOXSIZE - 1, BOXSIZE))
 
-def scrollScreen (DISPLAYSURF, hero, wx, wy, wz):
+def scrollScreen (displaySurf, hero, wx, wy, wz):
     if hero.direction == DOWN:
         for new_y in range(MAX_Y, MIN_Y, 0 - (BOXSIZE / 3)):
-            world.drawWorld(DISPLAYSURF, wx, wy, wz, offset_y = new_y - MAX_Y - (BOXSIZE * 2 / 3), real=True)
-            world.drawWorld(DISPLAYSURF, wx, wy + 1, wz, offset_y = new_y, real=True)
-            displayHero(DISPLAYSURF, hero, hero.x, new_y)
+            world.drawWorld(displaySurf, wx, wy, wz, offset_y = new_y - MAX_Y - (BOXSIZE * 2 / 3), real=True)
+            world.drawWorld(displaySurf, wx, wy + 1, wz, offset_y = new_y, real=True)
+            hero.y = new_y
+            displayHero(displaySurf, hero)
             pygame.display.update()
     elif hero.direction == RIGHT:
         for new_x in range(MAX_X - BOXSIZE, MIN_X, 0 - (BOXSIZE / 3)):
-            world.drawWorld(DISPLAYSURF, wx, wy, wz, offset_x = new_x - MAX_X - (BOXSIZE * 2 / 3), real=True)
-            world.drawWorld(DISPLAYSURF, wx + 1, wy, wz, offset_x = new_x, real=True)
-            displayHero(DISPLAYSURF, hero, new_x, hero.y)
+            world.drawWorld(displaySurf, wx, wy, wz, offset_x = new_x - MAX_X - (BOXSIZE * 2 / 3), real=True)
+            world.drawWorld(displaySurf, wx + 1, wy, wz, offset_x = new_x, real=True)
+            hero.x = new_x
+            displayHero(displaySurf, hero)
             pygame.display.update()
     elif hero.direction == UP:
         for new_y in range(MIN_Y, MAX_Y, (BOXSIZE / 3)):
-            world.drawWorld(DISPLAYSURF, wx, wy, wz, offset_y = new_y + (BOXSIZE * 2 / 3), real=True)
-            world.drawWorld(DISPLAYSURF, wx, wy - 1, wz, offset_y = new_y - MAX_Y, real=True)
-            displayHero(DISPLAYSURF, hero, hero.x, new_y)
+            world.drawWorld(displaySurf, wx, wy, wz, offset_y = new_y + (BOXSIZE * 2 / 3), real=True)
+            world.drawWorld(displaySurf, wx, wy - 1, wz, offset_y = new_y - MAX_Y, real=True)
+            hero.y = new_y
+            displayHero(displaySurf, hero)
             pygame.display.update()
     elif hero.direction == LEFT:
         for new_x in range(MIN_X, MAX_X, (BOXSIZE / 3)):
-            world.drawWorld(DISPLAYSURF, wx, wy, wz, offset_x = new_x + (BOXSIZE * 2 / 3), real=True)
-            world.drawWorld(DISPLAYSURF, wx - 1, wy, wz, offset_x = new_x - MAX_X, real=True)
-            displayHero(DISPLAYSURF, hero, new_x, hero.y)
+            world.drawWorld(displaySurf, wx, wy, wz, offset_x = new_x + (BOXSIZE * 2 / 3), real=True)
+            world.drawWorld(displaySurf, wx - 1, wy, wz, offset_x = new_x - MAX_X, real=True)
+            hero.x = new_x
+            displayHero(displaySurf, hero)
             pygame.display.update()
 
 def createProjectile (projectileRef, direction, x, y):
-    projectiles.append(Projectile(projectileRef, direction, x, y))
+    tempState.projectiles.append(Projectile(projectileRef, direction, x, y))
     
-def moveAndDisplayProjectiles (DISPLAYSURF, wz, wx, wy):    
+def moveAndDisplayProjectiles (displaySurf, wz, wx, wy):    
     obstacles = world.getObstacles()
-    for projectile in projectiles:
-        hitResult = projectile.move(obstacles, None, None) # TODO: hero, creatures
+    for projectile in tempState.projectiles:
+        if projectile.owner == -1:
+            hitResult = projectile.move(obstacles, None, tempState.getCreatureRects())
+        else:    
+            hitResult = projectile.move(obstacles, permState.hero.rect, tempState.getCreatureRects(owner))
         if hitResult[0] or hitResult[1] or hitResult[2] or hitResult[3]:
             projectile.surface = None
         else:                    
-            DISPLAYSURF.blit(projectile.surface, (projectile.x, projectile.y))
-    projectiles[:] = [p for p in projectiles if p.surface != None]
+            displaySurf.blit(projectile.surface, (projectile.x, projectile.y))
+    tempState.projectiles[:] = [p for p in tempState.projectiles if p.surface != None]
 
 def createCreature (spriteRef, tx, ty):
     spriteType = spriteMap[spriteRef]
     if spriteType.type == ENEMY:
-        creatures.append(Creature(spriteType.crossReference, tx, ty))
+        tempState.creatures.append(Creature(spriteType.crossReference, tx, ty))
     else:
-        staticHeroes.append((spriteRef, tx * BOXSIZE, ty * BOXSIZE))
+        tempState.allies.append((spriteRef, tx * BOXSIZE, ty * BOXSIZE))
 
-def moveAndDisplayCreatures (DISPLAYSURF, wz, wx, wy):
+def moveAndDisplayCreatures (displaySurf, wz, wx, wy):
     obstacles = world.getObstacles()
-    for creature in creatures:
+    for idx, creature in enumerate(tempState.creatures):
         creature.tick()
-        creature.move(obstacles, None, None) # TODO: hero, creatures
-        displayCreature(DISPLAYSURF, creature)
-    for hero in staticHeroes:
-        spriteRef, x, y = hero[0], hero[1], hero[2]
-        displayImage(DISPLAYSURF, spriteRef, DOWN, 0, x, y)
+        hitResult = creature.move(obstacles, permState.hero.rect, tempState.getCreatureRects(idx))
+        if hitResult[0] or hitResult[1] or hitResult[2] or hitResult[3]:
+            creature.changeDirection()
+        displayCreature(displaySurf, creature)
+    for ally in tempState.allies:
+        spriteRef, x, y = ally[0], ally[1], ally[2]
+        displayImage(displaySurf, spriteRef, DOWN, 0, x, y)
 
 def getCreatureRefBySpriteRef (spriteRef):
     return spriteMap[spriteRef].crossReference
-
-def clearCreatures ():
-    projectiles[:] = []
-    creatures[:] = []
-    staticHeroes[:] = []

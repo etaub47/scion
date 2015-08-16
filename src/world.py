@@ -1,6 +1,7 @@
 import pygame, anim
 from constants import *
 from pygame import Rect
+from state import tempState, permState
 
 terrain = [[[[[0 for x in range(BOARDTILEHEIGHT)] for x in range(BOARDTILEWIDTH)]
     for x in range(WORLD_MAX_Y + 1)] for x in range(WORLD_MAX_X + 1)] for x in range(DUNGEON_MAX_Z + 1)]
@@ -54,7 +55,7 @@ def loadWorld (wx, wy, wz, real = False):
                 featureObstacle = anim.getFeatureObstacle(feature[5])
                 if featureObstacle == 2 or featureObstacle == 4:
                     obstacles.append(Rect(feature[3] * BOXSIZE, feature[4] * BOXSIZE, BOXSIZE, BOXSIZE))
-        anim.clearCreatures()
+        tempState.clear()
         for creature in getCreatures(wz, wx, wy):
             anim.createCreature(creature[5], creature[3], creature[4])
                 

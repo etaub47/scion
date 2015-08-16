@@ -102,6 +102,11 @@ class Movable:
     def __init__ (self, direction, x, y, speed, pattern, step, timer, rect):
         self.direction, self.x, self.y, self.speed = direction, x, y, speed
         self.pattern, self.step, self.timer, self.rect = pattern, step, timer, rect
+    def changeDirection (self):
+        newDirection = self.direction
+        while newDirection == self.direction: 
+            newDirection = random.randint(0, 3)
+        self.direction = newDirection        
     def move (self, obstacles, hero, creatures):
         origLeft, origTop = self.rect.left, self.rect.top
         hitEdge, hitObstacle, hitHero, hitCreature = False, False, False, False
@@ -110,32 +115,46 @@ class Movable:
             if self.rect.bottom >= MAX_Y: hitEdge, self.rect.bottom = True, MAX_Y # verify MAX_Y is correct
             idx = self.rect.collidelist(obstacles)
             if idx >= 0: hitObstacle, self.rect.bottom = True, obstacles[idx].top
-            # TODO: hit hero, hit creature
+            if hero != None and self.rect.colliderect(hero):
+                hitHero, self.rect.bottom = True, hero.top            
+            if creatures != None:
+                idx = self.rect.collidelist(creatures)
+                if idx >= 0: hitCreature, self.rect.bottom = True, creatures[idx].top
         elif self.direction == RIGHT:
             self.rect.move_ip(self.speed, 0)
             if self.rect.right >= MAX_X: hitEdge, self.rect.right = True, MAX_X # verify MAX_X is correct
             idx = self.rect.collidelist(obstacles)
             if idx >= 0: hitObstacle, self.rect.right = True, obstacles[idx].left
-            # TODO: hit hero, hit creature
+            if hero != None and self.rect.colliderect(hero):
+                hitHero, self.rect.right = True, hero.left            
+            if creatures != None:
+                idx = self.rect.collidelist(creatures)
+                if idx >= 0: hitCreature, self.rect.right = True, creatures[idx].left
         elif self.direction == UP:
             self.rect.move_ip(0, -self.speed)            
             if self.rect.top <= MIN_Y: hitEdge, self.rect.top = True, MIN_Y # verify MIN_Y is correct
             idx = self.rect.collidelist(obstacles)
             if idx >= 0: hitObstacle, self.rect.top = True, obstacles[idx].bottom
-            # TODO: hit hero, hit creature
+            if hero != None and self.rect.colliderect(hero):
+                hitHero, self.rect.top = True, hero.bottom            
+            if creatures != None:
+                idx = self.rect.collidelist(creatures)
+                if idx >= 0: hitCreature, self.rect.top = True, creatures[idx].bottom
         elif self.direction == LEFT:
             self.rect.move_ip(-self.speed, 0)
             if self.rect.left <= MIN_X: hitEdge, self.rect.left = True, MIN_X # verify MIN_X is correct
             idx = self.rect.collidelist(obstacles)
             if idx >= 0: hitObstacle, self.rect.left = True, obstacles[idx].right
-            # TODO: hit hero, hit creature
+            if hero != None and self.rect.colliderect(hero):
+                hitHero, self.rect.left = True, hero.right            
+            if creatures != None:
+                idx = self.rect.collidelist(creatures)
+                if idx >= 0: hitCreature, self.rect.left = True, creatures[idx].right
         self.x += (self.rect.left - origLeft)
         self.y += (self.rect.top - origTop)
         if self.pattern == PATTERN_RANDOM:
             if hitObstacle or hitEdge or self.timer == 50 or random.randint(1, 100) <= 2:
-                newDirection = self.direction
-                while newDirection == self.direction: newDirection = random.randint(0, 3)
-                self.direction = newDirection
+                self.changeDirection()
         return (hitEdge, hitObstacle, hitHero, hitCreature)
 
 class Creature (Movable):
@@ -164,8 +183,8 @@ class Hero (Creature):
         self.rect = Rect(self.x + 3, self.y + (BOXSIZE / 2), BOXSIZE - 6, BOXSIZE / 2)
 
 class Projectile (Movable):
-    def __init__ (self, projectileRef, direction, x, y):
-        self.projectileType, angle = projectileMap[projectileRef], 0
+    def __init__ (self, projectileRef, direction, x, y, owner):
+        self.projectileType, self.owner, angle = projectileMap[projectileRef], owner, 0
         size = self.projectileType.size
         if self.projectileType.rotateInd:
             angle = self.projectileType.rotateOffset
