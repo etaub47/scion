@@ -18,11 +18,11 @@ def getBoxAtPixel(mousex, mousey):
     
 def drawHighlightBox(boxx, boxy, clr=BRIGHTYELLOW):
     left, top = leftTopCoordsOfBox(boxx, boxy)
-    pygame.draw.rect(DISPLAYSURF, clr, (left - 2, top - 2, BOXSIZE + 4, BOXSIZE + 4), 4)
+    pygame.draw.rect(DISPLAYSUR, clr, (left - 2, top - 2, BOXSIZE + 4, BOXSIZE + 4), 4)
 
 pygame.init()
 pygame.display.set_caption('Map Editor')
-DISPLAYSURF = pygame.display.set_mode((960, 800))
+DISPLAYSUR = pygame.display.set_mode((960, 800))
 BASICFONT = pygame.font.Font('freesansbold.ttf', 20)
 x, y, z = 1, 1, 0
 mousex, mousey, mouseDown = 0, 0, False
@@ -60,20 +60,20 @@ def getButtons (z):
     else: return buttons2
 
 while True:
-    DISPLAYSURF.fill(GRAY)
-    world.drawWorld(DISPLAYSURF, x, y, z)
+    DISPLAYSUR.fill(GRAY)
+    world.drawWorld(DISPLAYSUR, x, y, z)
     for button in getButtons(z):
-        if button[0] == 0: anim.displayTerrain(DISPLAYSURF, button[1], button[2], button[3])
-        elif button[0] == 2: anim.displayCreature(DISPLAYSURF, button[1], button[2] * BOXSIZE, button[3] * BOXSIZE)
+        if button[0] == 0: anim.displayTerrain(DISPLAYSUR, button[1], button[2], button[3])
+        elif button[0] == 2: anim.displaySprite(DISPLAYSUR, button[1], button[2] * BOXSIZE, button[3] * BOXSIZE)
         elif button[0] == 1 or button[0] == 3 or button[0] == 4:
-            anim.displayFeature(DISPLAYSURF, button[1], button[2], button[3])
+            anim.displayFeature(DISPLAYSUR, button[1], button[2], button[3])
     if z == 0: worldname = 'Overworld'
     else: worldname = 'Dungeon %d' % z        
     textSurf = BASICFONT.render("%s -- (%d,%d)" % (worldname, x, y), True, WHITE)
     textRect = textSurf.get_rect()
     textRect.topleft = (300, 576)
-    DISPLAYSURF.blit(textSurf, textRect)
-    world.tinyOverworld(DISPLAYSURF, x, y, z)
+    DISPLAYSUR.blit(textSurf, textRect)
+    world.tinyOverworld(DISPLAYSUR, x, y, z)
     for event in pygame.event.get():
         if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
             pygame.quit()

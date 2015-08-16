@@ -101,6 +101,13 @@ def displayCreature (displaySurf, creature):
     y_offset = (spriteType.coords[creature.direction][1]) * BOXSIZE
     displaySurf.blit(spriteType.name, (creature.x, creature.y), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
 
+def displaySprite (displaySurf, spriteRef, x, y):
+    spriteType = spriteMap[spriteRef]
+    x_offset = (spriteType.coords[DOWN][0]) * BOXSIZE
+    y_offset = (spriteType.coords[DOWN][1]) * BOXSIZE
+    print spriteType.name, x, y, (x_offset, y_offset, BOXSIZE, BOXSIZE)
+    displaySurf.blit(spriteType.name, (x, y), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))                
+
 def displayHero (displaySurf, hero):
     frame = 1 if hero.step == 3 else hero.step
     spriteType = hero.heroType.spriteType

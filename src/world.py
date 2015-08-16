@@ -91,8 +91,7 @@ def drawWorld (DISPLAYSURF, wx, wy, wz, offset_x = 0, offset_y = 0, real = False
                 offset_x = offset_x, offset_y = offset_y)
     if not real:
         for creature in getCreatures(wz, wx, wy):
-            creature[3] * BOXSIZE + offset_x, creature[4] * BOXSIZE + offset_y
-            anim.displayCreature(DISPLAYSURF, creature[5], creature[3] * BOXSIZE + offset_x, 
+            anim.displaySprite(DISPLAYSURF, creature[5], creature[3] * BOXSIZE + offset_x, 
                 creature[4] * BOXSIZE + offset_y)
         for addition in additions1:
             if addition[0] == wz and addition[1] == wx and addition[2] == wy:
