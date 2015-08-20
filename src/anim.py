@@ -162,10 +162,12 @@ def moveAndDisplayProjectiles (displaySurf, wz, wx, wy):
             hitResult = projectile.move(obstacles, None, tempState.getCreatureRects())
         else:    
             hitResult = projectile.move(obstacles, permState.hero.rect, tempState.getCreatureRects(owner))
-        if hitResult[0] or hitResult[1] or hitResult[2] or hitResult[3]:
+        if hitResult[0] != None or hitResult[1] != None or hitResult[2] != None or hitResult[3] != None:
             projectile.surface = None
         else:                    
             displaySurf.blit(projectile.surface, (projectile.x, projectile.y))
+        if hitResult[3] != None:
+            del tempState.creatures[hitResult[3]]
     tempState.projectiles[:] = [p for p in tempState.projectiles if p.surface != None]
 
 def createCreature (spriteRef, tx, ty):
@@ -180,7 +182,7 @@ def moveAndDisplayCreatures (displaySurf, wz, wx, wy):
     for idx, creature in enumerate(tempState.creatures):
         creature.tick()
         hitResult = creature.move(obstacles, permState.hero.rect, tempState.getCreatureRects(idx))
-        if hitResult[0] or hitResult[1] or hitResult[2] or hitResult[3]:
+        if hitResult[0] != None or hitResult[1] != None or hitResult[2] != None or hitResult[3] != None:
             creature.changeDirection()
         displayCreature(displaySurf, creature)
     for ally in tempState.allies:

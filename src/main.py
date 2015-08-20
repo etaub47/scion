@@ -21,6 +21,7 @@ if joystickCount > 0:
     myJoystick = pygame.joystick.Joystick(0)
     myJoystick.init()
     h_axis_pos, v_axis_pos = 0, 0
+    buttonsReset = True
 
 # DEBUG
 px, py = 55, 46
@@ -32,7 +33,8 @@ world.loadWorld(permState.wx, permState.wy, permState.wz, real=True)
 while True:
 
     # draw the current screen
-    world.drawWorld(displaySurf, permState.wx, permState.wy, permState.wz, real=True)
+    allDead = len(tempState.creatures) == 0
+    world.drawWorld(displaySurf, permState.wx, permState.wy, permState.wz, real=True, allDead=allDead)
 
     # process keyboard input
     for event in pygame.event.get():
@@ -62,13 +64,19 @@ while True:
         h_axis_pos = myJoystick.get_axis(3)
         v_axis_pos = myJoystick.get_axis(4)
         for b in range(0, 10):
+            pressed = str(b)
             if myJoystick.get_button(b):
-                pressed = str(b)
                 
                 # fire projectile
-                if int(pressed) == B_BUTTON:
-                    tempState.projectiles.append(Projectile(
-                        'PA', permState.hero.direction, permState.hero.x - PROJ_OFFSET, permState.hero.y, -1))
+                if int(pressed) == B_BUTTON and buttonsReset:
+                        buttonsReset = False
+                        dir = permState.hero.direction
+                        tempState.projectiles.append(Projectile(
+                            'PA', dir, permState.hero.x - PROJ_OFFSET, permState.hero.y, -1))
+                            
+            # fire button released; ready for another shot
+            elif int(pressed) == B_BUTTON:            
+                buttonsReset = True
     
     # check hero movement
     keys = pygame.key.get_pressed()
@@ -87,19 +95,19 @@ while True:
     
     # move the hero and check for collisions and edge of screen    
     hitResult = permState.hero.move(world.getObstacles(), None, tempState.getCreatureRects())
-    if permState.hero.direction == DOWN and hitResult[0]:
+    if hitResult[0] == DOWN:
         anim.scrollScreen(displaySurf, permState.hero, permState.wx, permState.wy, permState.wz)
         permState.hero.y, permState.wy = MIN_Y, permState.wy + 1
-    elif permState.hero.direction == RIGHT and hitResult[0]:
+    elif hitResult[0] == RIGHT:
         anim.scrollScreen(displaySurf, permState.hero, permState.wx, permState.wy, permState.wz)
         permState.hero.x, permState.wx = MIN_X, permState.wx + 1
-    elif permState.hero.direction == UP and hitResult[0]:
+    elif hitResult[0] == UP:
         anim.scrollScreen(displaySurf, permState.hero, permState.wx, permState.wy, permState.wz)
         permState.hero.y, permState.wy = MAX_Y, permState.wy - 1
-    elif permState.hero.direction == LEFT and hitResult[0]:
+    elif hitResult[0] == LEFT:
         anim.scrollScreen(displaySurf, permState.hero, permState.wx, permState.wy, permState.wz)
         permState.hero.x, permState.wx = MAX_X, permState.wx - 1
-    if hitResult[0]: 
+    if hitResult[0] != None:
         world.loadWorld(permState.wx, permState.wy, permState.wz, real=True)
         permState.hero.updateRect()
     

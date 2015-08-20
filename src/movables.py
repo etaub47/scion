@@ -31,7 +31,7 @@ spriteMap = {
     'S14': SpriteType(sprite3, ENEMY, [(0, 5), (9, 5), (3, 5), (6, 5)], BOXSIZE, 'C14'),
     'S15': SpriteType(sprite3, ENEMY, [(0, 6), (9, 6), (3, 6), (6, 6)], BOXSIZE, 'C15'),
     'S16': SpriteType(sprite3, ENEMY, [(0, 7), (9, 7), (3, 7), (6, 7)], BOXSIZE, 'C16'),
-    'S17': SpriteType(sprite4, ENEMY, [(0, 0), (0, 1), (0, 2), (0, 3)], BOXSIZE, 'C17'), 
+    'S17': SpriteType(sprite4, HERO, [(0, 0), (0, 1), (0, 2), (0, 3)], BOXSIZE, 'H17'), # girl
     'S18': SpriteType(sprite4, ENEMY, [(3, 0), (3, 1), (3, 2), (3, 3)], BOXSIZE, 'C18'),
     'S19': SpriteType(sprite4, ENEMY, [(6, 0), (6, 1), (6, 2), (6, 3)], BOXSIZE, 'C19'),
     'S20': SpriteType(sprite4, ENEMY, [(9, 0), (9, 1), (9, 2), (9, 3)], BOXSIZE, 'C20'),    
@@ -85,16 +85,17 @@ class HeroType:
         self.spriteType, self.speed = spriteMap[spriteRef], speed
 
 heroMap = {
-    'H1': HeroType('S1', 5),  #
-    'H2': HeroType('S2', 5),  #
-    'H3': HeroType('S3', 5),  #
-    'H4': HeroType('S4', 5),  #
-    'H5': HeroType('S5', 5),  #
-    'H6': HeroType('S6', 5),  #
-    'H7': HeroType('S7', 5),  #
-    'H8': HeroType('S8', 5),  #
-    'H9': HeroType('S9', 5),  #
-    'H10': HeroType('S10', 5) #
+    'H1': HeroType('S1', 5),   #
+    'H2': HeroType('S2', 5),   #
+    'H3': HeroType('S3', 5),   #
+    'H4': HeroType('S4', 5),   #
+    'H5': HeroType('S5', 5),   #
+    'H6': HeroType('S6', 5),   #
+    'H7': HeroType('S7', 5),   #
+    'H8': HeroType('S8', 5),   #
+    'H9': HeroType('S9', 5),   #
+    'H10': HeroType('S10', 5), #
+    'H17': HeroType('S17', 5)  #
 }
 
 class Movable:
@@ -109,47 +110,47 @@ class Movable:
         self.direction = newDirection        
     def move (self, obstacles, hero, creatures):
         origLeft, origTop = self.rect.left, self.rect.top
-        hitEdge, hitObstacle, hitHero, hitCreature = False, False, False, False
+        hitEdge, hitObstacle, hitHero, hitCreature = None, None, None, None
         if self.direction == DOWN:
             self.rect.move_ip(0, self.speed)            
-            if self.rect.bottom >= MAX_Y: hitEdge, self.rect.bottom = True, MAX_Y # verify MAX_Y is correct
+            if self.rect.bottom >= MAX_Y: hitEdge, self.rect.bottom = self.direction, MAX_Y
             idx = self.rect.collidelist(obstacles)
-            if idx >= 0: hitObstacle, self.rect.bottom = True, obstacles[idx].top
+            if idx >= 0: hitObstacle, self.rect.bottom = idx, obstacles[idx].top
             if hero != None and self.rect.colliderect(hero):
                 hitHero, self.rect.bottom = True, hero.top            
             if creatures != None:
                 idx = self.rect.collidelist(creatures)
-                if idx >= 0: hitCreature, self.rect.bottom = True, creatures[idx].top
+                if idx >= 0: hitCreature, self.rect.bottom = idx, creatures[idx].top
         elif self.direction == RIGHT:
             self.rect.move_ip(self.speed, 0)
-            if self.rect.right >= MAX_X: hitEdge, self.rect.right = True, MAX_X # verify MAX_X is correct
+            if self.rect.right >= MAX_X: hitEdge, self.rect.right = self.direction, MAX_X
             idx = self.rect.collidelist(obstacles)
-            if idx >= 0: hitObstacle, self.rect.right = True, obstacles[idx].left
+            if idx >= 0: hitObstacle, self.rect.right = idx, obstacles[idx].left
             if hero != None and self.rect.colliderect(hero):
                 hitHero, self.rect.right = True, hero.left            
             if creatures != None:
                 idx = self.rect.collidelist(creatures)
-                if idx >= 0: hitCreature, self.rect.right = True, creatures[idx].left
+                if idx >= 0: hitCreature, self.rect.right = idx, creatures[idx].left
         elif self.direction == UP:
             self.rect.move_ip(0, -self.speed)            
-            if self.rect.top <= MIN_Y: hitEdge, self.rect.top = True, MIN_Y # verify MIN_Y is correct
+            if self.rect.top <= MIN_Y: hitEdge, self.rect.top = self.direction, MIN_Y
             idx = self.rect.collidelist(obstacles)
-            if idx >= 0: hitObstacle, self.rect.top = True, obstacles[idx].bottom
+            if idx >= 0: hitObstacle, self.rect.top = idx, obstacles[idx].bottom
             if hero != None and self.rect.colliderect(hero):
                 hitHero, self.rect.top = True, hero.bottom            
             if creatures != None:
                 idx = self.rect.collidelist(creatures)
-                if idx >= 0: hitCreature, self.rect.top = True, creatures[idx].bottom
+                if idx >= 0: hitCreature, self.rect.top = idx, creatures[idx].bottom
         elif self.direction == LEFT:
             self.rect.move_ip(-self.speed, 0)
-            if self.rect.left <= MIN_X: hitEdge, self.rect.left = True, MIN_X # verify MIN_X is correct
+            if self.rect.left <= MIN_X: hitEdge, self.rect.left = self.direction, MIN_X
             idx = self.rect.collidelist(obstacles)
-            if idx >= 0: hitObstacle, self.rect.left = True, obstacles[idx].right
+            if idx >= 0: hitObstacle, self.rect.left = idx, obstacles[idx].right
             if hero != None and self.rect.colliderect(hero):
                 hitHero, self.rect.left = True, hero.right            
             if creatures != None:
                 idx = self.rect.collidelist(creatures)
-                if idx >= 0: hitCreature, self.rect.left = True, creatures[idx].right
+                if idx >= 0: hitCreature, self.rect.left = idx, creatures[idx].right
         self.x += (self.rect.left - origLeft)
         self.y += (self.rect.top - origTop)
         if self.pattern == PATTERN_RANDOM:

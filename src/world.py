@@ -79,16 +79,24 @@ def saveWorld (wx, wy, wz):
         for addition in additions2:
             if addition[0] == wz and addition[1] == wx and addition[2] == wy:
                 f.write("@%d,%d,%s\n" % (addition[3], addition[4], addition[5]))
-                
-def drawWorld (DISPLAYSURF, wx, wy, wz, offset_x = 0, offset_y = 0, real = False):
+
+def getAddition1 (wx, wy, wz, x, y):
+    for addition in additions1:
+        if addition[0] == wz and addition[1] == wx and addition[2] == wy and \
+                addition[3] == x and addition[4] == y:
+            return addition[5]
+    return None
+
+def drawWorld (DISPLAYSURF, wx, wy, wz, offset_x = 0, offset_y = 0, real = False, allDead = False):
     for x in range(BOARDTILEWIDTH):
         for y in range(BOARDTILEHEIGHT):
             anim.displayTerrain(DISPLAYSURF, terrain[wz][wx][wy][x][y], x, y, 
                 offset_x = offset_x, offset_y = offset_y)
     for feature in features:
         if feature[0] == wz and feature[1] == wx and feature[2] == wy:
-            anim.displayFeature(DISPLAYSURF, feature[5], feature[3], feature[4], 
-                offset_x = offset_x, offset_y = offset_y)
+            if not real or allDead or getAddition1(wx, wy, wz, feature[3], feature[4]) != "AD":
+                anim.displayFeature(DISPLAYSURF, feature[5], feature[3], feature[4], 
+                    offset_x = offset_x, offset_y = offset_y)
     if not real:
         for creature in getCreatures(wz, wx, wy):
             anim.displaySprite(DISPLAYSURF, creature[5], creature[3] * BOXSIZE + offset_x, 
@@ -99,7 +107,7 @@ def drawWorld (DISPLAYSURF, wx, wy, wz, offset_x = 0, offset_y = 0, real = False
         for addition in additions2:
             if addition[0] == wz and addition[1] == wx and addition[2] == wy:
                 anim.displayFeature(DISPLAYSURF, addition[5], addition[3], addition[4])
-
+                
 def tinyOverworld (DISPLAYSURF, wx, wy, wz):
     for gx in range(3):
         for gy in range(3):
