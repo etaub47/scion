@@ -109,7 +109,6 @@ def displaySprite (displaySurf, spriteRef, x, y):
     spriteType = spriteMap[spriteRef]
     x_offset = (spriteType.coords[DOWN][0]) * BOXSIZE
     y_offset = (spriteType.coords[DOWN][1]) * BOXSIZE
-    print spriteType.name, x, y, (x_offset, y_offset, BOXSIZE, BOXSIZE)
     displaySurf.blit(spriteType.name, (x, y), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))                
 
 def displayHero (displaySurf, hero):
