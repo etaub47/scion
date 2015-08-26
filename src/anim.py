@@ -9,30 +9,34 @@ imageMap = {
 }
 
 terrainMap = {
-    # x_offset, y_offset, r, g, b, obstacle (1=clear, 2=obstacle, 3=special)
+    # tx, ty, r, g, b, obstacleType (1=clear, 2=obstacle, 3=flight only)
     # nothing, grass
-    '-': (0, 0, 255, 250, 205, 1), 'A': (0, 15, 0, 128, 0, 1), 
-    # dungeon floor, brown brick wall, water, stones    
-    'H': (5, 18, 105, 105, 105, 1), 'I': (8, 16, 139, 37, 0, 2), 'B': (37, 19, 0, 238, 238, 3), 'C': (53, 16, 139, 90, 0, 2),
-    # colortile, large tiles, gray brick wall
-    'J': (59, 15, 255, 250, 205, 1), 'K': (57, 15, 142, 142, 56, 1), 'L': (52, 17, 183, 183, 183, 2), 
-    # sand
-    'D': (7, 15, 205, 179, 139, 1),
-    # cobblestone, poison swamp, lava, soft tile
-    'F': (9, 14, 139, 136, 120, 1), 'E': (23, 19, 118, 238, 0, 3), 'M': (52, 13, 238, 0, 0, 2), 'N': (56, 16, 125, 158, 192, 1), 
+    '-': (0, 0, 255, 250, 205, TYPE_CLEAR), 'A': (0, 15, 0, 128, 0, TYPE_CLEAR), 
+    # dungeon floor, brown brick wall
+    'H': (5, 18, 105, 105, 105, TYPE_CLEAR), 'I': (8, 16, 139, 37, 0, TYPE_OBSTACLE), 
+    # water, stones
+    'B': (37, 19, 0, 238, 238, TYPE_LOW), 'C': (53, 16, 139, 90, 0, TYPE_OBSTACLE),
+    # colortile, large tiles
+    'J': (59, 15, 255, 250, 205, TYPE_CLEAR), 'K': (57, 15, 142, 142, 56, TYPE_CLEAR), 
+    # gray brick wall, sand
+    'L': (52, 17, 183, 183, 183, TYPE_OBSTACLE), 'D': (7, 15, 205, 179, 139, TYPE_CLEAR),
+    # cobblestone, poison swamp
+    'F': (9, 14, 139, 136, 120, TYPE_CLEAR), 'E': (23, 19, 118, 238, 0, TYPE_LOW), 
+    # lava, soft tile
+    'M': (52, 13, 238, 0, 0, TYPE_OBSTACLE), 'N': (56, 16, 125, 158, 192, TYPE_CLEAR), 
     # murky water, bridge
-    'O': (19, 19, 56, 142, 142, 3), 'G': (43, 16, 139, 0, 0, 1)
-    # animated water: 36, 19 - 39, 19, animated swamp 23, 19 - 24, 19
-    # animated lava: 49, 13 - 52, 13
+    'O': (19, 19, 56, 142, 142, TYPE_LOW), 'G': (43, 16, 139, 0, 0, TYPE_CLEAR)
+    # animated water: 36, 19 - 39, 19, animated swamp 23, 19 - 24, 19, animated lava: 49, 13 - 52, 13
 }
 
 featureMap = {
-    # stairs to dungeon, stairs to overworld, blue tile, open door, closed door
-    'FA': (15, 15, 3), 'FB': (31, 15, 3), 'FC': (29, 16, 4), 'FD': (27, 11, 1), 'FE': (23, 11, 2), 
-    # tree
-    'FF': (14, 18, 2),
+    # tx, ty, obstacleType (4=pushable, 5=item, 6=addition1, 7=addition2, 8=stairs)
+    # stairs to dungeon, stairs to overworld, blue tile
+    'FA': (15, 15, 8), 'FB': (31, 15, 8), 'FC': (29, 16, 4), 
+    # open door, closed door, tree
+    'FD': (27, 11, TYPE_CLEAR), 'FE': (23, 11, TYPE_OBSTACLE), 'FF': (14, 18, TYPE_OBSTACLE),
     # statue, fountain, wings, armor, book
-    'FG': (28, 11, 4), 'FH': (63, 11, 2), 'IA': (15, 7, 5), 'IB': (28, 21, 5), 'IC': (58, 22, 5), 
+    'FG': (28, 11, 4), 'FH': (63, 11, TYPE_OBSTACLE), 'IA': (15, 7, 5), 'IB': (28, 21, 5), 'IC': (58, 22, 5), 
     # shield
     'ID': (54, 22, 5),
     # meat, gold, potion, bracelet, staff
@@ -156,7 +160,7 @@ def createProjectile (projectileRef, direction, x, y):
     tempState.projectiles.append(Projectile(projectileRef, direction, x, y))
     
 def moveAndDisplayProjectiles (displaySurf, wz, wx, wy):    
-    obstacles = world.getObstacles()
+    obstacles = world.getObstacles(returnObstacles=True, returnPushables=True)
     for projectile in tempState.projectiles:
         if projectile.owner == -1:
             hitResult = projectile.move(obstacles, None, tempState.getCreatureRects())
@@ -178,7 +182,7 @@ def createCreature (spriteRef, tx, ty):
         tempState.allies.append((spriteRef, tx * BOXSIZE, ty * BOXSIZE))
 
 def moveAndDisplayCreatures (displaySurf, wz, wx, wy):
-    obstacles = world.getObstacles()
+    obstacles = world.getObstacles(returnObstacles=True, returnLowObstacles=True, returnPushables=True)
     for idx, creature in enumerate(tempState.creatures):
         creature.tick()
         hitResult = creature.move(obstacles, permState.hero.rect, tempState.getCreatureRects(idx))

@@ -17,10 +17,10 @@ pygame.display.set_caption('Scion')
 
 # initialize joystick
 joystickCount, myJoystick = pygame.joystick.get_count(), None
+h_axis_pos, v_axis_pos = 0, 0
 if joystickCount > 0:
     myJoystick = pygame.joystick.Joystick(0)
     myJoystick.init()
-    h_axis_pos, v_axis_pos = 0, 0
     buttonsReset = True
 
 # DEBUG
@@ -94,7 +94,8 @@ while True:
     displaySurf.blit(textSurf, textRect)
     
     # move the hero and check for collisions and edge of screen    
-    hitResult = permState.hero.move(world.getObstacles(), None, tempState.getCreatureRects())
+    obstacles = world.getObstacles(returnObstacles=True, returnLowObstacles=True, returnPushables=True)
+    hitResult = permState.hero.move(obstacles, None, tempState.getCreatureRects())
     if hitResult[0] == DOWN:
         anim.scrollScreen(displaySurf, permState.hero, permState.wx, permState.wy, permState.wz)
         permState.hero.y, permState.wy = MIN_Y, permState.wy + 1

@@ -6,7 +6,8 @@ from state import tempState, permState
 terrain = [[[[[0 for x in range(BOARDTILEHEIGHT)] for x in range(BOARDTILEWIDTH)]
     for x in range(WORLD_MAX_Y + 1)] for x in range(WORLD_MAX_X + 1)] for x in range(DUNGEON_MAX_Z + 1)]
 loaded = [[[False for x in range(WORLD_MAX_Y + 1)] for x in range(WORLD_MAX_X + 1)] for x in range(DUNGEON_MAX_Z + 1)]
-obstacles, features, creatures, additions1, additions2, keyColors = [], [], [], [], [], {}
+obstacles, lowObstacles, pushables = [], [], []
+features, creatures, additions1, additions2, keyColors = [], [], [], [], {}
            
 def roomInRange (roomx, roomy, roomz):
     if roomx <= 0 or roomy <= 0: return False
@@ -46,15 +47,20 @@ def loadWorld (wx, wy, wz, real = False):
                 loadFile(roomx, roomy, wz)
     if real:
         del obstacles[:]
+        del lowObstacles[:]
+        del pushables[:]
         for x in range(BOARDTILEWIDTH):
             for y in range(BOARDTILEHEIGHT):
-                if anim.getTerrainObstacle(terrain[wz][wx][wy][x][y]) > 1:
-                    obstacles.append(Rect(x * BOXSIZE, y * BOXSIZE, BOXSIZE, BOXSIZE))
+                terrainObstacle = anim.getTerrainObstacle(terrain[wz][wx][wy][x][y])
+                rect = Rect(x * BOXSIZE, y * BOXSIZE, BOXSIZE, BOXSIZE)
+                if terrainObstacle == TYPE_OBSTACLE: obstacles.append(rect)
+                elif terrainObstacle == TYPE_LOW: lowObstacles.append(rect)
         for feature in features:
             if feature[0] == wz and feature[1] == wx and feature[2] == wy:
                 featureObstacle = anim.getFeatureObstacle(feature[5])
-                if featureObstacle == 2 or featureObstacle == 4:
-                    obstacles.append(Rect(feature[3] * BOXSIZE, feature[4] * BOXSIZE, BOXSIZE, BOXSIZE))
+                rect = Rect(feature[3] * BOXSIZE, feature[4] * BOXSIZE, BOXSIZE, BOXSIZE)
+                if featureObstacle == TYPE_OBSTACLE: obstacles.append(rect)
+                elif featureObstacle == TYPE_PUSHABLE: pushables.append(rect)
         tempState.clear()
         for creature in getCreatures(wz, wx, wy):
             anim.createCreature(creature[5], creature[3], creature[4])
@@ -168,5 +174,9 @@ def removeAddition (key, wz, wx, wy, x, y):
 def getCreatures (wz, wx, wy):
     return [c for c in creatures if c[0] == wz and c[1] == wx and c[2] == wy]
     
-def getObstacles ():
-    return obstacles
+def getObstacles (returnObstacles=False, returnLowObstacles=False, returnPushables=False):
+    retValue = []
+    if returnObstacles: retValue += obstacles
+    if returnLowObstacles: retValue += lowObstacles
+    if returnPushables: retValue += pushables
+    return retValue
