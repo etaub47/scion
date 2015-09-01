@@ -1,4 +1,4 @@
-import os, pygame, sys, anim, world
+import os, pygame, sys, anim, state, world
 from pygame.locals import *
 from pygame import Rect
 from constants import *
@@ -14,6 +14,9 @@ displaySurf = pygame.display.set_mode((BOXSIZE * BOARDTILEWIDTH, BOXSIZE * BOARD
 basicFont = pygame.font.Font('freesansbold.ttf', 20)
 displaySurf.fill((255, 255, 255))
 pygame.display.set_caption('Scion')
+
+# initialize hero
+permState.hero = Hero('H1', 5, 5)
 
 # initialize joystick
 joystickCount, myJoystick = pygame.joystick.get_count(), None
@@ -35,6 +38,7 @@ while True:
     # draw the current screen
     allDead = len(tempState.creatures) == 0
     world.drawWorld(displaySurf, permState.wx, permState.wy, permState.wz, real=True, allDead=allDead)
+    anim.displayPushables(displaySurf)
 
     # process keyboard input
     for event in pygame.event.get():
@@ -93,9 +97,12 @@ while True:
     anim.displaySquare(displaySurf, px, py)
     displaySurf.blit(textSurf, textRect)
     
-    # move the hero and check for collisions and edge of screen    
-    obstacles = world.getObstacles(returnObstacles=True, returnLowObstacles=True, returnPushables=True)
-    hitResult = permState.hero.move(obstacles, None, tempState.getCreatureRects())
+    # move the hero and check for collisions
+    obstacles = tempState.getObstacles(True, True, False)
+    pushables = tempState.getObstacles(False, False, True)
+    hitResult = permState.hero.move(obstacles, None, tempState.getCreatureRects(), pushables)
+    
+    # check for edge of screen
     if hitResult[0] == DOWN:
         anim.scrollScreen(displaySurf, permState.hero, permState.wx, permState.wy, permState.wz)
         permState.hero.y, permState.wy = MIN_Y, permState.wy + 1

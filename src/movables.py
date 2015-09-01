@@ -2,6 +2,7 @@ import pygame, random
 from constants import *
 from pygame import Rect
 from pygame.locals import SRCALPHA
+from state import tempState, permState
 
 sprite1 = pygame.image.load('../img/sprite1.png')
 sprite2 = pygame.image.load('../img/sprite2.png')
@@ -108,49 +109,133 @@ class Movable:
         while newDirection == self.direction: 
             newDirection = random.randint(0, 3)
         self.direction = newDirection        
-    def move (self, obstacles, hero, creatures):
+    def move (self, obstacles, hero, creatures, pushables=None):
         origLeft, origTop = self.rect.left, self.rect.top
         hitEdge, hitObstacle, hitHero, hitCreature = None, None, None, None
         if self.direction == DOWN:
             self.rect.move_ip(0, self.speed)            
+            
+            # check for collision with edge of screen
             if self.rect.bottom >= MAX_Y: hitEdge, self.rect.bottom = self.direction, MAX_Y
+            
+            # check for collision with pushables
+            if pushables != None:
+                idx = self.rect.collidelist(pushables)
+                if idx >= 0:
+                    tempState.pushables[idx].rect.move_ip(0, self.speed)
+                    del pushables[idx]
+                    rects = obstacles + creatures + pushables
+                    idx2 = tempState.pushables[idx].rect.collidelist(rects)
+                    if idx2 >= 0:
+                        tempState.pushables[idx].rect.bottom = rects[idx2].top
+                        self.rect.bottom = tempState.pushables[idx].rect.top
+                        
+            # check for collision with obstacles
             idx = self.rect.collidelist(obstacles)
             if idx >= 0: hitObstacle, self.rect.bottom = idx, obstacles[idx].top
+            
+            # check for collision with hero
             if hero != None and self.rect.colliderect(hero):
-                hitHero, self.rect.bottom = True, hero.top            
+                hitHero, self.rect.bottom = True, hero.top
+                
+            # check for collision with creatures
             if creatures != None:
-                idx = self.rect.collidelist(creatures)
+                idx = self.rect.collidelist(creatures)            
                 if idx >= 0: hitCreature, self.rect.bottom = idx, creatures[idx].top
+
         elif self.direction == RIGHT:
             self.rect.move_ip(self.speed, 0)
+            
+            # check for collision with edge of screen
             if self.rect.right >= MAX_X: hitEdge, self.rect.right = self.direction, MAX_X
+            
+            # check for collision with pushables
+            if pushables != None:
+                idx = self.rect.collidelist(pushables)
+                if idx >= 0:
+                    tempState.pushables[idx].rect.move_ip(self.speed, 0)
+                    del pushables[idx]
+                    rects = obstacles + creatures + pushables
+                    idx2 = tempState.pushables[idx].rect.collidelist(rects)
+                    if idx2 >= 0:
+                        tempState.pushables[idx].rect.right = rects[idx2].left
+                        self.rect.right = tempState.pushables[idx].rect.left
+            
+            # check for collision with obstacles
             idx = self.rect.collidelist(obstacles)
             if idx >= 0: hitObstacle, self.rect.right = idx, obstacles[idx].left
+            
+            # check for collision with hero
             if hero != None and self.rect.colliderect(hero):
                 hitHero, self.rect.right = True, hero.left            
+                
+            # check for collision with creatures
             if creatures != None:
                 idx = self.rect.collidelist(creatures)
                 if idx >= 0: hitCreature, self.rect.right = idx, creatures[idx].left
+                
         elif self.direction == UP:
-            self.rect.move_ip(0, -self.speed)            
+            self.rect.move_ip(0, -self.speed)   
+            
+            # check for collision with edge of screen
             if self.rect.top <= MIN_Y: hitEdge, self.rect.top = self.direction, MIN_Y
+            
+            # check for collision with pushables
+            if pushables != None:
+                idx = self.rect.collidelist(pushables)
+                if idx >= 0:
+                    tempState.pushables[idx].rect.move_ip(0, -self.speed)
+                    del pushables[idx]
+                    rects = obstacles + creatures + pushables
+                    idx2 = tempState.pushables[idx].rect.collidelist(rects)
+                    if idx2 >= 0:
+                        tempState.pushables[idx].rect.top = rects[idx2].bottom
+                        self.rect.top = tempState.pushables[idx].rect.bottom
+
+            # check for collision with obstacles
             idx = self.rect.collidelist(obstacles)
             if idx >= 0: hitObstacle, self.rect.top = idx, obstacles[idx].bottom
+
+            # check for collision with hero
             if hero != None and self.rect.colliderect(hero):
                 hitHero, self.rect.top = True, hero.bottom            
+
+            # check for collision with creatures
             if creatures != None:
                 idx = self.rect.collidelist(creatures)
                 if idx >= 0: hitCreature, self.rect.top = idx, creatures[idx].bottom
+
         elif self.direction == LEFT:
             self.rect.move_ip(-self.speed, 0)
+            
+            # check for collision with edge of screen
             if self.rect.left <= MIN_X: hitEdge, self.rect.left = self.direction, MIN_X
+            
+            # check for collision with pushables
+            if pushables != None:
+                idx = self.rect.collidelist(pushables)
+                if idx >= 0:
+                    tempState.pushables[idx].rect.move_ip(-self.speed, 0)
+                    del pushables[idx]
+                    rects = obstacles + creatures + pushables
+                    idx2 = tempState.pushables[idx].rect.collidelist(rects)
+                    if idx2 >= 0:
+                        tempState.pushables[idx].rect.left = rects[idx2].right
+                        self.rect.left = tempState.pushables[idx].rect.right
+
+            # check for collision with obstacles
             idx = self.rect.collidelist(obstacles)
             if idx >= 0: hitObstacle, self.rect.left = idx, obstacles[idx].right
+            
+            # check for collision with hero
             if hero != None and self.rect.colliderect(hero):
-                hitHero, self.rect.left = True, hero.right            
+                hitHero, self.rect.left = True, hero.right
+                     
+            # check for collision with creatures
             if creatures != None:
                 idx = self.rect.collidelist(creatures)
                 if idx >= 0: hitCreature, self.rect.left = idx, creatures[idx].right
+
         self.x += (self.rect.left - origLeft)
         self.y += (self.rect.top - origTop)
         if self.pattern == PATTERN_RANDOM:
@@ -198,3 +283,7 @@ class Projectile (Movable):
             self.projectileType.sy * BOXSIZE, BOXSIZE, BOXSIZE))
         self.surface = pygame.transform.rotate(self.surface, angle)
         Movable.__init__(self, direction, x, y, self.projectileType.speed, PATTERN_STRAIGHT, 0, 0, rect)
+
+class Pushable:
+    def __init__ (self, rect, featureRef):
+        self.rect, self.featureRef = rect, featureRef

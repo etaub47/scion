@@ -31,12 +31,14 @@ terrainMap = {
 
 featureMap = {
     # tx, ty, obstacleType (4=pushable, 5=item, 6=addition1, 7=addition2, 8=stairs)
-    # stairs to dungeon, stairs to overworld, blue tile
-    'FA': (15, 15, 8), 'FB': (31, 15, 8), 'FC': (29, 16, 4), 
+    # stairs to dungeon, stairs to overworld, blue block
+    'FA': (15, 15, 8), 'FB': (31, 15, 8), 'FC': (29, 16, TYPE_PUSHABLE), 
     # open door, closed door, tree
     'FD': (27, 11, TYPE_CLEAR), 'FE': (23, 11, TYPE_OBSTACLE), 'FF': (14, 18, TYPE_OBSTACLE),
-    # statue, fountain, wings, armor, book
-    'FG': (28, 11, 4), 'FH': (63, 11, TYPE_OBSTACLE), 'IA': (15, 7, 5), 'IB': (28, 21, 5), 'IC': (58, 22, 5), 
+    # statue, fountain, wings
+    'FG': (28, 11, TYPE_PUSHABLE), 'FH': (63, 11, TYPE_OBSTACLE), 'IA': (15, 7, 5), 
+    # armor, book
+    'IB': (28, 21, 5), 'IC': (58, 22, 5), 
     # shield
     'ID': (54, 22, 5),
     # meat, gold, potion, bracelet, staff
@@ -95,6 +97,13 @@ def displayFeature (displaySurf, featureRef, x, y, offset_x = 0, offset_y = 0):
     displaySurf.blit(sprite1, (x * BOXSIZE + offset_x, y * BOXSIZE + offset_y), 
         area=(x_offset + 1, y_offset, BOXSIZE - 1, BOXSIZE))
 
+def displayPushable (displaySurf, featureRef, x, y):
+    if featureRef[-1] == '\n': 
+        featureRef = featureRef[:-1]
+    x_offset = (featureMap[featureRef][0]) * BOXSIZE
+    y_offset = (featureMap[featureRef][1]) * BOXSIZE
+    displaySurf.blit(sprite1, (x, y), area=(x_offset + 1, y_offset, BOXSIZE - 1, BOXSIZE))
+
 def displaySquare (displaySurf, px, py):
     displaySurf.blit(sprite1, (144, 0), area=(px * BOXSIZE, py * BOXSIZE, BOXSIZE, BOXSIZE))
 
@@ -117,6 +126,7 @@ def displayHero (displaySurf, hero):
     x_offset = (spriteType.coords[hero.direction][0] + frame) * BOXSIZE
     y_offset = (spriteType.coords[hero.direction][1]) * BOXSIZE
     displaySurf.blit(spriteType.name, (hero.x, hero.y), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
+    #pygame.draw.rect(displaySurf, BRIGHTYELLOW, hero.rect, 1)
 
 def displayAddition (displaySurf, additionRef, x, y):
     if additionRef[-1] == '\n': 
@@ -159,7 +169,7 @@ def createProjectile (projectileRef, direction, x, y):
     tempState.projectiles.append(Projectile(projectileRef, direction, x, y))
     
 def moveAndDisplayProjectiles (displaySurf, wz, wx, wy):    
-    obstacles = world.getObstacles(returnObstacles=True, returnPushables=True)
+    obstacles = tempState.getObstacles(True, False, True) # TODO: projectiles should eventually be able to hit hero
     for projectile in tempState.projectiles:
         if projectile.owner == -1:
             hitResult = projectile.move(obstacles, None, tempState.getCreatureRects())
@@ -181,7 +191,7 @@ def createCreature (spriteRef, tx, ty):
         tempState.allies.append((spriteRef, tx * BOXSIZE, ty * BOXSIZE))
 
 def moveAndDisplayCreatures (displaySurf, wz, wx, wy):
-    obstacles = world.getObstacles(returnObstacles=True, returnLowObstacles=True, returnPushables=True)
+    obstacles = tempState.getObstacles(True, True, True)
     for idx, creature in enumerate(tempState.creatures):
         creature.tick()
         hitResult = creature.move(obstacles, permState.hero.rect, tempState.getCreatureRects(idx))
@@ -194,3 +204,7 @@ def moveAndDisplayCreatures (displaySurf, wz, wx, wy):
 
 def getCreatureRefBySpriteRef (spriteRef):
     return spriteMap[spriteRef].crossReference
+
+def displayPushables (displaySurf):
+    for pushable in tempState.pushables:
+        displayPushable(displaySurf, pushable.featureRef, pushable.rect.x, pushable.rect.y)
