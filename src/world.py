@@ -4,6 +4,7 @@ from constants import *
 from movables import *
 from pygame import Rect
 from state import tempState, permState
+from items import AvailableItem
 
 terrain = [[[[[0 for x in range(BOARDTILEHEIGHT)] for x in range(BOARDTILEWIDTH)]
     for x in range(WORLD_MAX_Y + 1)] for x in range(WORLD_MAX_X + 1)] for x in range(DUNGEON_MAX_Z + 1)]
@@ -52,15 +53,21 @@ def loadWorld (wx, wy, wz, real = False):
             for y in range(BOARDTILEHEIGHT):
                 terrainObstacle = anim.getTerrainObstacle(terrain[wz][wx][wy][x][y])
                 rect = Rect(x * BOXSIZE, y * BOXSIZE, BOXSIZE, BOXSIZE)
-                if terrainObstacle == TYPE_OBSTACLE: tempState.obstacles.append(rect)
-                elif terrainObstacle == TYPE_LOW: tempState.lowObstacles.append(rect)
+                if terrainObstacle == TYPE_OBSTACLE: 
+                    tempState.obstacles.append(rect)
+                elif terrainObstacle == TYPE_LOW: 
+                    tempState.lowObstacles.append(rect)
         for feature in features:
             if feature[0] == wz and feature[1] == wx and feature[2] == wy:
                 featureObstacle = anim.getFeatureObstacle(feature[5])
                 rect = Rect(feature[3] * BOXSIZE, feature[4] * BOXSIZE, BOXSIZE, BOXSIZE)
-                if featureObstacle == TYPE_OBSTACLE: tempState.obstacles.append(rect)
+                if featureObstacle == TYPE_OBSTACLE:
+                    tempState.obstacles.append(rect)
                 elif featureObstacle == TYPE_PUSHABLE:
                     tempState.pushables.append(Pushable(rect, feature[5]))
+                elif featureObstacle == TYPE_ITEM:
+                    shown = getAddition1(wx, wy, wz, feature[3], feature[4]) != "AD"
+                    tempState.availableItems.append(AvailableItem(feature[5], feature[3], feature[4], shown))
         for creature in getCreatures(wz, wx, wy):
             anim.createCreature(creature[5], creature[3], creature[4])
                 
@@ -92,24 +99,14 @@ def getAddition1 (wx, wy, wz, x, y):
             return addition[5]
     return None
 
-def drawWorld (DISPLAYSURF, wx, wy, wz, offset_x = 0, offset_y = 0, real = False, allDead = False):
+def drawWorld (DISPLAYSURF, wx, wy, wz, offset_x = 0, offset_y = 0, real = False):
     for x in range(BOARDTILEWIDTH):
         for y in range(BOARDTILEHEIGHT):
             anim.displayTerrain(DISPLAYSURF, terrain[wz][wx][wy][x][y], x, y, 
                 offset_x = offset_x, offset_y = offset_y)
     for feature in features:
         if feature[0] == wz and feature[1] == wx and feature[2] == wy:
-            displayFeature = True
-                        
-            # do not display gift item features until all creatures in the room are dead
-            if real and not allDead and getAddition1(wx, wy, wz, feature[3], feature[4]) == "AD":
-                displayFeature = False
-            
-            # do not display pushables as these will be handled separately by the game state
-            if real and anim.getFeatureObstacle(feature[5]) == TYPE_PUSHABLE:
-                displayFeature = False
-            
-            if displayFeature:
+            if not real or anim.getFeatureObstacle(feature[5]) == TYPE_OBSTACLE:
                 anim.displayFeature(DISPLAYSURF, feature[5], feature[3], feature[4], 
                     offset_x = offset_x, offset_y = offset_y)
     if not real:

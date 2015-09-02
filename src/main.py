@@ -1,4 +1,4 @@
-import os, pygame, sys, anim, state, world
+import os, pygame, sys, anim, state, items, world
 from pygame.locals import *
 from pygame import Rect
 from constants import *
@@ -36,9 +36,7 @@ world.loadWorld(permState.wx, permState.wy, permState.wz, real=True)
 while True:
 
     # draw the current screen
-    allDead = len(tempState.creatures) == 0
-    world.drawWorld(displaySurf, permState.wx, permState.wy, permState.wz, real=True, allDead=allDead)
-    anim.displayPushables(displaySurf)
+    world.drawWorld(displaySurf, permState.wx, permState.wy, permState.wz, real=True)
 
     # process keyboard input
     for event in pygame.event.get():
@@ -102,6 +100,13 @@ while True:
     pushables = tempState.getObstacles(False, False, True)
     hitResult = permState.hero.move(obstacles, None, tempState.getCreatureRects(), pushables)
     
+    # check for item collection
+    idx = permState.hero.rect.collidelist(tempState.getAvailableItemRects())
+    if idx >= 0:
+        availableItem = tempState.availableItems[idx]
+        if availableItem.shown:
+            items.getItem(availableItem)
+    
     # check for edge of screen
     if hitResult[0] == DOWN:
         anim.scrollScreen(displaySurf, permState.hero, permState.wx, permState.wy, permState.wz)
@@ -119,10 +124,16 @@ while True:
         world.loadWorld(permState.wx, permState.wy, permState.wz, real=True)
         permState.hero.updateRect()
     
+    # show hidden items    
+    allDead = len(tempState.creatures) == 0
+    items.showHiddenItems(allDead)
+    
     # update the other movables and redraw the screen
     anim.displayHero(displaySurf, permState.hero)
-    anim.moveAndDisplayProjectiles(displaySurf, permState.wz, permState.wx, permState.wy) 
+    anim.displayPushables(displaySurf)
     anim.moveAndDisplayCreatures(displaySurf, permState.wz, permState.wx, permState.wy)
+    anim.moveAndDisplayProjectiles(displaySurf, permState.wz, permState.wx, permState.wy) 
+    anim.displayAvailableItems(displaySurf)
     anim.displayLifeMeter(displaySurf, 3)    
     pygame.display.update()
     fpsClock.tick(FPS)

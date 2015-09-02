@@ -124,7 +124,7 @@ class Movable:
                 if idx >= 0:
                     tempState.pushables[idx].rect.move_ip(0, self.speed)
                     del pushables[idx]
-                    rects = obstacles + creatures + pushables
+                    rects = obstacles + creatures + pushables + tempState.getAvailableItemRects()
                     idx2 = tempState.pushables[idx].rect.collidelist(rects)
                     if idx2 >= 0:
                         tempState.pushables[idx].rect.bottom = rects[idx2].top
@@ -155,7 +155,7 @@ class Movable:
                 if idx >= 0:
                     tempState.pushables[idx].rect.move_ip(self.speed, 0)
                     del pushables[idx]
-                    rects = obstacles + creatures + pushables
+                    rects = obstacles + creatures + pushables + tempState.getAvailableItemRects()
                     idx2 = tempState.pushables[idx].rect.collidelist(rects)
                     if idx2 >= 0:
                         tempState.pushables[idx].rect.right = rects[idx2].left
@@ -186,7 +186,7 @@ class Movable:
                 if idx >= 0:
                     tempState.pushables[idx].rect.move_ip(0, -self.speed)
                     del pushables[idx]
-                    rects = obstacles + creatures + pushables
+                    rects = obstacles + creatures + pushables + tempState.getAvailableItemRects()
                     idx2 = tempState.pushables[idx].rect.collidelist(rects)
                     if idx2 >= 0:
                         tempState.pushables[idx].rect.top = rects[idx2].bottom
@@ -217,7 +217,7 @@ class Movable:
                 if idx >= 0:
                     tempState.pushables[idx].rect.move_ip(-self.speed, 0)
                     del pushables[idx]
-                    rects = obstacles + creatures + pushables
+                    rects = obstacles + creatures + pushables + tempState.getAvailableItemRects()
                     idx2 = tempState.pushables[idx].rect.collidelist(rects)
                     if idx2 >= 0:
                         tempState.pushables[idx].rect.left = rects[idx2].right

@@ -36,21 +36,19 @@ featureMap = {
     # open door, closed door, tree
     'FD': (27, 11, TYPE_CLEAR), 'FE': (23, 11, TYPE_OBSTACLE), 'FF': (14, 18, TYPE_OBSTACLE),
     # statue, fountain, wings
-    'FG': (28, 11, TYPE_PUSHABLE), 'FH': (63, 11, TYPE_OBSTACLE), 'IA': (15, 7, 5), 
-    # armor, book
-    'IB': (28, 21, 5), 'IC': (58, 22, 5), 
-    # shield
-    'ID': (54, 22, 5),
-    # meat, gold, potion, bracelet, staff
-    'IE': (36, 23, 5), 'IF': (59, 23, 5), 'IG': (63, 24, 5), 'IH': (60, 25, 5), 'II': (4, 46, 5), 
-    # sword
-    'IJ': (43, 27, 5),
-    # chest, key, glove, boots, cloak
-    'IK': (43, 45, 5), 'IL': (54, 45, 5), 'IM': (13, 21, 5), 'IN': (61, 20, 5), 'IO': (5, 21, 5),
-    # amulet
-    'IP': (15, 20, 5),
+    'FG': (28, 11, TYPE_PUSHABLE), 'FH': (63, 11, TYPE_OBSTACLE), 'IA': (15, 7, TYPE_ITEM), 
+    # armor, book, shield
+    'IB': (28, 21, TYPE_ITEM), 'IC': (58, 22, TYPE_ITEM), 'ID': (54, 22, TYPE_ITEM),
+    # meat, gold, potion
+    'IE': (36, 23, TYPE_ITEM), 'IF': (59, 23, TYPE_ITEM), 'IG': (63, 24, TYPE_ITEM), 
+    # bracelet, staff, sword
+    'IH': (60, 25, TYPE_ITEM), 'II': (4, 46, TYPE_ITEM), 'IJ': (43, 27, TYPE_ITEM),
+    # chest, key, glove
+    'IK': (43, 45, TYPE_ITEM), 'IL': (54, 45, TYPE_ITEM), 'IM': (13, 21, TYPE_ITEM),
+    # boots, cloak, amulet
+    'IN': (61, 20, TYPE_ITEM), 'IO': (5, 21, TYPE_ITEM), 'IP': (15, 20, TYPE_ITEM),
     # mirror, lantern, ring
-    'IQ': (57, 45, 5), 'IR': (14, 24, 5), 'IS': (58, 25, 5),
+    'IQ': (57, 45, TYPE_ITEM), 'IR': (14, 24, TYPE_ITEM), 'IS': (58, 25, TYPE_ITEM),
     # mini mirror, blast wall, mini fire, mini skull, question mark
     'AA': (3, 26, 6), 'AB': (2, 26, 6), 'AC': (23, 25, 6), 'AD': (42, 29, 6), 'AE': (36, 29, 6),
     # 1-5
@@ -208,3 +206,8 @@ def getCreatureRefBySpriteRef (spriteRef):
 def displayPushables (displaySurf):
     for pushable in tempState.pushables:
         displayPushable(displaySurf, pushable.featureRef, pushable.rect.x, pushable.rect.y)
+
+def displayAvailableItems (displaySurf):
+    for availableItem in tempState.availableItems:
+        if availableItem.shown:
+            displayFeature(displaySurf, availableItem.itemType.id, availableItem.x, availableItem.y)
