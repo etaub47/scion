@@ -16,30 +16,30 @@ class SpriteType:
         self.name, self.type, self.coords, self.size, self.crossReference = name, type, coords, size, crossReference
 
 spriteMap = {
-    'S1': SpriteType(sprite2, HERO, [(0, 0), (0, 1), (0, 2), (0, 3)], BOXSIZE, 'H1'), 
-    'S2': SpriteType(sprite2, HERO, [(3, 0), (3, 1), (3, 2), (3, 3)], BOXSIZE, 'H2'),
-    'S3': SpriteType(sprite2, HERO, [(6, 0), (6, 1), (6, 2), (6, 3)], BOXSIZE, 'H3'), 
-    'S4': SpriteType(sprite2, HERO, [(9, 0), (9, 1), (9, 2), (9, 3)], BOXSIZE, 'H4'), 
-    'S5': SpriteType(sprite2, HERO, [(0, 4), (0, 5), (0, 6), (0, 7)], BOXSIZE, 'H5'),
-    'S6': SpriteType(sprite2, HERO, [(3, 4), (3, 5), (3, 6), (3, 7)], BOXSIZE, 'H6'), 
-    'S7': SpriteType(sprite2, HERO, [(6, 4), (6, 5), (6, 6), (6, 7)], BOXSIZE, 'H7'),
-    'S8': SpriteType(sprite2, HERO, [(9, 4), (9, 5), (9, 6), (9, 7)], BOXSIZE, 'H8'),
-    'S9': SpriteType(sprite3, HERO, [(0, 0), (9, 0), (3, 0), (6, 0)], BOXSIZE, 'H9'), 
-    'S10': SpriteType(sprite3, ENEMY, [(0, 1), (9, 1), (3, 1), (6, 1)], BOXSIZE, 'H10'),    
+    'S1': SpriteType(sprite2, HERO, [(0, 0), (0, 1), (0, 2), (0, 3)], BOXSIZE, 'H1'),    # main hero
+    'S2': SpriteType(sprite2, HERO, [(3, 0), (3, 1), (3, 2), (3, 3)], BOXSIZE, 'H2'),    # blonde girl
+    'S3': SpriteType(sprite2, HERO, [(6, 0), (6, 1), (6, 2), (6, 3)], BOXSIZE, 'H3'),    # green-haired dude (unused)
+    'S4': SpriteType(sprite2, HERO, [(9, 0), (9, 1), (9, 2), (9, 3)], BOXSIZE, 'H4'),    # blue-haired girl
+    'S5': SpriteType(sprite2, HERO, [(0, 4), (0, 5), (0, 6), (0, 7)], BOXSIZE, 'H5'),    # long-haired caped dude
+    'S6': SpriteType(sprite2, HERO, [(3, 4), (3, 5), (3, 6), (3, 7)], BOXSIZE, 'H6'),    # fancy girl
+    'S7': SpriteType(sprite2, ENEMY, [(6, 4), (6, 5), (6, 6), (6, 7)], BOXSIZE, 'C7'),   # one-eyed creepy guy
+    'S8': SpriteType(sprite2, HERO, [(9, 4), (9, 5), (9, 6), (9, 7)], BOXSIZE, 'H8'),    # wizened old man
+    'S9': SpriteType(sprite3, ENEMY, [(0, 0), (9, 0), (3, 0), (6, 0)], BOXSIZE, 'C9'),   # ghost
+    'S10': SpriteType(sprite3, ENEMY, [(0, 1), (9, 1), (3, 1), (6, 1)], BOXSIZE, 'C10'), # skeleton  
     'S11': SpriteType(sprite3, ENEMY, [(0, 2), (9, 2), (3, 2), (6, 2)], BOXSIZE, 'C11'), # goblin
-    'S12': SpriteType(sprite3, ENEMY, [(0, 3), (9, 3), (3, 3), (6, 3)], BOXSIZE, 'C12'),    
+    'S12': SpriteType(sprite3, ENEMY, [(0, 3), (9, 3), (3, 3), (6, 3)], BOXSIZE, 'C12'), # gargoyle
     'S13': SpriteType(sprite3, ENEMY, [(0, 4), (9, 4), (3, 4), (6, 4)], BOXSIZE, 'C13'), # water demon
-    'S14': SpriteType(sprite3, ENEMY, [(0, 5), (9, 5), (3, 5), (6, 5)], BOXSIZE, 'C14'),
-    'S15': SpriteType(sprite3, ENEMY, [(0, 6), (9, 6), (3, 6), (6, 6)], BOXSIZE, 'C15'),
-    'S16': SpriteType(sprite3, ENEMY, [(0, 7), (9, 7), (3, 7), (6, 7)], BOXSIZE, 'C16'),
-    'S17': SpriteType(sprite4, HERO, [(0, 0), (0, 1), (0, 2), (0, 3)], BOXSIZE, 'H17'), # girl
-    'S18': SpriteType(sprite4, ENEMY, [(3, 0), (3, 1), (3, 2), (3, 3)], BOXSIZE, 'C18'),
-    'S19': SpriteType(sprite4, ENEMY, [(6, 0), (6, 1), (6, 2), (6, 3)], BOXSIZE, 'C19'),
-    'S20': SpriteType(sprite4, ENEMY, [(9, 0), (9, 1), (9, 2), (9, 3)], BOXSIZE, 'C20'),    
+    'S14': SpriteType(sprite3, ENEMY, [(0, 5), (9, 5), (3, 5), (6, 5)], BOXSIZE, 'C14'), # red-haired woman
+    'S15': SpriteType(sprite3, ENEMY, [(0, 6), (9, 6), (3, 6), (6, 6)], BOXSIZE, 'C15'), # grim reaper
+    'S16': SpriteType(sprite3, ENEMY, [(0, 7), (9, 7), (3, 7), (6, 7)], BOXSIZE, 'C16'), # blue powerful mage
+    'S17': SpriteType(sprite4, HERO, [(0, 0), (0, 1), (0, 2), (0, 3)], BOXSIZE, 'H17'),  # simple girl
+    'S18': SpriteType(sprite4, ENEMY, [(3, 0), (3, 1), (3, 2), (3, 3)], BOXSIZE, 'C18'), # hairy dude (unused)
+    'S19': SpriteType(sprite4, ENEMY, [(6, 0), (6, 1), (6, 2), (6, 3)], BOXSIZE, 'C19'), # white-haired mage
+    'S20': SpriteType(sprite4, ENEMY, [(9, 0), (9, 1), (9, 2), (9, 3)], BOXSIZE, 'C20'), # zombie
     'S21': SpriteType(sprite4, ENEMY, [(0, 4), (0, 5), (0, 6), (0, 7)], BOXSIZE, 'C21'), # worg
-    'S22': SpriteType(sprite4, ENEMY, [(3, 4), (3, 5), (3, 6), (3, 7)], BOXSIZE, 'C22'),
-    'S23': SpriteType(sprite4, ENEMY, [(6, 4), (6, 5), (6, 6), (6, 7)], BOXSIZE, 'C23'),
-    'S24': SpriteType(sprite6, ENEMY, [(0, 0), (0, 1), (0, 2), (0, 3)], BOXSIZE, 'C24'),
+    'S22': SpriteType(sprite4, ENEMY, [(3, 4), (3, 5), (3, 6), (3, 7)], BOXSIZE, 'C22'), # chicken crow (unused)
+    'S23': SpriteType(sprite4, ENEMY, [(6, 4), (6, 5), (6, 6), (6, 7)], BOXSIZE, 'C23'), # tan skeleton
+    'S24': SpriteType(sprite6, ENEMY, [(0, 0), (0, 1), (0, 2), (0, 3)], BOXSIZE, 'C24'), # scorpion
     'S25': SpriteType(sprite5, ENEMY, [(3, 0), (3, 1), (3, 2), (3, 3)], BOXSIZE, 'C25'),
     'S26': SpriteType(sprite6, ENEMY, [(6, 0), (6, 1), (6, 2), (6, 3)], BOXSIZE, 'C26'),
     'S27': SpriteType(sprite5, ENEMY, [(9, 0), (9, 1), (9, 2), (9, 3)], BOXSIZE, 'C27'),
@@ -54,14 +54,20 @@ class CreatureType:
         self.spriteType, self.pattern, self.speed = spriteMap[spriteRef], pattern, speed
 
 creatureMap = {
-    'C11': CreatureType('S11', PATTERN_RANDOM, 5), # goblin    
+    'C7' : CreatureType('S7' , PATTERN_RANDOM, 5), # one-eyed creep (unused)
+    'C9' : CreatureType('S9' , PATTERN_RANDOM, 5), # ghost
+    'C10': CreatureType('S10', PATTERN_RANDOM, 5), # skeleton
+    'C11': CreatureType('S11', PATTERN_RANDOM, 5), # goblin
+    'C12': CreatureType('S12', PATTERN_RANDOM, 5), # gargoyle
     'C13': CreatureType('S13', PATTERN_RANDOM, 5), # water demon
-    'C14': CreatureType('S14', PATTERN_RANDOM, 5),
-    'C16': CreatureType('S16', PATTERN_RANDOM, 5),
-    'C19': CreatureType('S19', PATTERN_RANDOM, 5),    
+    'C14': CreatureType('S14', PATTERN_RANDOM, 5), # red-haired woman
+    'C15': CreatureType('S15', PATTERN_RANDOM, 5), # grim reaper
+    'C16': CreatureType('S16', PATTERN_RANDOM, 5), # blue powerful mage
+    'C19': CreatureType('S19', PATTERN_RANDOM, 5), # white-haired mage
+    'C20': CreatureType('S20', PATTERN_RANDOM, 5), # zombie
     'C21': CreatureType('S21', PATTERN_RANDOM, 8), # worg
-    'C23': CreatureType('S23', PATTERN_RANDOM, 5),
-    'C24': CreatureType('S24', PATTERN_RANDOM, 5),
+    'C23': CreatureType('S23', PATTERN_RANDOM, 5), # tan skeleton
+    'C24': CreatureType('S24', PATTERN_RANDOM, 5), # scorpion
     'C29': CreatureType('S29', PATTERN_RANDOM, 5)
 }
         
@@ -86,17 +92,13 @@ class HeroType:
         self.spriteType, self.speed = spriteMap[spriteRef], speed
 
 heroMap = {
-    'H1': HeroType('S1', 5),   #
-    'H2': HeroType('S2', 5),   #
-    'H3': HeroType('S3', 5),   #
-    'H4': HeroType('S4', 5),   #
-    'H5': HeroType('S5', 5),   #
-    'H6': HeroType('S6', 5),   #
-    'H7': HeroType('S7', 5),   #
-    'H8': HeroType('S8', 5),   #
-    'H9': HeroType('S9', 5),   #
-    'H10': HeroType('S10', 5), #
-    'H17': HeroType('S17', 5)  #
+    'H1': HeroType('S1', 5),   # main hero
+    'H2': HeroType('S2', 5),   # blonde girl
+    'H4': HeroType('S4', 5),   # blue-haired girl
+    'H5': HeroType('S5', 5),   # long-haired caped dude
+    'H6': HeroType('S6', 5),   # fancy girl
+    'H8': HeroType('S8', 5),   # wizened old man
+    'H17': HeroType('S17', 5)  # simple girl
 }
 
 class Movable:
@@ -258,6 +260,7 @@ class Creature (Movable):
 
 class Hero (Creature):
     def __init__ (self, heroRef, tx, ty):
+        self.heroRef = heroRef
         self.heroType = heroMap[heroRef]
         rect = Rect(tx * BOXSIZE + 3, ty * BOXSIZE + (BOXSIZE / 2), BOXSIZE - 6, BOXSIZE / 2)
         Movable.__init__(self, DOWN, tx * BOXSIZE, ty * BOXSIZE, 0, PATTERN_NONE, 0, 0, rect)
@@ -265,6 +268,16 @@ class Hero (Creature):
         self.direction, self.speed = direction, self.heroType.speed
     def stop (self):
         self.speed = 0
+    def nextHero (self):
+        heroIdx = permState.unlockedHeroes.index(self.heroRef) + 1
+        if heroIdx >= len(permState.unlockedHeroes): heroIdx = 0
+        self.heroRef = permState.unlockedHeroes[heroIdx]        
+        self.heroType = heroMap[self.heroRef]
+    def prevHero (self):
+        heroIdx = permState.unlockedHeroes.index(self.heroRef) - 1
+        if heroIdx <= 0: heroIdx = len(permState.unlockedHeroes) - 1
+        self.heroRef = permState.unlockedHeroes[heroIdx]
+        self.heroType = heroMap[self.heroRef]
     def updateRect (self):
         self.rect = Rect(self.x + 3, self.y + (BOXSIZE / 2), BOXSIZE - 6, BOXSIZE / 2)
 

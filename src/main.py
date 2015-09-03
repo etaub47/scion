@@ -16,7 +16,8 @@ displaySurf.fill((255, 255, 255))
 pygame.display.set_caption('Scion')
 
 # initialize hero
-permState.hero = Hero('H1', 5, 5)
+permState.heroIdx = 'H1'
+permState.hero = Hero(permState.heroIdx, 5, 5)
 
 # initialize joystick
 joystickCount, myJoystick = pygame.joystick.get_count(), None
@@ -24,7 +25,9 @@ h_axis_pos, v_axis_pos = 0, 0
 if joystickCount > 0:
     myJoystick = pygame.joystick.Joystick(0)
     myJoystick.init()
-    buttonsReset = True
+    buttonsReset = [True] * MAX_BUTTONS
+    print buttonsReset
+    print buttonsReset[0]
 
 # DEBUG
 px, py = 55, 46
@@ -70,15 +73,27 @@ while True:
             if myJoystick.get_button(b):
                 
                 # fire projectile
-                if int(pressed) == B_BUTTON and buttonsReset:
-                        buttonsReset = False
-                        dir = permState.hero.direction
-                        tempState.projectiles.append(Projectile(
-                            'PA', dir, permState.hero.x - PROJ_OFFSET, permState.hero.y, -1))
-                            
-            # fire button released; ready for another shot
+                if int(pressed) == B_BUTTON and buttonsReset[B_BUTTON]:
+                    buttonsReset[B_BUTTON] = False
+                    dir = permState.hero.direction
+                    tempState.projectiles.append(Projectile(
+                        'PA', dir, permState.hero.x - PROJ_OFFSET, permState.hero.y, -1))
+                        
+                # change hero
+                elif int(pressed) == R_BUTTON and buttonsReset[R_BUTTON]:
+                    buttonsReset[R_BUTTON] = False
+                    permState.hero.nextHero()
+                elif int(pressed) == L_BUTTON and buttonsReset[L_BUTTON]:
+                    buttonsReset[L_BUTTON] = False
+                    permState.hero.prevHero()
+                                                                    
+            # button released; ready to press again
             elif int(pressed) == B_BUTTON:            
-                buttonsReset = True
+                buttonsReset[B_BUTTON] = True
+            elif int(pressed) == R_BUTTON:
+                buttonsReset[R_BUTTON] = True
+            elif int(pressed) == L_BUTTON:
+                buttonsReset[L_BUTTON] = True
     
     # check hero movement
     keys = pygame.key.get_pressed()

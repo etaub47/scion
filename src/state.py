@@ -34,9 +34,10 @@ class TemporalState:
         
 class PermanentState:
     def __init__ (self):
-        self.hero = None
+        self.hero, self.heroIdx = None, -1
         self.wx, self.wy, self.wz = START_WX, START_WY, START_WZ
         self.obtainedItems = [] # unique items already obtained
+        self.unlockedHeroes = ['H1', 'H2', 'H4', 'H5', 'H6', 'H8', 'H17']
     def alreadyObtained (self, wz, wx, wy, x, y):
         return (wz, wx, wy, x, y) in self.obtainedItems
     def obtain (self, x, y):
