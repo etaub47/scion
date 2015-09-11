@@ -135,7 +135,7 @@ def displayAddition (displaySurf, additionRef, x, y):
 
 def scrollScreen (displaySurf, hero, wx, wy, wz):
     if hero.direction == DOWN:
-        for new_y in range(MAX_Y, MIN_Y, 0 - (BOXSIZE / 3)):
+        for new_y in range(MAX_Y - BOXSIZE, MIN_Y, 0 - (BOXSIZE / 3)):
             world.drawWorld(displaySurf, wx, wy, wz, offset_y = new_y - MAX_Y - (BOXSIZE * 2 / 3), real=True)
             world.drawWorld(displaySurf, wx, wy + 1, wz, offset_y = new_y, real=True)
             hero.y = new_y
@@ -179,6 +179,8 @@ def moveAndDisplayProjectiles (displaySurf, wz, wx, wy):
             displaySurf.blit(projectile.surface, (projectile.x, projectile.y))
         if hitResult[3] != None:
             del tempState.creatures[hitResult[3]]
+            if len(tempState.creatures) == 0:
+                items.showHiddenItems()
     tempState.projectiles[:] = [p for p in tempState.projectiles if p.surface != None]
 
 def createCreature (spriteRef, tx, ty):
@@ -209,5 +211,6 @@ def displayPushables (displaySurf):
 
 def displayAvailableItems (displaySurf):
     for availableItem in tempState.availableItems:
-        if availableItem.shown:
+        if availableItem.showState == VISIBLE and not permState.alreadyObtained(
+                permState.wz, permState.wx, permState.wy, availableItem.x, availableItem.y):
             displayFeature(displaySurf, availableItem.itemType.id, availableItem.x, availableItem.y)

@@ -26,8 +26,6 @@ if joystickCount > 0:
     myJoystick = pygame.joystick.Joystick(0)
     myJoystick.init()
     buttonsReset = [True] * MAX_BUTTONS
-    print buttonsReset
-    print buttonsReset[0]
 
 # DEBUG
 px, py = 55, 46
@@ -117,10 +115,7 @@ while True:
     
     # check for item collection
     idx = permState.hero.rect.collidelist(tempState.getAvailableItemRects())
-    if idx >= 0:
-        availableItem = tempState.availableItems[idx]
-        if availableItem.shown:
-            items.getItem(availableItem)
+    if idx >= 0: items.getItem(idx)
     
     # check for edge of screen
     if hitResult[0] == DOWN:
@@ -138,10 +133,6 @@ while True:
     if hitResult[0] != None:
         world.loadWorld(permState.wx, permState.wy, permState.wz, real=True)
         permState.hero.updateRect()
-    
-    # show hidden items    
-    allDead = len(tempState.creatures) == 0
-    items.showHiddenItems(allDead)
     
     # update the other movables and redraw the screen
     anim.displayHero(displaySurf, permState.hero)

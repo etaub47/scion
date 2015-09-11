@@ -52,22 +52,34 @@ def loadWorld (wx, wy, wz, real = False):
         for x in range(BOARDTILEWIDTH):
             for y in range(BOARDTILEHEIGHT):
                 terrainObstacle = anim.getTerrainObstacle(terrain[wz][wx][wy][x][y])
+                addition = getAddition1(wx, wy, wz, x, y)
                 rect = Rect(x * BOXSIZE, y * BOXSIZE, BOXSIZE, BOXSIZE)
-                if terrainObstacle == TYPE_OBSTACLE: 
-                    tempState.obstacles.append(rect)
+                if terrainObstacle == TYPE_OBSTACLE:
+                    if addition != "AA": # mirror
+                        tempState.obstacles.append(rect)
                 elif terrainObstacle == TYPE_LOW: 
-                    tempState.lowObstacles.append(rect)
+                    if addition != "AA": # mirror
+                        tempState.lowObstacles.append(rect)
         for feature in features:
             if feature[0] == wz and feature[1] == wx and feature[2] == wy:
                 featureObstacle = anim.getFeatureObstacle(feature[5])
+                addition = getAddition1(wx, wy, wz, feature[3], feature[4])
                 rect = Rect(feature[3] * BOXSIZE, feature[4] * BOXSIZE, BOXSIZE, BOXSIZE)
                 if featureObstacle == TYPE_OBSTACLE:
-                    tempState.obstacles.append(rect)
+                    if addition != "AA": # mirror
+                        tempState.obstacles.append(rect)
                 elif featureObstacle == TYPE_PUSHABLE:
-                    tempState.pushables.append(Pushable(rect, feature[5]))
+                    secretTrigger = getAddition1(wx, wy, wz, feature[3], feature[4]) == "AE"
+                    tempState.pushables.append(Pushable(rect, feature[5], secretTrigger))
                 elif featureObstacle == TYPE_ITEM:
-                    shown = getAddition1(wx, wy, wz, feature[3], feature[4]) != "AD"
-                    tempState.availableItems.append(AvailableItem(feature[5], feature[3], feature[4], shown))
+                    if addition == "AD": # skull
+                        showState = AFTER_VICTORY
+                    elif addition == "AE": # question mark
+                        showState = AFTER_SECRET
+                    else:
+                        showState = VISIBLE
+                    tempState.availableItems.append(
+                        AvailableItem(feature[5], feature[3], feature[4], showState))
         for creature in getCreatures(wz, wx, wy):
             anim.createCreature(creature[5], creature[3], creature[4])
                 

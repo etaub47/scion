@@ -5,6 +5,7 @@ class TemporalState:
         self.projectiles, self.creatures, self.allies = [], [], []
         self.obstacles, self.lowObstacles, self.pushables = [], [], []
         self.availableItems = []
+        self.allDead = False
     def clear (self):
         self.projectiles[:] = []
         self.creatures[:] = []
@@ -27,10 +28,14 @@ class TemporalState:
             for pushable in self.pushables: 
                 retValue.append(pushable.rect)
         return retValue
-    def getAvailableItemRects (self):
-        return list(map((lambda x: x.rect), self.availableItems))
-    def deleteAvailableItem (self, item):
-        self.availableItems.remove(item)
+    def getAvailableItemRects (self, visibleOnly=False):
+        rects = []
+        for availableItem in self.availableItems:
+            if not visibleOnly or availableItem.showState == VISIBLE:
+                rects.append(availableItem.rect)
+        return rects
+    def deleteAvailableItem (self, idx):
+        self.availableItems[idx].showState = COLLECTED
         
 class PermanentState:
     def __init__ (self):

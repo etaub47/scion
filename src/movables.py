@@ -1,4 +1,4 @@
-import pygame, random
+import pygame, items, random
 from constants import *
 from pygame import Rect
 from pygame.locals import SRCALPHA
@@ -114,11 +114,13 @@ class Movable:
     def move (self, obstacles, hero, creatures, pushables=None):
         origLeft, origTop = self.rect.left, self.rect.top
         hitEdge, hitObstacle, hitHero, hitCreature = None, None, None, None
+        visibleItemRects = []
+        
         if self.direction == DOWN:
             self.rect.move_ip(0, self.speed)            
             
             # check for collision with edge of screen
-            if self.rect.bottom >= MAX_Y: hitEdge, self.rect.bottom = self.direction, MAX_Y
+            if self.rect.bottom >= MAX_Y_2: hitEdge, self.rect.bottom = self.direction, MAX_Y_2
             
             # check for collision with pushables
             if pushables != None:
@@ -126,11 +128,17 @@ class Movable:
                 if idx >= 0:
                     tempState.pushables[idx].rect.move_ip(0, self.speed)
                     del pushables[idx]
-                    rects = obstacles + creatures + pushables + tempState.getAvailableItemRects()
+                    rects = obstacles + creatures + pushables + \
+                        tempState.getAvailableItemRects(visibleOnly=True)
                     idx2 = tempState.pushables[idx].rect.collidelist(rects)
                     if idx2 >= 0:
                         tempState.pushables[idx].rect.bottom = rects[idx2].top
                         self.rect.bottom = tempState.pushables[idx].rect.top
+                    elif self.rect.bottom >= MAX_Y_2 - BOXSIZE:
+                        tempState.pushables[idx].rect.bottom = MAX_Y_2
+                        self.rect.bottom = tempState.pushables[idx].rect.top                        
+                    elif tempState.pushables[idx].secretTrigger:
+                        items.showSecretItem()
                         
             # check for collision with obstacles
             idx = self.rect.collidelist(obstacles)
@@ -149,7 +157,7 @@ class Movable:
             self.rect.move_ip(self.speed, 0)
             
             # check for collision with edge of screen
-            if self.rect.right >= MAX_X: hitEdge, self.rect.right = self.direction, MAX_X
+            if self.rect.right >= MAX_X_2: hitEdge, self.rect.right = self.direction, MAX_X_2
             
             # check for collision with pushables
             if pushables != None:
@@ -157,12 +165,18 @@ class Movable:
                 if idx >= 0:
                     tempState.pushables[idx].rect.move_ip(self.speed, 0)
                     del pushables[idx]
-                    rects = obstacles + creatures + pushables + tempState.getAvailableItemRects()
+                    rects = obstacles + creatures + pushables + \
+                        tempState.getAvailableItemRects(visibleOnly=True)
                     idx2 = tempState.pushables[idx].rect.collidelist(rects)
                     if idx2 >= 0:
                         tempState.pushables[idx].rect.right = rects[idx2].left
                         self.rect.right = tempState.pushables[idx].rect.left
-            
+                    elif self.rect.right >= MAX_X_2 - BOXSIZE:
+                        tempState.pushables[idx].rect.right = MAX_X_2
+                        self.rect.right = tempState.pushables[idx].rect.left                        
+                    elif tempState.pushables[idx].secretTrigger:
+                        items.showSecretItem()
+
             # check for collision with obstacles
             idx = self.rect.collidelist(obstacles)
             if idx >= 0: hitObstacle, self.rect.right = idx, obstacles[idx].left
@@ -180,7 +194,7 @@ class Movable:
             self.rect.move_ip(0, -self.speed)   
             
             # check for collision with edge of screen
-            if self.rect.top <= MIN_Y: hitEdge, self.rect.top = self.direction, MIN_Y
+            if self.rect.top <= 0: hitEdge, self.rect.top = self.direction, 0
             
             # check for collision with pushables
             if pushables != None:
@@ -188,11 +202,17 @@ class Movable:
                 if idx >= 0:
                     tempState.pushables[idx].rect.move_ip(0, -self.speed)
                     del pushables[idx]
-                    rects = obstacles + creatures + pushables + tempState.getAvailableItemRects()
+                    rects = obstacles + creatures + pushables + \
+                        tempState.getAvailableItemRects(visibleOnly=True)
                     idx2 = tempState.pushables[idx].rect.collidelist(rects)
                     if idx2 >= 0:
                         tempState.pushables[idx].rect.top = rects[idx2].bottom
                         self.rect.top = tempState.pushables[idx].rect.bottom
+                    elif self.rect.top < BOXSIZE:
+                        tempState.pushables[idx].rect.top = 0
+                        self.rect.top = tempState.pushables[idx].rect.bottom                        
+                    elif tempState.pushables[idx].secretTrigger:
+                        items.showSecretItem()
 
             # check for collision with obstacles
             idx = self.rect.collidelist(obstacles)
@@ -219,11 +239,17 @@ class Movable:
                 if idx >= 0:
                     tempState.pushables[idx].rect.move_ip(-self.speed, 0)
                     del pushables[idx]
-                    rects = obstacles + creatures + pushables + tempState.getAvailableItemRects()
+                    rects = obstacles + creatures + pushables + \
+                        tempState.getAvailableItemRects(visibleOnly=True)
                     idx2 = tempState.pushables[idx].rect.collidelist(rects)
                     if idx2 >= 0:
                         tempState.pushables[idx].rect.left = rects[idx2].right
                         self.rect.left = tempState.pushables[idx].rect.right
+                    elif self.rect.left < BOXSIZE:
+                        tempState.pushables[idx].rect.left = 0
+                        self.rect.left = tempState.pushables[idx].rect.right                        
+                    elif tempState.pushables[idx].secretTrigger:
+                        items.showSecretItem()
 
             # check for collision with obstacles
             idx = self.rect.collidelist(obstacles)
@@ -298,5 +324,5 @@ class Projectile (Movable):
         Movable.__init__(self, direction, x, y, self.projectileType.speed, PATTERN_STRAIGHT, 0, 0, rect)
 
 class Pushable:
-    def __init__ (self, rect, featureRef):
-        self.rect, self.featureRef = rect, featureRef
+    def __init__ (self, rect, featureRef, secretTrigger=False):
+        self.rect, self.featureRef, self.secretTrigger = rect, featureRef, secretTrigger

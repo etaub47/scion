@@ -32,19 +32,30 @@ itemMap = {
 }
 
 class AvailableItem:
-    def __init__ (self, itemTypeRef, x, y, shown=True):
-        self.itemType, self.x, self.y, self.shown = itemMap[itemTypeRef], x, y, shown
+    def __init__ (self, itemTypeRef, x, y, showState=VISIBLE):
+        self.itemType, self.x, self.y, self.showState = itemMap[itemTypeRef], x, y, showState
         self.rect = Rect(x * BOXSIZE, y * BOXSIZE, BOXSIZE, BOXSIZE)
 
-def getItem (item):
-    # this item is no longer available
-    tempState.deleteAvailableItem(item)
+def getItem (idx):
+    # called when the player picks up an available item
+    item = tempState.availableItems[idx]
+    tempState.deleteAvailableItem(idx) # this item is no longer available
     # if this is a unique item, mark item as no longer available
     if item.itemType.type == UNIQUE_ITEM:
         permState.obtain(item.x, item.y)
 
-def showHiddenItems (allDead):
+def showHiddenItems ():
+    # show items that only appear after all enemies on the screen are defeated
     for availableItem in tempState.availableItems:
-        if allDead and not availableItem.shown and not permState.alreadyObtained(
-                permState.wz, permState.wx, permState.wy, availableItem.x, availableItem.y):
-            availableItem.shown = True
+        if availableItem.showState == AFTER_VICTORY and \
+                not permState.alreadyObtained(permState.wz, permState.wx, 
+                permState.wy, availableItem.x, availableItem.y):
+            availableItem.showState = VISIBLE
+
+def showSecretItem ():
+    # show the item that only appears after the room secret is triggered
+    for availableItem in tempState.availableItems:
+        if availableItem.showState == AFTER_SECRET and \
+                not permState.alreadyObtained(permState.wz, permState.wx, 
+                permState.wy, availableItem.x, availableItem.y):
+            availableItem.showState = VISIBLE
