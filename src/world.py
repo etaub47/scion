@@ -129,10 +129,15 @@ def getAddition2 (wx, wy, wz, x, y):
     return None
 
 def drawWorld (DISPLAYSURF, wx, wy, wz, offset_x = 0, offset_y = 0, real = False):
+    tempState.incrementTimer()
     for x in range(BOARDTILEWIDTH):
-        for y in range(BOARDTILEHEIGHT):
-            anim.displayTerrain(DISPLAYSURF, terrain[wz][wx][wy][x][y], x, y, 
-                offset_x = offset_x, offset_y = offset_y)
+        for y in range(BOARDTILEHEIGHT):        
+            addition = getAddition1(wx, wy, wz, x, y)
+            if real and addition == "AA" and tempState.gotMirror and (tempState.timer / 5) % 2 == 0:
+                anim.displayTerrain(DISPLAYSURF, 'Q', x, y, offset_x = offset_x, offset_y = offset_y)
+            else:
+                anim.displayTerrain(DISPLAYSURF, terrain[wz][wx][wy][x][y], x, y, 
+                    offset_x = offset_x, offset_y = offset_y)
     for feature in features:
         if feature[0] == wz and feature[1] == wx and feature[2] == wy:
             if not real or anim.getFeatureObstacle(feature[5]) == TYPE_OBSTACLE:

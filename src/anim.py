@@ -25,8 +25,9 @@ terrainMap = {
     # lava, soft tile
     'M': (52, 13, 238, 0, 0, TYPE_OBSTACLE), 'N': (56, 16, 125, 158, 192, TYPE_CLEAR), 
     # murky water, bridge
-    'O': (19, 19, 56, 142, 142, TYPE_LOW), 'G': (43, 16, 139, 0, 0, TYPE_CLEAR)
+    'O': (19, 19, 56, 142, 142, TYPE_LOW), 'G': (43, 16, 139, 0, 0, TYPE_CLEAR),
     # animated water: 36, 19 - 39, 19, animated swamp 23, 19 - 24, 19, animated lava: 49, 13 - 52, 13
+    'Q': (0, 46, 0, 0, 0, TYPE_CLEAR)
 }
 
 featureMap = {
@@ -86,6 +87,7 @@ def displayTerrain (displaySurf, terrainRef, tx, ty, offset_x = 0, offset_y = 0)
         y_offset = (terrainMap[terrainRef][1]) * BOXSIZE
         displaySurf.blit(sprite1, (tx * BOXSIZE + offset_x, ty * BOXSIZE + offset_y), 
             area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
+        
 
 def displayFeature (displaySurf, featureRef, x, y, offset_x = 0, offset_y = 0):
     if featureRef[-1] == '\n': 

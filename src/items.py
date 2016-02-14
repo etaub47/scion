@@ -48,8 +48,8 @@ class Door:
 def getItem (idx):
     # called when the player picks up an available item
     item = tempState.availableItems[idx]
-    if item.showState == COLLECTED:
-        return    
+    if item.showState != VISIBLE:
+        return
     # this item is no longer available
     tempState.deleteAvailableItem(idx)
     # if this is a unique item, mark item as no longer available
@@ -58,6 +58,9 @@ def getItem (idx):
     # key
     if item.itemType.id == 'IL': 
         permState.keys += 1
+    # mirror
+    elif item.itemType.id == 'IQ':
+        tempState.gotMirror = True
     
 def unlockDoor (idx):
     # called when the player bumps into a locked door and has a key
@@ -87,3 +90,10 @@ def showSecretItem ():
                 not permState.alreadyObtained(permState.wz, permState.wx, 
                 permState.wy, availableItem.x, availableItem.y):
             availableItem.showState = VISIBLE
+    # open doors that remain closed until the room secret is triggered
+    # permanently unlock them too
+    for door in tempState.doors:
+        if door.showState == AFTER_SECRET:
+            door.showState = OPEN
+            permState.unlockedDoors.append((permState.wx, permState.wy, permState.wz, door.x, door.y))
+    

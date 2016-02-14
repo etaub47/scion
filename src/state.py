@@ -6,8 +6,9 @@ class TemporalState:
         self.projectiles, self.creatures, self.allies = [], [], []
         self.obstacles, self.lowObstacles, self.pushables = [], [], []
         self.availableItems = [] # AvailableItem
-        self.stairs, self.checkForStairs = None, False
+        self.stairs, self.checkForStairs, self.gotMirror = None, False, False
         self.doors = [] # (x, y, doorState, rect, number)
+        self.timer = 0
     def clear (self):
         self.projectiles[:] = []
         self.creatures[:] = []
@@ -16,8 +17,9 @@ class TemporalState:
         self.lowObstacles[:] = []
         self.pushables[:] = []
         self.availableItems[:] = []
-        self.stairs, self.checkForStairs = None, False
+        self.stairs, self.checkForStairs, self.gotMirror = None, False, False
         self.doors[:] = []
+        self.timer = 0
     def getCreatureRects (self, itself = -1):
         creatureRects = []
         for idx, creature in enumerate(self.creatures):
@@ -55,6 +57,10 @@ class TemporalState:
         # this "deletes" an available item without modifying the collection
         # this is done to preserve the item indexes in the collection
         self.availableItems[idx].showState = COLLECTED
+    def incrementTimer (self):
+        self.timer += 1
+        if self.timer == 100:
+            self.timer = 0
         
 class PermanentState:
     def __init__ (self):
