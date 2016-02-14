@@ -45,30 +45,34 @@ spriteMap = {
     'S27': SpriteType(sprite5, ENEMY, [(9, 0), (9, 1), (9, 2), (9, 3)], BOXSIZE, 'C27'),
     'S28': SpriteType(sprite5, ENEMY, [(0, 4), (0, 5), (0, 6), (0, 7)], BOXSIZE, 'C28'),
     'S29': SpriteType(sprite6, ENEMY, [(3, 4), (3, 5), (3, 6), (3, 7)], BOXSIZE, 'C29'),
-    'S30': SpriteType(sprite6, ENEMY, [(6, 4), (6, 5), (6, 6), (6, 7)], BOXSIZE, 'C30'),
+    'S30': SpriteType(sprite6, ENEMY, [(6, 4), (6, 5), (6, 6), (6, 7)], BOXSIZE, 'C30'), # bat
     'S31': SpriteType(sprite5, ENEMY, [(9, 4), (9, 5), (9, 6), (9, 7)], BOXSIZE, 'C31')
 }
 
 class CreatureType:
-    def __init__ (self, spriteRef, pattern, speed):
+    def __init__ (self, spriteRef, pattern, speed, movement):
         self.spriteType, self.pattern, self.speed = spriteMap[spriteRef], pattern, speed
+        self.movement = movement
 
 creatureMap = {
-    'C7' : CreatureType('S7' , PATTERN_RANDOM, 5), # one-eyed creep (unused)
-    'C9' : CreatureType('S9' , PATTERN_RANDOM, 5), # ghost
-    'C10': CreatureType('S10', PATTERN_RANDOM, 5), # skeleton
-    'C11': CreatureType('S11', PATTERN_RANDOM, 5), # goblin
-    'C12': CreatureType('S12', PATTERN_RANDOM, 5), # gargoyle
-    'C13': CreatureType('S13', PATTERN_RANDOM, 5), # water demon
-    'C14': CreatureType('S14', PATTERN_RANDOM, 5), # red-haired woman
-    'C15': CreatureType('S15', PATTERN_RANDOM, 5), # grim reaper
-    'C16': CreatureType('S16', PATTERN_RANDOM, 5), # blue powerful mage
-    'C19': CreatureType('S19', PATTERN_RANDOM, 5), # white-haired mage
-    'C20': CreatureType('S20', PATTERN_RANDOM, 5), # zombie
-    'C21': CreatureType('S21', PATTERN_RANDOM, 8), # worg
-    'C23': CreatureType('S23', PATTERN_RANDOM, 5), # tan skeleton
-    'C24': CreatureType('S24', PATTERN_RANDOM, 5), # scorpion
-    'C29': CreatureType('S29', PATTERN_RANDOM, 5)
+    'C7' : CreatureType('S7' , PATTERN_RANDOM, 5, MOVE_WALK), # one-eyed creep (unused)
+    'C9' : CreatureType('S9' , PATTERN_RANDOM, 5, MOVE_FLY), # ghost
+    'C10': CreatureType('S10', PATTERN_RANDOM, 5, MOVE_WALK), # skeleton
+    'C11': CreatureType('S11', PATTERN_RANDOM, 5, MOVE_WALK), # goblin
+    'C12': CreatureType('S12', PATTERN_RANDOM, 5, MOVE_WALK), # gargoyle
+    'C13': CreatureType('S13', PATTERN_RANDOM, 5, MOVE_SWIM), # water demon
+    'C14': CreatureType('S14', PATTERN_RANDOM, 5, MOVE_WALK), # red-haired woman
+    'C15': CreatureType('S15', PATTERN_RANDOM, 5, MOVE_WALK), # grim reaper
+    'C16': CreatureType('S16', PATTERN_RANDOM, 5, MOVE_WALK), # blue powerful mage
+    'C19': CreatureType('S19', PATTERN_RANDOM, 5, MOVE_WALK), # white-haired mage
+    'C20': CreatureType('S20', PATTERN_RANDOM, 5, MOVE_WALK), # zombie
+    'C21': CreatureType('S21', PATTERN_RANDOM, 8, MOVE_WALK), # worg
+    'C23': CreatureType('S23', PATTERN_RANDOM, 5, MOVE_WALK), # tan skeleton
+    'C24': CreatureType('S24', PATTERN_RANDOM, 5, MOVE_WALK), # scorpion
+    'C26': CreatureType('S26', PATTERN_RANDOM, 5, MOVE_WALK),
+    'C27': CreatureType('S27', PATTERN_RANDOM, 5, MOVE_WALK),
+    'C29': CreatureType('S29', PATTERN_RANDOM, 5, MOVE_WALK),
+    'C30': CreatureType('S30', PATTERN_RANDOM, 5, MOVE_FLY)  # bat
 }
         
 class ProjectileType:

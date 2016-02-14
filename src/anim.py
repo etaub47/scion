@@ -32,9 +32,9 @@ terrainMap = {
 featureMap = {
     # tx, ty, obstacleType (4=pushable, 5=item, 6=addition1, 7=addition2, 8=stairs)
     # stairs to dungeon, stairs to overworld, blue block
-    'FA': (15, 15, 8), 'FB': (31, 15, 8), 'FC': (29, 16, TYPE_PUSHABLE), 
+    'FA': (15, 15, TYPE_STAIRS), 'FB': (31, 15, TYPE_STAIRS), 'FC': (29, 16, TYPE_PUSHABLE), 
     # open door, closed door, tree
-    'FD': (27, 11, TYPE_CLEAR), 'FE': (23, 11, TYPE_OBSTACLE), 'FF': (14, 18, TYPE_OBSTACLE),
+    'FD': (27, 11, TYPE_DOOR), 'FE': (23, 11, TYPE_DOOR), 'FF': (14, 18, TYPE_OBSTACLE),
     # statue, fountain, wings
     'FG': (28, 11, TYPE_PUSHABLE), 'FH': (63, 11, TYPE_OBSTACLE), 'IA': (15, 7, TYPE_ITEM), 
     # armor, book, shield
@@ -192,9 +192,11 @@ def createCreature (spriteRef, tx, ty):
 
 def moveAndDisplayCreatures (displaySurf, wz, wx, wy):
     obstacles = tempState.getObstacles(True, True, True)
+    highObstacles = tempState.getObstacles(True, False, True)
     for idx, creature in enumerate(tempState.creatures):
         creature.tick()
-        hitResult = creature.move(obstacles, permState.hero.rect, tempState.getCreatureRects(idx))
+        creatureObstacles = highObstacles if creature.creatureType.movement == MOVE_FLY else obstacles        
+        hitResult = creature.move(creatureObstacles, permState.hero.rect, tempState.getCreatureRects(idx))
         if hitResult[0] != None or hitResult[1] != None or hitResult[2] != None or hitResult[3] != None:
             creature.changeDirection()
         displayCreature(displaySurf, creature)
@@ -205,6 +207,12 @@ def moveAndDisplayCreatures (displaySurf, wz, wx, wy):
 def getCreatureRefBySpriteRef (spriteRef):
     return spriteMap[spriteRef].crossReference
 
+def displayStairs (displaySurf):
+    stairIcon = 'FA'
+    if permState.wz > 0: stairIcon = 'FB'
+    if tempState.stairs != None and tempState.stairs[2] == VISIBLE:
+        displayFeature(displaySurf, stairIcon, tempState.stairs[0], tempState.stairs[1])
+
 def displayPushables (displaySurf):
     for pushable in tempState.pushables:
         displayPushable(displaySurf, pushable.featureRef, pushable.rect.x, pushable.rect.y)
@@ -214,3 +222,8 @@ def displayAvailableItems (displaySurf):
         if availableItem.showState == VISIBLE and not permState.alreadyObtained(
                 permState.wz, permState.wx, permState.wy, availableItem.x, availableItem.y):
             displayFeature(displaySurf, availableItem.itemType.id, availableItem.x, availableItem.y)
+
+def displayDoors (displaySurf):
+    for door in tempState.doors:
+        doorIcon = 'FD' if door.isOpen() else 'FE'
+        displayFeature(displaySurf, doorIcon, door.x, door.y)

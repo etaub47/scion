@@ -35,14 +35,36 @@ class AvailableItem:
     def __init__ (self, itemTypeRef, x, y, showState=VISIBLE):
         self.itemType, self.x, self.y, self.showState = itemMap[itemTypeRef], x, y, showState
         self.rect = Rect(x * BOXSIZE, y * BOXSIZE, BOXSIZE, BOXSIZE)
+        
+class Door:
+    def __init__ (self, x, y, showState, number):
+        self.x, self.y, self.showState, self.number = x, y, showState, number
+        self.rect = Rect(x * BOXSIZE, y * BOXSIZE, BOXSIZE, BOXSIZE)
+    def isOpen (self):
+        return self.showState == OPEN
+    def isLocked (self):
+        return self.showState == AFTER_KEY
 
 def getItem (idx):
     # called when the player picks up an available item
     item = tempState.availableItems[idx]
-    tempState.deleteAvailableItem(idx) # this item is no longer available
+    if item.showState == COLLECTED:
+        return    
+    # this item is no longer available
+    tempState.deleteAvailableItem(idx)
     # if this is a unique item, mark item as no longer available
     if item.itemType.type == UNIQUE_ITEM:
         permState.obtain(item.x, item.y)
+    # key
+    if item.itemType.id == 'IL': 
+        permState.keys += 1
+    
+def unlockDoor (idx):
+    # called when the player bumps into a locked door and has a key
+    door = tempState.doors[idx]
+    door.showState = OPEN
+    permState.unlockedDoors.append((permState.wx, permState.wy, permState.wz, door.x, door.y))
+    permState.keys -= 1
 
 def showHiddenItems ():
     # show items that only appear after all enemies on the screen are defeated
@@ -51,7 +73,13 @@ def showHiddenItems ():
                 not permState.alreadyObtained(permState.wz, permState.wx, 
                 permState.wy, availableItem.x, availableItem.y):
             availableItem.showState = VISIBLE
-
+    # open doors that remain closed until all enemies on the screen are defeated
+    # permanently unlock them too
+    for door in tempState.doors:
+        if door.showState == AFTER_VICTORY:
+            door.showState = OPEN
+            permState.unlockedDoors.append((permState.wx, permState.wy, permState.wz, door.x, door.y))
+        
 def showSecretItem ():
     # show the item that only appears after the room secret is triggered
     for availableItem in tempState.availableItems:

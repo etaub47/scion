@@ -17,7 +17,7 @@ pygame.display.set_caption('Scion')
 
 # initialize hero
 permState.heroIdx = 'H1'
-permState.hero = Hero(permState.heroIdx, 5, 5)
+permState.hero = Hero(permState.heroIdx, 7, 7)
 
 # initialize joystick
 joystickCount, myJoystick = pygame.joystick.get_count(), None
@@ -49,8 +49,6 @@ while True:
             # DEBUG
             if event.key == K_o: i = "S" + str(int(i[1:]) - 1)
             elif event.key == K_p: i = "S" + str(int(i[1:]) + 1)
-            elif event.key == K_k: speed += 1            
-            elif event.key == K_m: speed -= 1
             elif event.key == K_d: px -= 1
             elif event.key == K_f: px += 1
             elif event.key == K_r: py -= 1
@@ -108,8 +106,13 @@ while True:
     anim.displaySquare(displaySurf, px, py)
     displaySurf.blit(textSurf, textRect)
     
-    # move the hero and check for collisions
-    obstacles = tempState.getObstacles(True, True, False)
+    # check for locked doors that can be opened
+    if permState.keys > 0:
+        idx = permState.hero.rect.collidelist(tempState.getLockedDoorRects())
+        if idx >= 0: items.unlockDoor(idx)
+    
+    # check for collisions
+    obstacles = tempState.getObstacles(True, True, False, permState.keys == 0)
     pushables = tempState.getObstacles(False, False, True)
     hitResult = permState.hero.move(obstacles, None, tempState.getCreatureRects(), pushables)
     
@@ -133,8 +136,25 @@ while True:
     if hitResult[0] != None:
         world.loadWorld(permState.wx, permState.wy, permState.wz, real=True)
         permState.hero.updateRect()
+        
+    # check for staircase
+    if tempState.stairs != None and permState.hero.rect.colliderect(tempState.stairs[3]):
+        if tempState.checkForStairs:    
+            if permState.wz > 0:
+                s_idx, s_idx2 = permState.wz - 1, 0
+            else:
+                s_idx, s_idx2 = ord(tempState.stairs[4][1]) - 70, 1
+            permState.wz, permState.wx, permState.wy = STAIRS[s_idx][s_idx2]
+            world.loadWorld(permState.wx, permState.wy, permState.wz, real=True)
+            permState.hero.x, permState.hero.y = tempState.stairs[0] * BOXSIZE, \
+                tempState.stairs[1] * BOXSIZE
+            permState.hero.updateRect()
+    else:
+        tempState.checkForStairs = True
     
     # update the other movables and redraw the screen
+    anim.displayStairs(displaySurf)
+    anim.displayDoors(displaySurf)
     anim.displayHero(displaySurf, permState.hero)
     anim.displayPushables(displaySurf)
     anim.moveAndDisplayCreatures(displaySurf, permState.wz, permState.wx, permState.wy)

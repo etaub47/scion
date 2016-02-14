@@ -4,7 +4,7 @@ from constants import *
 from movables import *
 from pygame import Rect
 from state import tempState, permState
-from items import AvailableItem
+from items import AvailableItem, Door
 
 terrain = [[[[[0 for x in range(BOARDTILEHEIGHT)] for x in range(BOARDTILEWIDTH)]
     for x in range(WORLD_MAX_Y + 1)] for x in range(WORLD_MAX_X + 1)] for x in range(DUNGEON_MAX_Z + 1)]
@@ -63,23 +63,33 @@ def loadWorld (wx, wy, wz, real = False):
         for feature in features:
             if feature[0] == wz and feature[1] == wx and feature[2] == wy:
                 featureObstacle = anim.getFeatureObstacle(feature[5])
-                addition = getAddition1(wx, wy, wz, feature[3], feature[4])
-                rect = Rect(feature[3] * BOXSIZE, feature[4] * BOXSIZE, BOXSIZE, BOXSIZE)
+                x, y = feature[3], feature[4]
+                addition = getAddition1(wx, wy, wz, x, y)
+                number = getAddition2(wx, wy, wz, x, y)
+                rect = Rect(x * BOXSIZE, y * BOXSIZE, BOXSIZE, BOXSIZE)
+                if addition == "AD" and (wx, wy, wz, x, y) not in permState.unlockedDoors:
+                    showState = AFTER_VICTORY # skull
+                elif addition == "AE" and (wx, wy, wz, x, y) not in permState.unlockedDoors:
+                    showState = AFTER_SECRET # question mark
+                else:
+                    showState = VISIBLE # intentionally equivalent to OPEN for doors
                 if featureObstacle == TYPE_OBSTACLE:
                     if addition != "AA": # mirror
                         tempState.obstacles.append(rect)
                 elif featureObstacle == TYPE_PUSHABLE:
-                    secretTrigger = getAddition1(wx, wy, wz, feature[3], feature[4]) == "AE"
+                    secretTrigger = getAddition1(wx, wy, wz, x, y) == "AE"
                     tempState.pushables.append(Pushable(rect, feature[5], secretTrigger))
                 elif featureObstacle == TYPE_ITEM:
-                    if addition == "AD": # skull
-                        showState = AFTER_VICTORY
-                    elif addition == "AE": # question mark
-                        showState = AFTER_SECRET
-                    else:
-                        showState = VISIBLE
-                    tempState.availableItems.append(
-                        AvailableItem(feature[5], feature[3], feature[4], showState))
+                    if (wx, wy, wz, x, y) not in permState.obtainedItems:
+                        tempState.availableItems.append(AvailableItem(feature[5], x, y, showState))
+                elif featureObstacle == TYPE_STAIRS:
+                    tempState.stairs = (x, y, showState, rect, number)
+                elif featureObstacle == TYPE_DOOR:
+                    # a closed door without an addition is locked unless a key has been used
+                    if feature[5] == 'FE' and (wx, wy, wz, x, y) not in permState.unlockedDoors and \
+                            showState == OPEN:
+                        showState = AFTER_KEY
+                    tempState.doors.append(Door(x, y, showState, number))
         for creature in getCreatures(wz, wx, wy):
             anim.createCreature(creature[5], creature[3], creature[4])
                 
@@ -106,6 +116,13 @@ def saveWorld (wx, wy, wz):
 
 def getAddition1 (wx, wy, wz, x, y):
     for addition in additions1:
+        if addition[0] == wz and addition[1] == wx and addition[2] == wy and \
+                addition[3] == x and addition[4] == y:
+            return addition[5]
+    return None
+
+def getAddition2 (wx, wy, wz, x, y):
+    for addition in additions2:
         if addition[0] == wz and addition[1] == wx and addition[2] == wy and \
                 addition[3] == x and addition[4] == y:
             return addition[5]
