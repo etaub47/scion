@@ -4,19 +4,18 @@ from pygame import Rect
 class TemporalState:
     def __init__ (self):
         self.projectiles, self.creatures, self.allies = [], [], []
-        self.obstacles, self.lowObstacles, self.clearObstacles, self.pushables = [], [], [], []
+        self.obstacles, self.waterObstacles, self.clearObstacles = [], [], []
+        self.fakeObstacles, self.fakeWaterObstacles, self.pushables = [], [], []
+        self.poisonObstacles, self.fakePoisonObstacles = [], []
         self.availableItems = [] # AvailableItem
         self.stairs, self.checkForStairs, self.gotMirror, self.gotWings = None, False, False, False
         self.doors = [] # (x, y, doorState, rect, number)
         self.timer = 0
     def clear (self):
-        self.projectiles[:] = []
-        self.creatures[:] = []
-        self.allies[:] = []
-        self.obstacles[:] = []
-        self.lowObstacles[:] = []
-        self.clearObstacles[:] = []
-        self.pushables[:] = []
+        self.projectiles[:], self.creatures[:], self.allies = [], [], []
+        self.obstacles[:], self.waterObstacles[:], self.clearObstacles[:] = [], [], []
+        self.fakeObstacles[:], self.fakeWaterObstacles[:], self.pushables[:] = [], [], []
+        self.poisonObstacles[:], self.fakePoisonObstacles[:] = [], []
         self.availableItems[:] = []
         self.stairs, self.checkForStairs, self.gotMirror, self.gotWings = None, False, False, False
         self.doors[:] = []
@@ -27,18 +26,23 @@ class TemporalState:
             if idx != itself:
                 creatureRects.append(creature.rect)
         return creatureRects
-    def getObstacles (self, returnObstacles, returnLowObstacles, returnPushables, returnLockedDoors=True, returnClearObstacles=False):
+    def getObstacles (self, filter):
         retValue = []
-        if returnObstacles: 
+        if filter & INCLUDE_OBSTACLES > 0: 
             retValue += self.obstacles
-            for door in self.doors:
-                if (not door.isOpen()) and (returnLockedDoors or not door.isLocked()): 
-                    retValue.append(door.rect)
-        if returnLowObstacles: retValue += self.lowObstacles
-        if returnClearObstacles: retValue += self.clearObstacles
-        if returnPushables: 
-            for pushable in self.pushables: 
-                retValue.append(pushable.rect)
+            for door in self.doors: 
+                if not door.isOpen() and not door.isLocked(): retValue.append(door.rect)
+        if filter & INCLUDE_WATER_OBSTACLES > 0: retValue += self.waterObstacles
+        if filter & INCLUDE_PUSHABLES > 0: 
+            for pushable in self.pushables: retValue.append(pushable.rect)
+        if filter & INCLUDE_FAKE_OBSTACLES > 0: retValue += self.fakeObstacles
+        if filter & INCLUDE_FAKE_WATER_OBSTACLES > 0: retValue += self.fakeWaterObstacles
+        if filter & INCLUDE_LOCKED_DOORS > 0: 
+            for door in self.doors: 
+                if door.isLocked(): retValue.append(door.rect)
+        if filter & INCLUDE_CLEAR_OBSTACLES: retValue += self.clearObstacles
+        if filter & INCLUDE_POISON_OBSTACLES > 0: retValue += self.poisonObstacles
+        if filter & INCLUDE_FAKE_POISON_OBSTACLES > 0: retValue += self.fakePoisonObstacles
         return retValue
     def getLockedDoorRects (self):
         rects = []

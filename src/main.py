@@ -112,8 +112,11 @@ while True:
         if idx >= 0: items.unlockDoor(idx)
     
     # check for collisions
-    obstacles = tempState.getObstacles(True, not tempState.gotWings, False, permState.keys == 0)
-    pushables = tempState.getObstacles(False, False, True)
+    filter = INCLUDE_OBSTACLES
+    if permState.keys == 0: filter = filter | INCLUDE_LOCKED_DOORS
+    if not tempState.gotWings: filter = filter | INCLUDE_WATER_OBSTACLES | INCLUDE_POISON_OBSTACLES
+    obstacles = tempState.getObstacles(filter)    
+    pushables = tempState.getObstacles(INCLUDE_PUSHABLES)
     hitResult = permState.hero.move(obstacles, None, tempState.getCreatureRects(), pushables)
     
     # check for item collection

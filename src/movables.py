@@ -55,20 +55,20 @@ class CreatureType:
         self.movement = movement
 
 creatureMap = {
-    'C7' : CreatureType('S7' , PATTERN_RANDOM, 5, MOVE_WALK), # one-eyed creep (unused)
-    'C9' : CreatureType('S9' , PATTERN_RANDOM, 5, MOVE_FLY), # ghost
-    'C10': CreatureType('S10', PATTERN_RANDOM, 5, MOVE_WALK), # skeleton
-    'C11': CreatureType('S11', PATTERN_RANDOM, 5, MOVE_WALK), # goblin
-    'C12': CreatureType('S12', PATTERN_RANDOM, 5, MOVE_WALK), # gargoyle
-    'C13': CreatureType('S13', PATTERN_RANDOM, 5, MOVE_SWIM), # water demon
-    'C14': CreatureType('S14', PATTERN_RANDOM, 5, MOVE_WALK), # red-haired woman
-    'C15': CreatureType('S15', PATTERN_RANDOM, 5, MOVE_WALK), # grim reaper
-    'C16': CreatureType('S16', PATTERN_RANDOM, 5, MOVE_WALK), # blue powerful mage
-    'C19': CreatureType('S19', PATTERN_RANDOM, 5, MOVE_WALK), # white-haired mage
-    'C20': CreatureType('S20', PATTERN_RANDOM, 5, MOVE_WALK), # zombie
-    'C21': CreatureType('S21', PATTERN_RANDOM, 8, MOVE_WALK), # worg
-    'C23': CreatureType('S23', PATTERN_RANDOM, 5, MOVE_WALK), # tan skeleton
-    'C24': CreatureType('S24', PATTERN_RANDOM, 5, MOVE_WALK), # scorpion
+    'C7' : CreatureType('S7' , PATTERN_RANDOM, 5, MOVE_WALK),   # one-eyed creep (unused)
+    'C9' : CreatureType('S9' , PATTERN_RANDOM, 5, MOVE_FLY),    # ghost
+    'C10': CreatureType('S10', PATTERN_RANDOM, 5, MOVE_WALK),   # skeleton
+    'C11': CreatureType('S11', PATTERN_RANDOM, 5, MOVE_WALK),   # goblin
+    'C12': CreatureType('S12', PATTERN_RANDOM, 5, MOVE_WALK),   # gargoyle
+    'C13': CreatureType('S13', PATTERN_RANDOM, 5, MOVE_SWIM),   # water demon
+    'C14': CreatureType('S14', PATTERN_RANDOM, 5, MOVE_POISON), # red-haired woman
+    'C15': CreatureType('S15', PATTERN_RANDOM, 5, MOVE_WALK),   # grim reaper
+    'C16': CreatureType('S16', PATTERN_RANDOM, 5, MOVE_WALK),   # blue powerful mage
+    'C19': CreatureType('S19', PATTERN_RANDOM, 5, MOVE_WALK),   # white-haired mage
+    'C20': CreatureType('S20', PATTERN_RANDOM, 5, MOVE_WALK),   # zombie
+    'C21': CreatureType('S21', PATTERN_RANDOM, 8, MOVE_WALK),   # worg
+    'C23': CreatureType('S23', PATTERN_RANDOM, 5, MOVE_WALK),   # tan skeleton
+    'C24': CreatureType('S24', PATTERN_RANDOM, 5, MOVE_WALK),   # scorpion
     'C26': CreatureType('S26', PATTERN_RANDOM, 5, MOVE_WALK),
     'C27': CreatureType('S27', PATTERN_RANDOM, 5, MOVE_WALK),
     'C29': CreatureType('S29', PATTERN_RANDOM, 5, MOVE_WALK),

@@ -15,17 +15,17 @@ terrainMap = {
     # dungeon floor, brown brick wall
     'H': (5, 18, 105, 105, 105, TYPE_CLEAR), 'I': (8, 16, 139, 37, 0, TYPE_OBSTACLE), 
     # water, stones
-    'B': (37, 19, 0, 238, 238, TYPE_LOW), 'C': (53, 16, 139, 90, 0, TYPE_OBSTACLE),
+    'B': (37, 19, 0, 238, 238, TYPE_WATER), 'C': (53, 16, 139, 90, 0, TYPE_OBSTACLE),
     # colortile, large tiles
     'J': (59, 15, 255, 250, 205, TYPE_CLEAR), 'K': (57, 15, 142, 142, 56, TYPE_CLEAR), 
     # gray brick wall, sand
     'L': (52, 17, 183, 183, 183, TYPE_OBSTACLE), 'D': (7, 15, 205, 179, 139, TYPE_CLEAR),
     # cobblestone, poison swamp
-    'F': (9, 14, 139, 136, 120, TYPE_CLEAR), 'E': (23, 19, 118, 238, 0, TYPE_LOW), 
+    'F': (9, 14, 139, 136, 120, TYPE_CLEAR), 'E': (23, 19, 118, 238, 0, TYPE_POISON), 
     # lava, soft tile
     'M': (52, 13, 238, 0, 0, TYPE_OBSTACLE), 'N': (56, 16, 125, 158, 192, TYPE_CLEAR), 
     # murky water, bridge
-    'O': (19, 19, 56, 142, 142, TYPE_LOW), 'G': (43, 16, 139, 0, 0, TYPE_CLEAR),
+    'O': (19, 19, 56, 142, 142, TYPE_WATER), 'G': (43, 16, 139, 0, 0, TYPE_CLEAR),
     # animated water: 36, 19 - 39, 19, animated swamp 23, 19 - 24, 19, animated lava: 49, 13 - 52, 13
     'Q': (0, 46, 0, 0, 0, TYPE_CLEAR)
 }
@@ -168,8 +168,10 @@ def scrollScreen (displaySurf, hero, wx, wy, wz):
 def createProjectile (projectileRef, direction, x, y):
     tempState.projectiles.append(Projectile(projectileRef, direction, x, y))
     
-def moveAndDisplayProjectiles (displaySurf, wz, wx, wy):    
-    obstacles = tempState.getObstacles(True, False, True) # TODO: projectiles should eventually be able to hit hero
+def moveAndDisplayProjectiles (displaySurf, wz, wx, wy): 
+    # TODO: projectiles should eventually be able to hit hero
+    filter = INCLUDE_OBSTACLES | INCLUDE_PUSHABLES | INCLUDE_LOCKED_DOORS
+    obstacles = tempState.getObstacles(filter)
     for projectile in tempState.projectiles:
         if projectile.owner == -1:
             hitResult = projectile.move(obstacles, None, tempState.getCreatureRects())
@@ -196,11 +198,18 @@ def moveAndDisplayCreatures (displaySurf, wz, wx, wy):
     for idx, creature in enumerate(tempState.creatures):
         creature.tick()
         if creature.creatureType.movement == MOVE_FLY:
-            creatureObstacles = tempState.getObstacles(True, False, True)
+            filter = INCLUDE_OBSTACLES | INCLUDE_LOCKED_DOORS | INCLUDE_FAKE_OBSTACLES | INCLUDE_PUSHABLES
         elif creature.creatureType.movement == MOVE_SWIM:
-            creatureObstacles = tempState.getObstacles(True, False, True, True, True)
+            filter = INCLUDE_OBSTACLES | INCLUDE_LOCKED_DOORS | INCLUDE_FAKE_OBSTACLES | INCLUDE_PUSHABLES |\
+                INCLUDE_CLEAR_OBSTACLES | INCLUDE_POISON_OBSTACLES | INCLUDE_FAKE_POISON_OBSTACLES
+        elif creature.creatureType.movement == MOVE_POISON:
+            filter = INCLUDE_OBSTACLES | INCLUDE_LOCKED_DOORS | INCLUDE_FAKE_OBSTACLES | INCLUDE_PUSHABLES |\
+                INCLUDE_CLEAR_OBSTACLES | INCLUDE_WATER_OBSTACLES | INCLUDE_FAKE_WATER_OBSTACLES
         else:
-            creatureObstacles = tempState.getObstacles(True, True, True)
+            filter = INCLUDE_OBSTACLES | INCLUDE_WATER_OBSTACLES | INCLUDE_PUSHABLES | INCLUDE_FAKE_OBSTACLES |\
+                INCLUDE_FAKE_WATER_OBSTACLES | INCLUDE_LOCKED_DOORS | INCLUDE_POISON_OBSTACLES |\
+                INCLUDE_FAKE_POISON_OBSTACLES
+        creatureObstacles = tempState.getObstacles(filter)
         hitResult = creature.move(creatureObstacles, permState.hero.rect, tempState.getCreatureRects(idx))
         if hitResult[0] != None or hitResult[1] != None or hitResult[2] != None or hitResult[3] != None:
             creature.changeDirection()

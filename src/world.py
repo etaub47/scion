@@ -55,11 +55,14 @@ def loadWorld (wx, wy, wz, real = False):
                 addition = getAddition1(wx, wy, wz, x, y)
                 rect = Rect(x * BOXSIZE, y * BOXSIZE, BOXSIZE, BOXSIZE)
                 if terrainObstacle == TYPE_OBSTACLE:
-                    if addition != "AA": # mirror
-                        tempState.obstacles.append(rect)
-                elif terrainObstacle == TYPE_LOW: 
-                    if addition != "AA": # mirror
-                        tempState.lowObstacles.append(rect)
+                    if addition == "AA": tempState.fakeObstacles.append(rect) # mirror icon
+                    else: tempState.obstacles.append(rect)
+                elif terrainObstacle == TYPE_WATER: 
+                    if addition == "AA": tempState.fakeWaterObstacles.append(rect) # mirror icon
+                    else: tempState.waterObstacles.append(rect)
+                elif terrainObstacle == TYPE_POISON: 
+                    if addition == "AA": tempState.fakePoisonObstacles.append(rect) # mirror icon
+                    else: tempState.poisonObstacles.append(rect)
                 elif terrainObstacle == TYPE_CLEAR:
                     tempState.clearObstacles.append(rect)
         for feature in features:
@@ -136,7 +139,7 @@ def drawWorld (DISPLAYSURF, wx, wy, wz, offset_x = 0, offset_y = 0, real = False
         for y in range(BOARDTILEHEIGHT):        
             addition = getAddition1(wx, wy, wz, x, y)
             if real and addition == "AA" and tempState.gotMirror and (tempState.timer / 5) % 2 == 0:
-                anim.displayTerrain(DISPLAYSURF, 'Q', x, y, offset_x = offset_x, offset_y = offset_y)
+                anim.displayTerrain(DISPLAYSURF, 'G', x, y, offset_x = offset_x, offset_y = offset_y)
             else:
                 anim.displayTerrain(DISPLAYSURF, terrain[wz][wx][wy][x][y], x, y, 
                     offset_x = offset_x, offset_y = offset_y)
