@@ -193,11 +193,14 @@ def createCreature (spriteRef, tx, ty):
         tempState.allies.append((spriteRef, tx * BOXSIZE, ty * BOXSIZE))
 
 def moveAndDisplayCreatures (displaySurf, wz, wx, wy):
-    obstacles = tempState.getObstacles(True, True, True)
-    highObstacles = tempState.getObstacles(True, False, True)
     for idx, creature in enumerate(tempState.creatures):
         creature.tick()
-        creatureObstacles = highObstacles if creature.creatureType.movement == MOVE_FLY else obstacles        
+        if creature.creatureType.movement == MOVE_FLY:
+            creatureObstacles = tempState.getObstacles(True, False, True)
+        elif creature.creatureType.movement == MOVE_SWIM:
+            creatureObstacles = tempState.getObstacles(True, False, True, True, True)
+        else:
+            creatureObstacles = tempState.getObstacles(True, True, True)
         hitResult = creature.move(creatureObstacles, permState.hero.rect, tempState.getCreatureRects(idx))
         if hitResult[0] != None or hitResult[1] != None or hitResult[2] != None or hitResult[3] != None:
             creature.changeDirection()

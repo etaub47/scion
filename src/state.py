@@ -4,7 +4,7 @@ from pygame import Rect
 class TemporalState:
     def __init__ (self):
         self.projectiles, self.creatures, self.allies = [], [], []
-        self.obstacles, self.lowObstacles, self.pushables = [], [], []
+        self.obstacles, self.lowObstacles, self.clearObstacles, self.pushables = [], [], [], []
         self.availableItems = [] # AvailableItem
         self.stairs, self.checkForStairs, self.gotMirror = None, False, False
         self.doors = [] # (x, y, doorState, rect, number)
@@ -15,6 +15,7 @@ class TemporalState:
         self.allies[:] = []
         self.obstacles[:] = []
         self.lowObstacles[:] = []
+        self.clearObstacles[:] = []
         self.pushables[:] = []
         self.availableItems[:] = []
         self.stairs, self.checkForStairs, self.gotMirror = None, False, False
@@ -26,7 +27,7 @@ class TemporalState:
             if idx != itself:
                 creatureRects.append(creature.rect)
         return creatureRects
-    def getObstacles (self, returnObstacles, returnLowObstacles, returnPushables, returnLockedDoors=True):
+    def getObstacles (self, returnObstacles, returnLowObstacles, returnPushables, returnLockedDoors=True, returnClearObstacles=False):
         retValue = []
         if returnObstacles: 
             retValue += self.obstacles
@@ -34,6 +35,7 @@ class TemporalState:
                 if (not door.isOpen()) and (returnLockedDoors or not door.isLocked()): 
                     retValue.append(door.rect)
         if returnLowObstacles: retValue += self.lowObstacles
+        if returnClearObstacles: retValue += self.clearObstacles
         if returnPushables: 
             for pushable in self.pushables: 
                 retValue.append(pushable.rect)

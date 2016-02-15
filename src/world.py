@@ -60,6 +60,8 @@ def loadWorld (wx, wy, wz, real = False):
                 elif terrainObstacle == TYPE_LOW: 
                     if addition != "AA": # mirror
                         tempState.lowObstacles.append(rect)
+                elif terrainObstacle == TYPE_CLEAR:
+                    tempState.clearObstacles.append(rect)
         for feature in features:
             if feature[0] == wz and feature[1] == wx and feature[2] == wy:
                 featureObstacle = anim.getFeatureObstacle(feature[5])
