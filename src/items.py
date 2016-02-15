@@ -48,19 +48,18 @@ class Door:
 def getItem (idx):
     # called when the player picks up an available item
     item = tempState.availableItems[idx]
-    if item.showState != VISIBLE:
-        return
+    # only visible items may be picked up
+    if item.showState != VISIBLE: return
     # this item is no longer available
     tempState.deleteAvailableItem(idx)
     # if this is a unique item, mark item as no longer available
-    if item.itemType.type == UNIQUE_ITEM:
-        permState.obtain(item.x, item.y)
+    if item.itemType.type == UNIQUE_ITEM: permState.obtain(item.x, item.y)
     # key
-    if item.itemType.id == 'IL': 
-        permState.keys += 1
+    if item.itemType.id == 'IL': permState.keys += 1
     # mirror
-    elif item.itemType.id == 'IQ':
-        tempState.gotMirror = True
+    elif item.itemType.id == 'IQ': tempState.gotMirror = True
+    # wings
+    elif item.itemType.id == 'IA': tempState.gotWings = True
     
 def unlockDoor (idx):
     # called when the player bumps into a locked door and has a key

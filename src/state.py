@@ -6,7 +6,7 @@ class TemporalState:
         self.projectiles, self.creatures, self.allies = [], [], []
         self.obstacles, self.lowObstacles, self.clearObstacles, self.pushables = [], [], [], []
         self.availableItems = [] # AvailableItem
-        self.stairs, self.checkForStairs, self.gotMirror = None, False, False
+        self.stairs, self.checkForStairs, self.gotMirror, self.gotWings = None, False, False, False
         self.doors = [] # (x, y, doorState, rect, number)
         self.timer = 0
     def clear (self):
@@ -18,7 +18,7 @@ class TemporalState:
         self.clearObstacles[:] = []
         self.pushables[:] = []
         self.availableItems[:] = []
-        self.stairs, self.checkForStairs, self.gotMirror = None, False, False
+        self.stairs, self.checkForStairs, self.gotMirror, self.gotWings = None, False, False, False
         self.doors[:] = []
         self.timer = 0
     def getCreatureRects (self, itself = -1):

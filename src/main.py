@@ -17,7 +17,7 @@ pygame.display.set_caption('Scion')
 
 # initialize hero
 permState.heroIdx = 'H1'
-permState.hero = Hero(permState.heroIdx, 7, 7)
+permState.hero = Hero(permState.heroIdx, START_X, START_Y)
 
 # initialize joystick
 joystickCount, myJoystick = pygame.joystick.get_count(), None
@@ -112,7 +112,7 @@ while True:
         if idx >= 0: items.unlockDoor(idx)
     
     # check for collisions
-    obstacles = tempState.getObstacles(True, True, False, permState.keys == 0)
+    obstacles = tempState.getObstacles(True, not tempState.gotWings, False, permState.keys == 0)
     pushables = tempState.getObstacles(False, False, True)
     hitResult = permState.hero.move(obstacles, None, tempState.getCreatureRects(), pushables)
     
