@@ -78,6 +78,7 @@ class PermanentState:
         self.unlockedDoors = [] # locked doors already opened as a list of tuples (wx, wy, wz, x, y)
         # DEBUG: start out with a key
         self.keys = 1
+        self.life = 3
     def alreadyObtained (self, wz, wx, wy, x, y):
         return (wz, wx, wy, x, y) in self.obtainedItems
     def obtain (self, x, y):

@@ -70,8 +70,8 @@ def displaySimpleImage (displaySurf, imageRef, x, y):
     x_offset, y_offset = image[0] * BOXSIZE, image[1] * BOXSIZE
     displaySurf.blit(sprite1, (x, y), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
     
-def displayLifeMeter (displaySurf, life):
-    for heart in range(life):
+def displayLifeMeter (displaySurf):
+    for heart in range(permState.life):
         displaySimpleImage(displaySurf, 'LIFE', heart * (BOXSIZE / 3) - (BOXSIZE / 2), 0)        
 
 def displayImage (displaySurf, spriteRef, direction, step, x, y):
@@ -87,7 +87,6 @@ def displayTerrain (displaySurf, terrainRef, tx, ty, offset_x = 0, offset_y = 0)
         y_offset = (terrainMap[terrainRef][1]) * BOXSIZE
         displaySurf.blit(sprite1, (tx * BOXSIZE + offset_x, ty * BOXSIZE + offset_y), 
             area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
-        
 
 def displayFeature (displaySurf, featureRef, x, y, offset_x = 0, offset_y = 0):
     if featureRef[-1] == '\n': 
@@ -120,7 +119,8 @@ def displaySprite (displaySurf, spriteRef, x, y):
     y_offset = (spriteType.coords[DOWN][1]) * BOXSIZE
     displaySurf.blit(spriteType.name, (x, y), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))                
 
-def displayHero (displaySurf, hero):
+def displayHero (displaySurf):
+    hero = permState.hero
     frame = 1 if hero.step == 3 else hero.step
     spriteType = hero.heroType.spriteType
     x_offset = (spriteType.coords[hero.direction][0] + frame) * BOXSIZE
@@ -168,8 +168,7 @@ def scrollScreen (displaySurf, hero, wx, wy, wz):
 def createProjectile (projectileRef, direction, x, y):
     tempState.projectiles.append(Projectile(projectileRef, direction, x, y))
     
-def moveAndDisplayProjectiles (displaySurf, wz, wx, wy): 
-    # TODO: projectiles should eventually be able to hit hero
+def moveProjectiles (displaySurf): 
     filter = INCLUDE_OBSTACLES | INCLUDE_PUSHABLES | INCLUDE_LOCKED_DOORS
     obstacles = tempState.getObstacles(filter)
     for projectile in tempState.projectiles:
@@ -179,13 +178,15 @@ def moveAndDisplayProjectiles (displaySurf, wz, wx, wy):
             hitResult = projectile.move(obstacles, permState.hero.rect, tempState.getCreatureRects(owner))
         if hitResult[0] != None or hitResult[1] != None or hitResult[2] != None or hitResult[3] != None:
             projectile.surface = None
-        else:                    
-            displaySurf.blit(projectile.surface, (projectile.x, projectile.y))
         if hitResult[3] != None:
             del tempState.creatures[hitResult[3]]
             if len(tempState.creatures) == 0:
                 items.showHiddenItems()
     tempState.projectiles[:] = [p for p in tempState.projectiles if p.surface != None]
+
+def displayProjectiles (displaySurf): 
+    for projectile in tempState.projectiles:
+        displaySurf.blit(projectile.surface, (projectile.x, projectile.y))
 
 def createCreature (spriteRef, tx, ty):
     spriteType = spriteMap[spriteRef]
@@ -194,7 +195,7 @@ def createCreature (spriteRef, tx, ty):
     else:
         tempState.allies.append((spriteRef, tx * BOXSIZE, ty * BOXSIZE))
 
-def moveAndDisplayCreatures (displaySurf, wz, wx, wy):
+def moveCreatures (displaySurf):
     for idx, creature in enumerate(tempState.creatures):
         creature.tick()
         if creature.creatureType.movement == MOVE_FLY:
@@ -213,6 +214,9 @@ def moveAndDisplayCreatures (displaySurf, wz, wx, wy):
         hitResult = creature.move(creatureObstacles, permState.hero.rect, tempState.getCreatureRects(idx))
         if hitResult[0] != None or hitResult[1] != None or hitResult[2] != None or hitResult[3] != None:
             creature.changeDirection()
+
+def displayCreatures (displaySurf):
+    for creature in tempState.creatures:
         displayCreature(displaySurf, creature)
     for ally in tempState.allies:
         spriteRef, x, y = ally[0], ally[1], ally[2]
@@ -241,3 +245,14 @@ def displayDoors (displaySurf):
     for door in tempState.doors:
         doorIcon = 'FD' if door.isOpen() else 'FE'
         displayFeature(displaySurf, doorIcon, door.x, door.y)
+
+def redrawScreen (displaySurf):
+    # TODO: would be great if we could order these by y-index to draw them properly
+    displayStairs(displaySurf)
+    displayDoors(displaySurf)
+    displayHero(displaySurf)
+    displayPushables(displaySurf)
+    displayCreatures(displaySurf)
+    displayProjectiles(displaySurf) 
+    displayAvailableItems(displaySurf)
+    displayLifeMeter(displaySurf)

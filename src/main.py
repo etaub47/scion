@@ -155,15 +155,14 @@ while True:
     else:
         tempState.checkForStairs = True
     
-    # update the other movables and redraw the screen
-    anim.displayStairs(displaySurf)
-    anim.displayDoors(displaySurf)
-    anim.displayHero(displaySurf, permState.hero)
-    anim.displayPushables(displaySurf)
-    anim.moveAndDisplayCreatures(displaySurf, permState.wz, permState.wx, permState.wy)
-    anim.moveAndDisplayProjectiles(displaySurf, permState.wz, permState.wx, permState.wy) 
-    anim.displayAvailableItems(displaySurf)
-    anim.displayLifeMeter(displaySurf, 3)    
+    # update the other movables
+    anim.moveCreatures(displaySurf)
+    anim.moveProjectiles(displaySurf) 
+
+    # redraw the screen
+    anim.redrawScreen(displaySurf)
     pygame.display.update()
+    
+    # update the clocks
     fpsClock.tick(FPS)
     if permState.hero.speed > 0: permState.hero.tick()
