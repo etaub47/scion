@@ -10,7 +10,7 @@ class ItemType:
         self.id, self.type, self.cost, self.duration, self.effect = id, type, cost, duration, effect
         
 itemMap = {
-    'IA': ItemType('IA', NORMAL_ITEM, 0, 0, 0), # wings (fly over low obstacles)
+    'IA': ItemType('IA', NORMAL_ITEM, 0, 0, 0), # wings (fly over water and poison)
     'IB': ItemType('IB', UNIQUE_ITEM, 0, 0, 0), # armor (permanent defense)
     'IC': ItemType('IC', UNIQUE_ITEM, 0, 0, 0), # book (permanent max hp)
     'ID': ItemType('ID', NORMAL_ITEM, 0, 0, 0), # shield (temporary defense)

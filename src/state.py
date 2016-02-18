@@ -75,7 +75,8 @@ class PermanentState:
         self.obtainedItems = [] # unique items already obtained
         # DEBUG: currently unlock all heroes for testing purposes
         self.unlockedHeroes = ['H1', 'H2', 'H4', 'H5', 'H6', 'H8', 'H17'] # heroes unlocked
-        self.unlockedDoors = [] # locked doors already opened (wx, wy, wz, x, y)
+        self.unlockedDoors = [] # locked doors already opened as a list of tuples (wx, wy, wz, x, y)
+        # DEBUG: start out with a key
         self.keys = 1
     def alreadyObtained (self, wz, wx, wy, x, y):
         return (wz, wx, wy, x, y) in self.obtainedItems

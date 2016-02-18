@@ -31,7 +31,7 @@ terrainMap = {
 }
 
 featureMap = {
-    # tx, ty, obstacleType (4=pushable, 5=item, 6=addition1, 7=addition2, 8=stairs)
+    # tx, ty, obstacle type constant
     # stairs to dungeon, stairs to overworld, blue block
     'FA': (15, 15, TYPE_STAIRS), 'FB': (31, 15, TYPE_STAIRS), 'FC': (29, 16, TYPE_PUSHABLE), 
     # open door, closed door, tree

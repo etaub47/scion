@@ -292,7 +292,7 @@ class Hero (Creature):
     def __init__ (self, heroRef, tx, ty):
         self.heroRef = heroRef
         self.heroType = heroMap[heroRef]
-        rect = Rect(tx * BOXSIZE + 3, ty * BOXSIZE + (BOXSIZE / 2), BOXSIZE - 6, BOXSIZE / 2)
+        rect = Rect(tx * BOXSIZE + 4, ty * BOXSIZE + (BOXSIZE / 2), BOXSIZE - 8, BOXSIZE / 2)
         Movable.__init__(self, DOWN, tx * BOXSIZE, ty * BOXSIZE, 0, PATTERN_NONE, 0, 0, rect)
     def moving (self, direction):
         self.direction, self.speed = direction, self.heroType.speed
