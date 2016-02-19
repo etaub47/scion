@@ -1,4 +1,4 @@
-import os, pygame, sys, anim, state, items, world
+import os, pygame, sys, anim, state, graphics, items, world
 from pygame.locals import *
 from pygame import Rect
 from constants import *
@@ -36,8 +36,9 @@ world.loadWorld(permState.wx, permState.wy, permState.wz, real=True)
 # main game loop
 while True:
 
-    # draw the current screen
+    # draw the current background
     world.drawWorld(displaySurf, permState.wx, permState.wy, permState.wz, real=True)
+    graphics.displayStairs(displaySurf)
 
     # process keyboard input
     for event in pygame.event.get():
@@ -160,7 +161,8 @@ while True:
     anim.moveProjectiles(displaySurf) 
 
     # redraw the screen
-    anim.redrawScreen(displaySurf)
+    graphics.redrawScreen(displaySurf)
+    graphics.drawHeadsUpDisplay(displaySurf)
     pygame.display.update()
     
     # update the clocks

@@ -1,3 +1,6 @@
+import graphics
+
+from graphics import Drawable
 from constants import *
 from state import tempState, permState
 from pygame import Rect
@@ -31,19 +34,38 @@ itemMap = {
     'IS': ItemType('IS', NORMAL_ITEM, 0, 0, 0)  # ring
 }
 
-class AvailableItem:
+class AvailableItem (Drawable):
     def __init__ (self, itemTypeRef, x, y, showState=VISIBLE):
         self.itemType, self.x, self.y, self.showState = itemMap[itemTypeRef], x, y, showState
         self.rect = Rect(x * BOXSIZE, y * BOXSIZE, BOXSIZE, BOXSIZE)
+    def getZIndex (self):  
+        return self.y
+    def draw (self, displaySurf): 
+        if self.showState == VISIBLE and \
+                not permState.alreadyObtained(permState.wz, permState.wx, permState.wy, self.x, self.y):
+            graphics.displayFeature(displaySurf, self.itemType.id, self.x, self.y)
         
-class Door:
+class Door (Drawable):
     def __init__ (self, x, y, showState, number):
         self.x, self.y, self.showState, self.number = x, y, showState, number
         self.rect = Rect(x * BOXSIZE, y * BOXSIZE, BOXSIZE, BOXSIZE)
+    def getZIndex (self):  
+        return self.y * BOXSIZE
+    def draw (self, displaySurf): 
+        doorIcon = 'FD' if self.showState == OPEN else 'FE'
+        graphics.displayFeature(displaySurf, doorIcon, self.x, self.y)
     def isOpen (self):
         return self.showState == OPEN
     def isLocked (self):
         return self.showState == AFTER_KEY
+
+class Ally (Drawable):
+    def __init__ (self, spriteRef, x, y):
+        self.spriteRef, self.x, self.y = spriteRef, x, y
+    def getZIndex (self):
+        return self.y
+    def draw (self, displaySurf):        
+        graphics.displayImage(displaySurf, self.spriteRef, DOWN, 0, self.x, self.y)
 
 def getItem (idx):
     # called when the player picks up an available item

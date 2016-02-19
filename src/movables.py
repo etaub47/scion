@@ -1,53 +1,10 @@
 import pygame, items, random
+
 from constants import *
+from graphics import *
 from pygame import Rect
 from pygame.locals import SRCALPHA
 from state import tempState, permState
-
-sprite1 = pygame.image.load('../img/sprite1.png')
-sprite2 = pygame.image.load('../img/sprite2.png')
-sprite3 = pygame.image.load('../img/sprite3.png')
-sprite4 = pygame.image.load('../img/sprite4.png')
-sprite5 = pygame.image.load('../img/sprite5.png')
-sprite6 = pygame.image.load('../img/sprite6.png')
-
-class SpriteType:
-    def __init__ (self, name, type, coords, size, crossReference):
-        self.name, self.type, self.coords, self.size, self.crossReference = name, type, coords, size, crossReference
-
-spriteMap = {
-    'S1': SpriteType(sprite2, HERO, [(0, 0), (0, 1), (0, 2), (0, 3)], BOXSIZE, 'H1'),    # main hero
-    'S2': SpriteType(sprite2, HERO, [(3, 0), (3, 1), (3, 2), (3, 3)], BOXSIZE, 'H2'),    # blonde girl
-    'S3': SpriteType(sprite2, HERO, [(6, 0), (6, 1), (6, 2), (6, 3)], BOXSIZE, 'H3'),    # green-haired dude (unused)
-    'S4': SpriteType(sprite2, HERO, [(9, 0), (9, 1), (9, 2), (9, 3)], BOXSIZE, 'H4'),    # blue-haired girl
-    'S5': SpriteType(sprite2, HERO, [(0, 4), (0, 5), (0, 6), (0, 7)], BOXSIZE, 'H5'),    # long-haired caped dude
-    'S6': SpriteType(sprite2, HERO, [(3, 4), (3, 5), (3, 6), (3, 7)], BOXSIZE, 'H6'),    # fancy girl
-    'S7': SpriteType(sprite2, ENEMY, [(6, 4), (6, 5), (6, 6), (6, 7)], BOXSIZE, 'C7'),   # one-eyed creepy guy
-    'S8': SpriteType(sprite2, HERO, [(9, 4), (9, 5), (9, 6), (9, 7)], BOXSIZE, 'H8'),    # wizened old man
-    'S9': SpriteType(sprite3, ENEMY, [(0, 0), (9, 0), (3, 0), (6, 0)], BOXSIZE, 'C9'),   # ghost
-    'S10': SpriteType(sprite3, ENEMY, [(0, 1), (9, 1), (3, 1), (6, 1)], BOXSIZE, 'C10'), # skeleton  
-    'S11': SpriteType(sprite3, ENEMY, [(0, 2), (9, 2), (3, 2), (6, 2)], BOXSIZE, 'C11'), # goblin
-    'S12': SpriteType(sprite3, ENEMY, [(0, 3), (9, 3), (3, 3), (6, 3)], BOXSIZE, 'C12'), # gargoyle
-    'S13': SpriteType(sprite3, ENEMY, [(0, 4), (9, 4), (3, 4), (6, 4)], BOXSIZE, 'C13'), # water demon
-    'S14': SpriteType(sprite3, ENEMY, [(0, 5), (9, 5), (3, 5), (6, 5)], BOXSIZE, 'C14'), # red-haired woman
-    'S15': SpriteType(sprite3, ENEMY, [(0, 6), (9, 6), (3, 6), (6, 6)], BOXSIZE, 'C15'), # grim reaper
-    'S16': SpriteType(sprite3, ENEMY, [(0, 7), (9, 7), (3, 7), (6, 7)], BOXSIZE, 'C16'), # blue powerful mage
-    'S17': SpriteType(sprite4, HERO, [(0, 0), (0, 1), (0, 2), (0, 3)], BOXSIZE, 'H17'),  # simple girl
-    'S18': SpriteType(sprite4, ENEMY, [(3, 0), (3, 1), (3, 2), (3, 3)], BOXSIZE, 'C18'), # hairy dude (unused)
-    'S19': SpriteType(sprite4, ENEMY, [(6, 0), (6, 1), (6, 2), (6, 3)], BOXSIZE, 'C19'), # white-haired mage
-    'S20': SpriteType(sprite4, ENEMY, [(9, 0), (9, 1), (9, 2), (9, 3)], BOXSIZE, 'C20'), # zombie
-    'S21': SpriteType(sprite4, ENEMY, [(0, 4), (0, 5), (0, 6), (0, 7)], BOXSIZE, 'C21'), # worg
-    'S22': SpriteType(sprite4, ENEMY, [(3, 4), (3, 5), (3, 6), (3, 7)], BOXSIZE, 'C22'), # chicken crow (unused)
-    'S23': SpriteType(sprite4, ENEMY, [(6, 4), (6, 5), (6, 6), (6, 7)], BOXSIZE, 'C23'), # tan skeleton
-    'S24': SpriteType(sprite6, ENEMY, [(0, 0), (0, 1), (0, 2), (0, 3)], BOXSIZE, 'C24'), # scorpion
-    'S25': SpriteType(sprite5, ENEMY, [(3, 0), (3, 1), (3, 2), (3, 3)], BOXSIZE, 'C25'),
-    'S26': SpriteType(sprite6, ENEMY, [(6, 0), (6, 1), (6, 2), (6, 3)], BOXSIZE, 'C26'),
-    'S27': SpriteType(sprite5, ENEMY, [(9, 0), (9, 1), (9, 2), (9, 3)], BOXSIZE, 'C27'),
-    'S28': SpriteType(sprite5, ENEMY, [(0, 4), (0, 5), (0, 6), (0, 7)], BOXSIZE, 'C28'),
-    'S29': SpriteType(sprite6, ENEMY, [(3, 4), (3, 5), (3, 6), (3, 7)], BOXSIZE, 'C29'),
-    'S30': SpriteType(sprite6, ENEMY, [(6, 4), (6, 5), (6, 6), (6, 7)], BOXSIZE, 'C30'), # bat
-    'S31': SpriteType(sprite5, ENEMY, [(9, 4), (9, 5), (9, 6), (9, 7)], BOXSIZE, 'C31')
-}
 
 class CreatureType:
     def __init__ (self, spriteRef, pattern, speed, movement):
@@ -282,18 +239,34 @@ class Creature (Movable):
         rect = Rect(tx * size + 3, ty * size + (size / 2), size - 6, size / 2)
         Movable.__init__(self, random.randint(0, 3), tx * size, ty * size, self.creatureType.speed,
             self.creatureType.pattern, 0, 0, rect)
+    def getZIndex (self):  
+        return self.y
+    def draw (self, displaySurf): 
+        frame = 1 if self.step == 3 else self.step
+        spriteType = self.creatureType.spriteType
+        x_offset = (spriteType.coords[self.direction][0] + frame) * BOXSIZE
+        y_offset = (spriteType.coords[self.direction][1]) * BOXSIZE
+        displaySurf.blit(spriteType.name, (self.x, self.y), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
     def tick (self):
         self.timer += 1
         if self.timer > 100: self.timer = 0
         if self.timer % 2 == 0: self.step += 1
         if self.step >= 4: self.step = 0    
 
-class Hero (Creature):
+class Hero (Creature, Drawable):
     def __init__ (self, heroRef, tx, ty):
         self.heroRef = heroRef
         self.heroType = heroMap[heroRef]
         rect = Rect(tx * BOXSIZE + 4, ty * BOXSIZE + (BOXSIZE / 2), BOXSIZE - 8, BOXSIZE / 2)
         Movable.__init__(self, DOWN, tx * BOXSIZE, ty * BOXSIZE, 0, PATTERN_NONE, 0, 0, rect)
+    def getZIndex (self):  
+        return self.y
+    def draw (self, displaySurf): 
+        frame = 1 if self.step == 3 else self.step
+        spriteType = self.heroType.spriteType
+        x_offset = (spriteType.coords[self.direction][0] + frame) * BOXSIZE
+        y_offset = (spriteType.coords[self.direction][1]) * BOXSIZE
+        displaySurf.blit(spriteType.name, (self.x, self.y), area=(x_offset, y_offset, BOXSIZE, BOXSIZE))
     def moving (self, direction):
         self.direction, self.speed = direction, self.heroType.speed
     def stop (self):
@@ -326,7 +299,20 @@ class Projectile (Movable):
             self.projectileType.sy * BOXSIZE, BOXSIZE, BOXSIZE))
         self.surface = pygame.transform.rotate(self.surface, angle)
         Movable.__init__(self, direction, x, y, self.projectileType.speed, PATTERN_STRAIGHT, 0, 0, rect)
+    def getZIndex (self):  
+        return self.y
+    def draw (self, displaySurf): 
+        displaySurf.blit(self.surface, (self.x, self.y))    
 
-class Pushable:
+class Pushable (Drawable):
     def __init__ (self, rect, featureRef, secretTrigger=False):
         self.rect, self.featureRef, self.secretTrigger = rect, featureRef, secretTrigger
+    def getZIndex (self):  
+        return self.rect.y
+    def draw (self, displaySurf): 
+        featureRef, x, y = self.featureRef, self.rect.x, self.rect.y
+        if featureRef[-1] == '\n': 
+            featureRef = featureRef[:-1]
+        x_offset = (featureMap[featureRef][0]) * BOXSIZE
+        y_offset = (featureMap[featureRef][1]) * BOXSIZE
+        displaySurf.blit(sprite1, (x, y), area=(x_offset + 1, y_offset, BOXSIZE - 1, BOXSIZE))

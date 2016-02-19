@@ -1,4 +1,4 @@
-import pygame, sys, anim, world
+import pygame, sys, graphics, world
 from pygame.locals import *
 from constants import *
 
@@ -63,10 +63,10 @@ while True:
     DISPLAYSUR.fill(GRAY)
     world.drawWorld(DISPLAYSUR, x, y, z)
     for button in getButtons(z):
-        if button[0] == 0: anim.displayTerrain(DISPLAYSUR, button[1], button[2], button[3])
-        elif button[0] == 2: anim.displaySprite(DISPLAYSUR, button[1], button[2] * BOXSIZE, button[3] * BOXSIZE)
+        if button[0] == 0: graphics.displayTerrain(DISPLAYSUR, button[1], button[2], button[3])
+        elif button[0] == 2: graphics.displaySprite(DISPLAYSUR, button[1], button[2] * BOXSIZE, button[3] * BOXSIZE)
         elif button[0] == 1 or button[0] == 3 or button[0] == 4:
-            anim.displayFeature(DISPLAYSUR, button[1], button[2], button[3])
+            graphics.displayFeature(DISPLAYSUR, button[1], button[2], button[3])
     if z == 0: worldname = 'Overworld'
     else: worldname = 'Dungeon %d' % z        
     textSurf = BASICFONT.render("%s -- (%d,%d)" % (worldname, x, y), True, WHITE)

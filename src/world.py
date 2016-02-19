@@ -1,10 +1,10 @@
-import pygame, anim
+import pygame, graphics
 
 from constants import *
 from movables import *
 from pygame import Rect
 from state import tempState, permState
-from items import AvailableItem, Door
+from items import AvailableItem, Door, Ally
 
 terrain = [[[[[0 for x in range(BOARDTILEHEIGHT)] for x in range(BOARDTILEWIDTH)]
     for x in range(WORLD_MAX_Y + 1)] for x in range(WORLD_MAX_X + 1)] for x in range(DUNGEON_MAX_Z + 1)]
@@ -51,7 +51,7 @@ def loadWorld (wx, wy, wz, real = False):
         tempState.clear()
         for x in range(BOARDTILEWIDTH):
             for y in range(BOARDTILEHEIGHT):
-                terrainObstacle = anim.getTerrainObstacle(terrain[wz][wx][wy][x][y])
+                terrainObstacle = graphics.getTerrainObstacle(terrain[wz][wx][wy][x][y])
                 addition = getAddition1(wx, wy, wz, x, y)
                 rect = Rect(x * BOXSIZE, y * BOXSIZE, BOXSIZE, BOXSIZE)
                 if terrainObstacle == TYPE_OBSTACLE:
@@ -67,10 +67,11 @@ def loadWorld (wx, wy, wz, real = False):
                     tempState.clearObstacles.append(rect)
         for feature in features:
             if feature[0] == wz and feature[1] == wx and feature[2] == wy:
-                featureObstacle = anim.getFeatureObstacle(feature[5])
+                featureObstacle = graphics.getFeatureObstacle(feature[5])
                 x, y = feature[3], feature[4]
                 addition = getAddition1(wx, wy, wz, x, y)
                 number = getAddition2(wx, wy, wz, x, y)
+                # TODO: shrink these rectangles to allow people to walk behind trees?
                 rect = Rect(x * BOXSIZE, y * BOXSIZE, BOXSIZE, BOXSIZE)
                 if addition == "AD" and (wx, wy, wz, x, y) not in permState.unlockedDoors:
                     showState = AFTER_VICTORY # skull
@@ -96,7 +97,12 @@ def loadWorld (wx, wy, wz, real = False):
                         showState = AFTER_KEY
                     tempState.doors.append(Door(x, y, showState, number))
         for creature in getCreatures(wz, wx, wy):
-            anim.createCreature(creature[5], creature[3], creature[4])
+            spriteRef, tx, ty = creature[5], creature[3], creature[4]
+            spriteType = graphics.getSpriteType(spriteRef)
+            if spriteType.type == ENEMY:
+                tempState.creatures.append(Creature(spriteType.crossReference, tx, ty))
+            else:
+                tempState.allies.append(Ally(spriteRef, tx * BOXSIZE, ty * BOXSIZE))
                 
 def saveWorld (wx, wy, wz):
     if wz == 0: datafile = "../data/world_%02d_%02d.dat" % (wx, wy)
@@ -139,25 +145,25 @@ def drawWorld (DISPLAYSURF, wx, wy, wz, offset_x = 0, offset_y = 0, real = False
         for y in range(BOARDTILEHEIGHT):        
             addition = getAddition1(wx, wy, wz, x, y)
             if real and addition == "AA" and tempState.gotMirror and (tempState.timer / 5) % 2 == 0:
-                anim.displayTerrain(DISPLAYSURF, 'G', x, y, offset_x = offset_x, offset_y = offset_y)
+                graphics.displayTerrain(DISPLAYSURF, 'G', x, y, offset_x = offset_x, offset_y = offset_y)
             else:
-                anim.displayTerrain(DISPLAYSURF, terrain[wz][wx][wy][x][y], x, y, 
+                graphics.displayTerrain(DISPLAYSURF, terrain[wz][wx][wy][x][y], x, y, 
                     offset_x = offset_x, offset_y = offset_y)
     for feature in features:
         if feature[0] == wz and feature[1] == wx and feature[2] == wy:
-            if not real or anim.getFeatureObstacle(feature[5]) == TYPE_OBSTACLE:
-                anim.displayFeature(DISPLAYSURF, feature[5], feature[3], feature[4], 
+            if not real or graphics.getFeatureObstacle(feature[5]) == TYPE_OBSTACLE:
+                graphics.displayFeature(DISPLAYSURF, feature[5], feature[3], feature[4], 
                     offset_x = offset_x, offset_y = offset_y)
     if not real:
         for creature in getCreatures(wz, wx, wy):
-            anim.displaySprite(DISPLAYSURF, creature[5], creature[3] * BOXSIZE + offset_x, 
+            graphics.displaySprite(DISPLAYSURF, creature[5], creature[3] * BOXSIZE + offset_x, 
                 creature[4] * BOXSIZE + offset_y)
         for addition in additions1:
             if addition[0] == wz and addition[1] == wx and addition[2] == wy:
-                anim.displayFeature(DISPLAYSURF, addition[5], addition[3], addition[4])
+                graphics.displayFeature(DISPLAYSURF, addition[5], addition[3], addition[4])
         for addition in additions2:
             if addition[0] == wz and addition[1] == wx and addition[2] == wy:
-                anim.displayFeature(DISPLAYSURF, addition[5], addition[3], addition[4])
+                graphics.displayFeature(DISPLAYSURF, addition[5], addition[3], addition[4])
                 
 def tinyOverworld (DISPLAYSURF, wx, wy, wz):
     for gx in range(3):
@@ -170,7 +176,7 @@ def tinyOverworld (DISPLAYSURF, wx, wy, wz):
                         if ckey in keyColors:
                             clr = keyColors[ckey]
                         else:
-                            clr = anim.getTerrainColor(ckey)
+                            clr = graphics.getTerrainColor(ckey)
                             keyColors[ckey] = clr
                         rect_x = BOXSIZE * (gx + 1) + (x * 3)
                         rect_y = BOARDHEIGHT + (BOXSIZE * (gy + 1)) + (y * 4)
