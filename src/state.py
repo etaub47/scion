@@ -1,6 +1,33 @@
 from constants import *
 from pygame import Rect
 
+def positionMatchesF (f, wz, wx, wy, x, y):
+    return f.wz == wz and f.wx == wx and f.wy == wy and f.tx == x and f.ty == y
+
+class WorldState:
+    def __init__ (self):
+        self.terrains, self.features = {}, {}
+    def addTerrain (self, terrain):
+        key = (terrain.wz, terrain.wx, terrain.wy)
+        if key not in self.terrains:
+            self.terrains[key] = []
+        self.terrains[key].append(terrain)
+    def addFeature (self, feature):
+        key = (feature.wz, feature.wx, feature.wy)
+        if key not in self.features:
+            self.features[key] = []
+        self.features[key].append(feature)
+    def getTerrains (self, wz, wx, wy):
+        return self.terrains[(wz, wx, wy)]
+    def getTerrain (self, wz, wx, wy, tx, ty):
+        for t in self.getTerrains(wz, wx, wy):
+            if t.tx == tx and t.ty == ty: return t
+        return None
+    def getFeatures (self, wz, wx, wy):
+        return self.features[(wz, wx, wy)]
+    def removeFeature (self, wz, wx, wy, x, y):
+        self.features[(wz, wx, wy)][:] = [f for f in self.features[(wz, wx, wy)] if f.tx != x or f.ty != y]
+
 class TemporalState:
     def __init__ (self):
         self.projectiles, self.creatures, self.allies = [], [], []
@@ -88,5 +115,6 @@ class PermanentState:
     def load (self):
         pass
 
+worldState = WorldState()
 tempState = TemporalState()
 permState = PermanentState()

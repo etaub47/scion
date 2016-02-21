@@ -285,24 +285,29 @@ class Hero (Creature, Drawable):
         self.rect = Rect(self.x + 3, self.y + (BOXSIZE / 2), BOXSIZE - 6, BOXSIZE / 2)
 
 class Projectile (Movable):
-    def __init__ (self, projectileRef, direction, x, y, owner):
+    def __init__ (self, projectileRef, direction, owner_x, owner_y, owner):
         self.projectileType, self.owner, angle = projectileMap[projectileRef], owner, 0
         size = self.projectileType.size
+        x, y = owner_x, owner_y
+        rect_x, rect_y = x + (BOXSIZE / 2), y + (BOXSIZE / 2)
         if self.projectileType.rotateInd:
             angle = self.projectileType.rotateOffset
             if direction == DOWN: angle += 90
             elif direction == RIGHT: angle += 180
-            elif direction == UP: angle += 270        
-        rect = Rect(x + (BOXSIZE / 2 - size / 2), y + (BOXSIZE / 2 - size / 2), size, size)
+            elif direction == UP: angle += 270
+        rect = Rect(rect_x, rect_y, size, size)
         self.surface = pygame.Surface((BOXSIZE, BOXSIZE), SRCALPHA)
         self.surface.blit(sprite1, (0, 0), area=(self.projectileType.sx * BOXSIZE, 
             self.projectileType.sy * BOXSIZE, BOXSIZE, BOXSIZE))
         self.surface = pygame.transform.rotate(self.surface, angle)
         Movable.__init__(self, direction, x, y, self.projectileType.speed, PATTERN_STRAIGHT, 0, 0, rect)
-    def getZIndex (self):  
+    def getZIndex (self): 
         return self.y
     def draw (self, displaySurf): 
-        displaySurf.blit(self.surface, (self.x, self.y))    
+        displaySurf.blit(self.surface, (self.x, self.y))  
+        # DEBUG
+        #pygame.draw.rect(displaySurf, BRIGHTYELLOW, (self.rect.x, self.rect.y, self.projectileType.size, \
+            #self.projectileType.size), 0)  
 
 class Pushable (Drawable):
     def __init__ (self, rect, featureRef, secretTrigger=False):
@@ -310,9 +315,12 @@ class Pushable (Drawable):
     def getZIndex (self):  
         return self.rect.y
     def draw (self, displaySurf): 
-        featureRef, x, y = self.featureRef, self.rect.x, self.rect.y
+        featureRef = self.featureRef
+        x, y = self.rect.x, self.rect.y - (BOXSIZE / 2) + 1
         if featureRef[-1] == '\n': 
             featureRef = featureRef[:-1]
         x_offset = (featureMap[featureRef][0]) * BOXSIZE
         y_offset = (featureMap[featureRef][1]) * BOXSIZE
         displaySurf.blit(sprite1, (x, y), area=(x_offset + 1, y_offset, BOXSIZE - 1, BOXSIZE))
+        # DEBUG
+        # pygame.draw.rect(displaySurf, BRIGHTYELLOW, (self.rect.x, self.rect.y, BOXSIZE, (BOXSIZE / 2) + 1), 0)  

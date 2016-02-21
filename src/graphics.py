@@ -2,17 +2,7 @@ import pygame
 
 from pygame.locals import *
 from constants import *
-from state import tempState, permState
-
-class SpriteType:
-    def __init__ (self, name, type, coords, size, crossReference):
-        self.name, self.type, self.coords, self.size, self.crossReference = name, type, coords, size, crossReference
-
-class Drawable:
-    def getZIndex (self):  
-        raise NotImplementedError("Please Implement this method")
-    def draw (self, displaySurf): 
-        raise NotImplementedError("Please Implement this method")
+from state import worldState, tempState, permState
 
 sprite1 = pygame.image.load('../img/sprite1.png')
 sprite2 = pygame.image.load('../img/sprite2.png')
@@ -30,13 +20,13 @@ terrainMap = {
     # nothing, grass
     '-': (0, 0, 255, 250, 205, TYPE_CLEAR), 'A': (0, 15, 0, 128, 0, TYPE_CLEAR), 
     # dungeon floor, brown brick wall
-    'H': (5, 18, 105, 105, 105, TYPE_CLEAR), 'I': (8, 16, 139, 37, 0, TYPE_OBSTACLE), 
+    'H': (5, 18, 105, 105, 105, TYPE_CLEAR), 'I': (8, 16, 139, 37, 0, TYPE_OBSTACLE_TALL), 
     # water, stones
-    'B': (37, 19, 0, 238, 238, TYPE_WATER), 'C': (53, 16, 139, 90, 0, TYPE_OBSTACLE),
+    'B': (37, 19, 0, 238, 238, TYPE_WATER), 'C': (53, 16, 139, 90, 0, TYPE_OBSTACLE_TALL),
     # colortile, large tiles
     'J': (59, 15, 255, 250, 205, TYPE_CLEAR), 'K': (57, 15, 142, 142, 56, TYPE_CLEAR), 
     # gray brick wall, sand
-    'L': (52, 17, 183, 183, 183, TYPE_OBSTACLE), 'D': (7, 15, 205, 179, 139, TYPE_CLEAR),
+    'L': (52, 17, 183, 183, 183, TYPE_OBSTACLE_TALL), 'D': (7, 15, 205, 179, 139, TYPE_CLEAR),
     # cobblestone, poison swamp
     'F': (9, 14, 139, 136, 120, TYPE_CLEAR), 'E': (23, 19, 118, 238, 0, TYPE_POISON), 
     # lava, soft tile
@@ -52,9 +42,9 @@ featureMap = {
     # stairs to dungeon, stairs to overworld, blue block
     'FA': (15, 15, TYPE_STAIRS), 'FB': (31, 15, TYPE_STAIRS), 'FC': (29, 16, TYPE_PUSHABLE), 
     # open door, closed door, tree
-    'FD': (27, 11, TYPE_DOOR), 'FE': (23, 11, TYPE_DOOR), 'FF': (14, 18, TYPE_OBSTACLE),
+    'FD': (27, 11, TYPE_DOOR), 'FE': (23, 11, TYPE_DOOR), 'FF': (14, 18, TYPE_OBSTACLE_TALL),
     # statue, fountain, wings
-    'FG': (28, 11, TYPE_PUSHABLE), 'FH': (63, 11, TYPE_OBSTACLE), 'IA': (15, 7, TYPE_ITEM), 
+    'FG': (28, 11, TYPE_PUSHABLE), 'FH': (63, 11, TYPE_OBSTACLE_TALL), 'IA': (15, 7, TYPE_ITEM), 
     # armor, book, shield
     'IB': (28, 21, TYPE_ITEM), 'IC': (58, 22, TYPE_ITEM), 'ID': (54, 22, TYPE_ITEM),
     # meat, gold, potion
@@ -72,6 +62,10 @@ featureMap = {
     # 1-5
     'AF': (11, 0, 7), 'AG': (12, 0, 7), 'AH': (13, 0, 7), 'AI': (14, 0, 7), 'AJ': (15, 0, 7)
 }
+
+class SpriteType:
+    def __init__ (self, name, type, coords, size, crossReference):
+        self.name, self.type, self.coords, self.size, self.crossReference = name, type, coords, size, crossReference
 
 spriteMap = {
     'S1': SpriteType(sprite2, HERO, [(0, 0), (0, 1), (0, 2), (0, 3)], BOXSIZE, 'H1'),    # main hero
@@ -106,6 +100,34 @@ spriteMap = {
     'S30': SpriteType(sprite6, ENEMY, [(6, 4), (6, 5), (6, 6), (6, 7)], BOXSIZE, 'C30'), # bat
     'S31': SpriteType(sprite5, ENEMY, [(9, 4), (9, 5), (9, 6), (9, 7)], BOXSIZE, 'C31')
 }
+
+class Drawable:
+    def getZIndex (self):  
+        raise NotImplementedError("Please Implement this method")
+    def draw (self, displaySurf): 
+        raise NotImplementedError("Please Implement this method")
+
+class Terrain (Drawable):
+    def __init__ (self, wz, wx, wy, tx, ty, tkey):
+        self.wz, self.wx, self.wy, self.tx, self.ty, self.tkey = wz, wx, wy, tx, ty, tkey
+        self.addition = None
+    def setAddition (self, addition):
+        self.addition = addition
+    def getZIndex (self):
+        return self.ty * BOXSIZE
+    def draw (self, displaySurf):
+        if self.addition == "AA" and tempState.gotMirror and (tempState.timer / 5) % 2 == 0:
+            displayTerrain(displaySurf, 'G', self.tx, self.ty)
+        else:
+            displayTerrain(displaySurf, self.tkey, self.tx, self.ty)
+
+class Feature (Drawable):
+    def __init__ (self, wz, wx, wy, tx, ty, tkey):
+        self.wz, self.wx, self.wy, self.tx, self.ty, self.tkey = wz, wx, wy, tx, ty, tkey
+    def getZIndex (self):  
+        return self.ty * BOXSIZE
+    def draw (self, displaySurf):
+        displayFeature(displaySurf, self.tkey, self.tx, self.ty)
 
 def getTerrainColor (terrainRef):
     return terrainMap[terrainRef][2:5]
@@ -183,5 +205,11 @@ def redrawScreen (displaySurf):
     drawables.extend(tempState.allies)
     drawables.extend(tempState.projectiles)
     drawables.extend(tempState.availableItems)
+    for feature in worldState.getFeatures(permState.wz, permState.wx, permState.wy):
+        if getFeatureObstacle(feature.tkey) == TYPE_OBSTACLE or getFeatureObstacle(feature.tkey) == TYPE_OBSTACLE_TALL:
+            drawables.append(feature)
+    for terrain in worldState.getTerrains(permState.wz, permState.wx, permState.wy):
+        if getTerrainObstacle(terrain.tkey) == TYPE_OBSTACLE or getTerrainObstacle(terrain.tkey) == TYPE_OBSTACLE_TALL:
+            drawables.append(terrain)
     for drawable in sorted(drawables, key = lambda drawable: drawable.getZIndex()):
         drawable.draw(displaySurf)

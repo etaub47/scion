@@ -8,31 +8,31 @@ from state import tempState, permState
 def scrollScreen (displaySurf, hero, wx, wy, wz):
     if hero.direction == DOWN:
         for new_y in range(MAX_Y - BOXSIZE, MIN_Y, 0 - (BOXSIZE / 3)):
-            world.drawWorld(displaySurf, wx, wy, wz, offset_y = new_y - MAX_Y - (BOXSIZE * 2 / 3), real=True)
-            world.drawWorld(displaySurf, wx, wy + 1, wz, offset_y = new_y, real=True)
+            world.drawMap(displaySurf, wx, wy, wz, offset_y = new_y - MAX_Y - (BOXSIZE * 2 / 3), real=True)
+            world.drawMap(displaySurf, wx, wy + 1, wz, offset_y = new_y, real=True)
             hero.y = new_y
-            displayHero(displaySurf, hero)
+            hero.draw(displaySurf)
             pygame.display.update()
     elif hero.direction == RIGHT:
         for new_x in range(MAX_X - BOXSIZE, MIN_X, 0 - (BOXSIZE / 3)):
-            world.drawWorld(displaySurf, wx, wy, wz, offset_x = new_x - MAX_X - (BOXSIZE * 2 / 3), real=True)
-            world.drawWorld(displaySurf, wx + 1, wy, wz, offset_x = new_x, real=True)
+            world.drawMap(displaySurf, wx, wy, wz, offset_x = new_x - MAX_X - (BOXSIZE * 2 / 3), real=True)
+            world.drawMap(displaySurf, wx + 1, wy, wz, offset_x = new_x, real=True)
             hero.x = new_x
-            displayHero(displaySurf, hero)
+            hero.draw(displaySurf)
             pygame.display.update()
     elif hero.direction == UP:
         for new_y in range(MIN_Y, MAX_Y, (BOXSIZE / 3)):
-            world.drawWorld(displaySurf, wx, wy, wz, offset_y = new_y + (BOXSIZE * 2 / 3), real=True)
-            world.drawWorld(displaySurf, wx, wy - 1, wz, offset_y = new_y - MAX_Y, real=True)
+            world.drawMap(displaySurf, wx, wy, wz, offset_y = new_y + (BOXSIZE * 2 / 3), real=True)
+            world.drawMap(displaySurf, wx, wy - 1, wz, offset_y = new_y - MAX_Y, real=True)
             hero.y = new_y
-            displayHero(displaySurf, hero)
+            hero.draw(displaySurf)
             pygame.display.update()
     elif hero.direction == LEFT:
         for new_x in range(MIN_X, MAX_X, (BOXSIZE / 3)):
-            world.drawWorld(displaySurf, wx, wy, wz, offset_x = new_x + (BOXSIZE * 2 / 3), real=True)
-            world.drawWorld(displaySurf, wx - 1, wy, wz, offset_x = new_x - MAX_X, real=True)
+            world.drawMap(displaySurf, wx, wy, wz, offset_x = new_x + (BOXSIZE * 2 / 3), real=True)
+            world.drawMap(displaySurf, wx - 1, wy, wz, offset_x = new_x - MAX_X, real=True)
             hero.x = new_x
-            displayHero(displaySurf, hero)
+            hero.draw(displaySurf)
             pygame.display.update()
 
 def moveProjectiles (displaySurf): 

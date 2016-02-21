@@ -37,7 +37,7 @@ world.loadWorld(permState.wx, permState.wy, permState.wz, real=True)
 while True:
 
     # draw the current background
-    world.drawWorld(displaySurf, permState.wx, permState.wy, permState.wz, real=True)
+    world.drawTerrain(displaySurf, permState.wx, permState.wy, permState.wz, real=True)
     graphics.displayStairs(displaySurf)
 
     # process keyboard input
@@ -73,8 +73,7 @@ while True:
                 if int(pressed) == B_BUTTON and buttonsReset[B_BUTTON]:
                     buttonsReset[B_BUTTON] = False
                     dir = permState.hero.direction
-                    tempState.projectiles.append(Projectile(
-                        'PA', dir, permState.hero.x - PROJ_OFFSET, permState.hero.y, -1))
+                    tempState.projectiles.append(Projectile('PA', dir, permState.hero.x, permState.hero.y, -1))
                         
                 # change hero
                 elif int(pressed) == R_BUTTON and buttonsReset[R_BUTTON]:
@@ -168,3 +167,4 @@ while True:
     # update the clocks
     fpsClock.tick(FPS)
     if permState.hero.speed > 0: permState.hero.tick()
+    tempState.incrementTimer()

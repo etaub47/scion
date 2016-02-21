@@ -61,7 +61,9 @@ def getButtons (z):
 
 while True:
     DISPLAYSUR.fill(GRAY)
-    world.drawWorld(DISPLAYSUR, x, y, z)
+    world.drawMap(DISPLAYSUR, x, y, z)
+    world.drawEditorElements(DISPLAYSUR, x, y, z)
+    
     for button in getButtons(z):
         if button[0] == 0: graphics.displayTerrain(DISPLAYSUR, button[1], button[2], button[3])
         elif button[0] == 2: graphics.displaySprite(DISPLAYSUR, button[1], button[2] * BOXSIZE, button[3] * BOXSIZE)
