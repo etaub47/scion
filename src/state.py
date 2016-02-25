@@ -11,6 +11,8 @@ class WorldState:
         key = (terrain.wz, terrain.wx, terrain.wy)
         if key not in self.terrains:
             self.terrains[key] = []
+        if key not in self.features:
+            self.features[key] = []
         self.terrains[key].append(terrain)
     def addFeature (self, feature):
         key = (feature.wz, feature.wx, feature.wy)
@@ -30,6 +32,7 @@ class WorldState:
 
 class TemporalState:
     def __init__ (self):
+        self.hero = None
         self.projectiles, self.creatures, self.allies = [], [], []
         self.obstacles, self.waterObstacles, self.clearObstacles = [], [], []
         self.fakeObstacles, self.fakeWaterObstacles, self.pushables = [], [], []
@@ -97,15 +100,14 @@ class TemporalState:
         
 class PermanentState:
     def __init__ (self):
-        self.hero, self.heroIdx = None, -1
-        self.wx, self.wy, self.wz = START_WX, START_WY, START_WZ
-        self.obtainedItems = [] # unique items already obtained
+        self.wx, self.wy, self.wz = START_WX, START_WY, START_WZ # start location
+        self.maxHp, self.maxAttack, self.maxDefense = 3, 1, 0 # combat values
+        self.obtainedItems = [] # unique items already obtained as a list of AvailableItem objects
+        self.unlockedDoors = [] # locked doors already opened as a list of tuples (wx, wy, wz, x, y)
         # DEBUG: currently unlock all heroes for testing purposes
         self.unlockedHeroes = ['H1', 'H2', 'H4', 'H5', 'H6', 'H8', 'H17'] # heroes unlocked
-        self.unlockedDoors = [] # locked doors already opened as a list of tuples (wx, wy, wz, x, y)
         # DEBUG: start out with a key
-        self.keys = 1
-        self.life = 3
+        self.keys = 1 # number of keys
     def alreadyObtained (self, wz, wx, wy, x, y):
         return (wz, wx, wy, x, y) in self.obtainedItems
     def obtain (self, x, y):

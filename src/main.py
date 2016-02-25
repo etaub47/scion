@@ -16,8 +16,7 @@ displaySurf.fill((255, 255, 255))
 pygame.display.set_caption('Scion')
 
 # initialize hero
-permState.heroIdx = 'H1'
-permState.hero = Hero(permState.heroIdx, START_X, START_Y)
+tempState.hero = Hero('H1', START_X, START_Y, permState.maxHp, permState.maxAttack, permState.maxDefense)
 
 # initialize joystick
 joystickCount, myJoystick = pygame.joystick.get_count(), None
@@ -58,7 +57,7 @@ while True:
             # fire projectile
             elif event.key == K_SPACE:                
                 tempState.projectiles.append(Projectile(
-                    'PA', permState.hero.direction, permState.hero.x - PROJ_OFFSET, permState.hero.y, -1))
+                    'PA', tempState.hero.direction, tempState.hero.x - PROJ_OFFSET, tempState.hero.y, -1))
                     
     # process joystick input
     pressed = ""
@@ -72,16 +71,16 @@ while True:
                 # fire projectile
                 if int(pressed) == B_BUTTON and buttonsReset[B_BUTTON]:
                     buttonsReset[B_BUTTON] = False
-                    dir = permState.hero.direction
-                    tempState.projectiles.append(Projectile('PA', dir, permState.hero.x, permState.hero.y, -1))
+                    dir = tempState.hero.direction
+                    tempState.projectiles.append(Projectile('PA', dir, tempState.hero.x, tempState.hero.y, -1))
                         
                 # change hero
                 elif int(pressed) == R_BUTTON and buttonsReset[R_BUTTON]:
                     buttonsReset[R_BUTTON] = False
-                    permState.hero.nextHero()
+                    tempState.hero.nextHero()
                 elif int(pressed) == L_BUTTON and buttonsReset[L_BUTTON]:
                     buttonsReset[L_BUTTON] = False
-                    permState.hero.prevHero()
+                    tempState.hero.prevHero()
                                                                     
             # button released; ready to press again
             elif int(pressed) == B_BUTTON:            
@@ -93,11 +92,11 @@ while True:
     
     # check hero movement
     keys = pygame.key.get_pressed()
-    if keys[K_LEFT] or h_axis_pos < -0.5: permState.hero.moving(LEFT)
-    elif keys[K_RIGHT] or h_axis_pos > 0.5: permState.hero.moving(RIGHT)
-    elif keys[K_UP] or v_axis_pos < -0.5: permState.hero.moving(UP)
-    elif keys[K_DOWN] or v_axis_pos > 0.5: permState.hero.moving(DOWN)
-    else: permState.hero.stop()
+    if keys[K_LEFT] or h_axis_pos < -0.5: tempState.hero.moving(LEFT)
+    elif keys[K_RIGHT] or h_axis_pos > 0.5: tempState.hero.moving(RIGHT)
+    elif keys[K_UP] or v_axis_pos < -0.5: tempState.hero.moving(UP)
+    elif keys[K_DOWN] or v_axis_pos > 0.5: tempState.hero.moving(DOWN)
+    else: tempState.hero.stop()
             
     # DEBUG
     textSurf = basicFont.render("%s,%s -- %s" % (str(px), str(py), pressed), True, (255, 255, 255))
@@ -108,7 +107,7 @@ while True:
     
     # check for locked doors that can be opened
     if permState.keys > 0:
-        idx = permState.hero.rect.collidelist(tempState.getLockedDoorRects())
+        idx = tempState.hero.rect.collidelist(tempState.getLockedDoorRects())
         if idx >= 0: items.unlockDoor(idx)
     
     # check for collisions
@@ -117,31 +116,31 @@ while True:
     if not tempState.gotWings: filter = filter | INCLUDE_WATER_OBSTACLES | INCLUDE_POISON_OBSTACLES
     obstacles = tempState.getObstacles(filter)    
     pushables = tempState.getObstacles(INCLUDE_PUSHABLES)
-    hitResult = permState.hero.move(obstacles, None, tempState.getCreatureRects(), pushables)
+    hitResult = tempState.hero.move(obstacles, None, tempState.getCreatureRects(), pushables)
     
     # check for item collection
-    idx = permState.hero.rect.collidelist(tempState.getAvailableItemRects())
+    idx = tempState.hero.rect.collidelist(tempState.getAvailableItemRects())
     if idx >= 0: items.getItem(idx)
     
     # check for edge of screen
-    if hitResult[0] == DOWN:
-        anim.scrollScreen(displaySurf, permState.hero, permState.wx, permState.wy, permState.wz)
-        permState.hero.y, permState.wy = MIN_Y, permState.wy + 1
-    elif hitResult[0] == RIGHT:
-        anim.scrollScreen(displaySurf, permState.hero, permState.wx, permState.wy, permState.wz)
-        permState.hero.x, permState.wx = MIN_X, permState.wx + 1
-    elif hitResult[0] == UP:
-        anim.scrollScreen(displaySurf, permState.hero, permState.wx, permState.wy, permState.wz)
-        permState.hero.y, permState.wy = MAX_Y, permState.wy - 1
-    elif hitResult[0] == LEFT:
-        anim.scrollScreen(displaySurf, permState.hero, permState.wx, permState.wy, permState.wz)
-        permState.hero.x, permState.wx = MAX_X, permState.wx - 1
-    if hitResult[0] != None:
+    if hitResult[HIT_EDGE] == DOWN:
+        anim.scrollScreen(displaySurf, tempState.hero, permState.wx, permState.wy, permState.wz)
+        tempState.hero.y, permState.wy = MIN_Y, permState.wy + 1
+    elif hitResult[HIT_EDGE] == RIGHT:
+        anim.scrollScreen(displaySurf, tempState.hero, permState.wx, permState.wy, permState.wz)
+        tempState.hero.x, permState.wx = MIN_X, permState.wx + 1
+    elif hitResult[HIT_EDGE] == UP:
+        anim.scrollScreen(displaySurf, tempState.hero, permState.wx, permState.wy, permState.wz)
+        tempState.hero.y, permState.wy = MAX_Y, permState.wy - 1
+    elif hitResult[HIT_EDGE] == LEFT:
+        anim.scrollScreen(displaySurf, tempState.hero, permState.wx, permState.wy, permState.wz)
+        tempState.hero.x, permState.wx = MAX_X, permState.wx - 1
+    if hitResult[HIT_EDGE] != None:
         world.loadWorld(permState.wx, permState.wy, permState.wz, real=True)
-        permState.hero.updateRect()
+        tempState.hero.updateRect()
         
     # check for staircase
-    if tempState.stairs != None and permState.hero.rect.colliderect(tempState.stairs[3]):
+    if tempState.stairs != None and tempState.hero.rect.colliderect(tempState.stairs[3]):
         if tempState.checkForStairs:    
             if permState.wz > 0:
                 s_idx, s_idx2 = permState.wz - 1, 0
@@ -149,11 +148,19 @@ while True:
                 s_idx, s_idx2 = ord(tempState.stairs[4][1]) - 70, 1
             permState.wz, permState.wx, permState.wy = STAIRS[s_idx][s_idx2]
             world.loadWorld(permState.wx, permState.wy, permState.wz, real=True)
-            permState.hero.x, permState.hero.y = tempState.stairs[0] * BOXSIZE, \
+            tempState.hero.x, tempState.hero.y = tempState.stairs[0] * BOXSIZE, \
                 tempState.stairs[1] * BOXSIZE
-            permState.hero.updateRect()
+            tempState.hero.updateRect()
     else:
         tempState.checkForStairs = True
+        
+    # check for collision with creature (damage)
+    if hitResult[HIT_CREATURE] != None:
+        creature = tempState.creatures[hitResult[HIT_CREATURE]]
+        tempState.hero.hp -= 1 # TODO: this should be dependent on the creature
+        # TODO: temporary invincibility
+        if tempState.hero.hp <= 0:
+            tempState.hero.hp = 0 # TODO: and of course death
     
     # update the other movables
     anim.moveCreatures(displaySurf)
@@ -166,5 +173,5 @@ while True:
     
     # update the clocks
     fpsClock.tick(FPS)
-    if permState.hero.speed > 0: permState.hero.tick()
+    if tempState.hero.speed > 0: tempState.hero.tick()
     tempState.incrementTimer()

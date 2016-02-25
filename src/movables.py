@@ -7,29 +7,29 @@ from pygame.locals import SRCALPHA
 from state import tempState, permState
 
 class CreatureType:
-    def __init__ (self, spriteRef, pattern, speed, movement):
-        self.spriteType, self.pattern, self.speed = spriteMap[spriteRef], pattern, speed
-        self.movement = movement
+    def __init__ (self, spriteRef, pattern, speed, movement, hp, attack):
+        self.spriteType, self.pattern, self.speed, self.movement = spriteMap[spriteRef], pattern, speed, movement
+        self.hp, self.attack = hp, attack
 
 creatureMap = {
-    'C7' : CreatureType('S7' , PATTERN_RANDOM, 5, MOVE_WALK),   # one-eyed creep (unused)
-    'C9' : CreatureType('S9' , PATTERN_RANDOM, 5, MOVE_FLY),    # ghost
-    'C10': CreatureType('S10', PATTERN_RANDOM, 5, MOVE_WALK),   # skeleton
-    'C11': CreatureType('S11', PATTERN_RANDOM, 5, MOVE_WALK),   # goblin
-    'C12': CreatureType('S12', PATTERN_RANDOM, 5, MOVE_WALK),   # gargoyle
-    'C13': CreatureType('S13', PATTERN_RANDOM, 5, MOVE_SWIM),   # water demon
-    'C14': CreatureType('S14', PATTERN_RANDOM, 5, MOVE_POISON), # red-haired woman
-    'C15': CreatureType('S15', PATTERN_RANDOM, 5, MOVE_WALK),   # grim reaper
-    'C16': CreatureType('S16', PATTERN_RANDOM, 5, MOVE_WALK),   # blue powerful mage
-    'C19': CreatureType('S19', PATTERN_RANDOM, 5, MOVE_WALK),   # white-haired mage
-    'C20': CreatureType('S20', PATTERN_RANDOM, 5, MOVE_WALK),   # zombie
-    'C21': CreatureType('S21', PATTERN_RANDOM, 8, MOVE_WALK),   # worg
-    'C23': CreatureType('S23', PATTERN_RANDOM, 5, MOVE_WALK),   # tan skeleton
-    'C24': CreatureType('S24', PATTERN_RANDOM, 5, MOVE_WALK),   # scorpion
-    'C26': CreatureType('S26', PATTERN_RANDOM, 5, MOVE_WALK),
-    'C27': CreatureType('S27', PATTERN_RANDOM, 5, MOVE_WALK),
-    'C29': CreatureType('S29', PATTERN_RANDOM, 5, MOVE_WALK),
-    'C30': CreatureType('S30', PATTERN_RANDOM, 5, MOVE_FLY)  # bat
+    'C7' : CreatureType('S7' , PATTERN_RANDOM, 5, MOVE_WALK, 1, 1),   # one-eyed creep (unused)
+    'C9' : CreatureType('S9' , PATTERN_RANDOM, 5, MOVE_FLY, 1, 1),    # ghost
+    'C10': CreatureType('S10', PATTERN_RANDOM, 5, MOVE_WALK, 1, 1),   # skeleton
+    'C11': CreatureType('S11', PATTERN_RANDOM, 5, MOVE_WALK, 1, 1),   # goblin
+    'C12': CreatureType('S12', PATTERN_RANDOM, 5, MOVE_WALK, 1, 1),   # gargoyle
+    'C13': CreatureType('S13', PATTERN_RANDOM, 5, MOVE_SWIM, 1, 1),   # water demon
+    'C14': CreatureType('S14', PATTERN_RANDOM, 5, MOVE_POISON, 1, 1), # red-haired woman
+    'C15': CreatureType('S15', PATTERN_RANDOM, 5, MOVE_WALK, 1, 1),   # grim reaper
+    'C16': CreatureType('S16', PATTERN_RANDOM, 5, MOVE_WALK, 1, 1),   # blue powerful mage
+    'C19': CreatureType('S19', PATTERN_RANDOM, 5, MOVE_WALK, 1, 1),   # white-haired mage
+    'C20': CreatureType('S20', PATTERN_RANDOM, 5, MOVE_WALK, 1, 1),   # zombie
+    'C21': CreatureType('S21', PATTERN_RANDOM, 8, MOVE_WALK, 1, 1),   # worg
+    'C23': CreatureType('S23', PATTERN_RANDOM, 5, MOVE_WALK, 1, 1),   # tan skeleton
+    'C24': CreatureType('S24', PATTERN_RANDOM, 5, MOVE_WALK, 1, 1),   # scorpion
+    'C26': CreatureType('S26', PATTERN_RANDOM, 5, MOVE_WALK, 1, 1),
+    'C27': CreatureType('S27', PATTERN_RANDOM, 5, MOVE_WALK, 1, 1),
+    'C29': CreatureType('S29', PATTERN_RANDOM, 5, MOVE_WALK, 1, 1),
+    'C30': CreatureType('S30', PATTERN_RANDOM, 5, MOVE_FLY, 1, 1)     # bat
 }
         
 class ProjectileType:
@@ -235,6 +235,9 @@ class Movable:
 class Creature (Movable):
     def __init__ (self, creatureRef, tx, ty):
         self.creatureType = creatureMap[creatureRef]
+        self.hp = self.creatureType.hp
+        self.attack = self.creatureType.attack
+        self.defense = 0
         size = self.creatureType.spriteType.size
         rect = Rect(tx * size + 3, ty * size + (size / 2), size - 6, size / 2)
         Movable.__init__(self, random.randint(0, 3), tx * size, ty * size, self.creatureType.speed,
@@ -251,12 +254,13 @@ class Creature (Movable):
         self.timer += 1
         if self.timer > 100: self.timer = 0
         if self.timer % 2 == 0: self.step += 1
-        if self.step >= 4: self.step = 0    
+        if self.step >= 4: self.step = 0
 
 class Hero (Creature, Drawable):
-    def __init__ (self, heroRef, tx, ty):
+    def __init__ (self, heroRef, tx, ty, hp, attack, defense):
         self.heroRef = heroRef
         self.heroType = heroMap[heroRef]
+        self.hp, self.attack, self.defense = hp, attack, defense
         rect = Rect(tx * BOXSIZE + 4, ty * BOXSIZE + (BOXSIZE / 2), BOXSIZE - 8, BOXSIZE / 2)
         Movable.__init__(self, DOWN, tx * BOXSIZE, ty * BOXSIZE, 0, PATTERN_NONE, 0, 0, rect)
     def getZIndex (self):  

@@ -191,14 +191,14 @@ def displayStairs (displaySurf):
         displayFeature(displaySurf, stairIcon, tempState.stairs[0], tempState.stairs[1])
 
 def displayLifeMeter (displaySurf):
-    for heart in range(permState.life):
+    for heart in range(tempState.hero.hp):
         displaySimpleImage(displaySurf, 'LIFE', heart * (BOXSIZE / 3) - (BOXSIZE / 2), 0)        
 
 def drawHeadsUpDisplay (displaySurf):
     displayLifeMeter(displaySurf)
 
 def redrawScreen (displaySurf):
-    drawables = [permState.hero]
+    drawables = [tempState.hero]
     drawables.extend(tempState.doors)
     drawables.extend(tempState.pushables)
     drawables.extend(tempState.creatures)

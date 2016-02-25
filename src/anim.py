@@ -42,7 +42,7 @@ def moveProjectiles (displaySurf):
         if projectile.owner == -1:
             hitResult = projectile.move(obstacles, None, tempState.getCreatureRects())
         else:    
-            hitResult = projectile.move(obstacles, permState.hero.rect, tempState.getCreatureRects(owner))
+            hitResult = projectile.move(obstacles, tempState.hero.rect, tempState.getCreatureRects(owner))
         if hitResult[0] != None or hitResult[1] != None or hitResult[2] != None or hitResult[3] != None:
             projectile.surface = None
         if hitResult[3] != None:
@@ -67,6 +67,6 @@ def moveCreatures (displaySurf):
                 INCLUDE_FAKE_WATER_OBSTACLES | INCLUDE_LOCKED_DOORS | INCLUDE_POISON_OBSTACLES |\
                 INCLUDE_FAKE_POISON_OBSTACLES
         creatureObstacles = tempState.getObstacles(filter)
-        hitResult = creature.move(creatureObstacles, permState.hero.rect, tempState.getCreatureRects(idx))
+        hitResult = creature.move(creatureObstacles, tempState.hero.rect, tempState.getCreatureRects(idx))
         if hitResult[0] != None or hitResult[1] != None or hitResult[2] != None or hitResult[3] != None:
             creature.changeDirection()
